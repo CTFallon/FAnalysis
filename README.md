@@ -1,5 +1,7 @@
 # FAnalysis
 Analysis code for semi-visible jets
+Created with CMSSW\_8\_0\_28
+Tested with CMSSW\_8\_0\_28
 
 current use is
 
