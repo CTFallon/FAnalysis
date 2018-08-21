@@ -1,0 +1,7 @@
+# ignore large files, such as .root files
+*.root
+
+# ignore outputs, such as pngs, pdfs, and such.
+*.png
+*.pdf
+
