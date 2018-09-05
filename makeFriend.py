@@ -15,7 +15,7 @@ def loop(self):
 	tree.SetBranchStatus("DeltaPhi*", 1)
 	tree.SetBranchStatus("MET",1)
 	tree.SetBranchStatus("METPhi",1)
-	tree.SetBranchStatus("GenParticles*",1)
+	tree.SetBranchStatus("GenParticle*",1)
 	tree.SetBranchStatus("Electrons",1)
 	tree.SetBranchStatus("Muons",1)
 
