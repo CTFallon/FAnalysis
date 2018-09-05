@@ -75,7 +75,6 @@ def loop(self):
 		# record:
 	 	#   if it is inside which AK8 jet
 		#   if it is decendant of an HV quark
-		#   
 		for iPart in tree.GenParticles:
 			genParticleInAK8Jet.append(-1)
 			genParticleIsFromHVQuark.append(0)
@@ -90,8 +89,6 @@ def loop(self):
 			for iJet in range(len(tree.JetsAK8)-1,-1,-1):
 				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) > 0.08 and numberOfDaughtersAParticleHas[iPart] == 0:
 					genParticleInAK8Jet[iPart] = iJet
-						
-		
 		friend.Fill()
 
 	
