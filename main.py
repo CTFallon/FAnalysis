@@ -8,7 +8,7 @@
 import sys, os
 import analysisBase as ab
 
-os.symlink("../{}".format(sys.argv[1]), "../src/analysisClass.py")
+os.symlink("{}".format(sys.argv[1]), "analysisClass.py")
 
 import analysisClass as tm
 
