@@ -51,7 +51,7 @@ def loop(self):
 		passedLeptonVeto[0] = 0
 		passedPreSelection[0] = 0
 		for i in range(100):
-			genParticleInAK8Jet[i] = =10
+			genParticleInAK8Jet[i] = -10
 			genParticleIsFromHVQuark[i] = -10
 		# PreSelection Cuts
 		# At least 2 jets in the event
