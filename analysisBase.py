@@ -71,10 +71,10 @@ class baseClass():
 	def selfprint(self):
 		print("------------------------")
 		print("Analysing these files:")
-		for line in self.fileList:
+		for line in self.inputFileList:
 			print(line)
 		print("Using these trees:")
-		for line in self.treeList:
+		for line in self.treeNameList:
 			print(line)
 		print("And saving output here:")
 		print(self.outFileName)

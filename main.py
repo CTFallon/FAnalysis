@@ -7,6 +7,8 @@
 
 import sys, os
 import analysisBase as ab
+#import sys.argv[1][:-3]
+print(sys.argv[1][:-3])
 
 # arguments
 # [0] main.py
