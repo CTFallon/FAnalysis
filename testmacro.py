@@ -16,6 +16,8 @@ def loop(self):
 	tree.SetBranchStatus("MET",1)
 	tree.SetBranchStatus("METPhi",1)
 	tree.SetBranchStatus("GenParticles*",1)
+	tree.SetBranchStatus("Electrons",1)
+	tree.SetBranchStatus("Muons",1)
 
 	# initalize histograms to be made, or create Friend tree to be filled
 	friend = rt.TTree("friend","friend")
@@ -46,11 +48,11 @@ def loop(self):
 		passedPreSelection[0] = 0
 		# PreSelection Cuts
 		# At least 2 jets in the event
-		if not (len(jetCollection)>=2): 
+		if not (len(tree.JetsAK8)>=2): 
 			continue
 		passednJets[0] = 1
 		# Both leading jets must have pt > 170
-		if not ((jetCollection[0].Pt() > 170.0) and (jetCollection[1].Pt() > 170.0)): 
+		if not ((tree.JetsAK8[0].Pt() > 170.0) and (tree.JetsAK8[1].Pt() > 170.0)): 
 			continue
 		passedHighPt[0] = 1
 		# MET/MT ratio must be greater than 0.15
