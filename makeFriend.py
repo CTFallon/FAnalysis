@@ -30,8 +30,8 @@ def loop(self):
 	passedLeptonVeto = array('i', [0])
 	passedPreSelection = array('i', [0])
 	
-	genParticleInAK8Jet = array('i' ,[])
-	genParticleIsFromHVQuark = array('i' ,[])
+	genParticleInAK8Jet = array('i' ,[-10 for x in range(100)])
+	genParticleIsFromHVQuark = array('i' ,[-10 for x in range(100)])
 	
 	friend.Branch("passednJets", passednJets, 'passednJets/I')
 	friend.Branch("passedHighPt", passedHighPt, 'passedHighPt/I')
@@ -50,8 +50,9 @@ def loop(self):
 		passedMETMTRatio[0] = 0
 		passedLeptonVeto[0] = 0
 		passedPreSelection[0] = 0
-		genParticleInAK8Jet = array('i' ,[])
-		genParticleIsFromHVQuark = array('i' ,[])
+		for i in range(100):
+			genParticleInAK8Jet[i] = =10
+			genParticleIsFromHVQuark[i] = -10
 		# PreSelection Cuts
 		# At least 2 jets in the event
 		if not (len(tree.JetsAK8)>=2): 
@@ -75,9 +76,6 @@ def loop(self):
 		# record:
 	 	#   if it is inside which AK8 jet
 		#   if it is decendant of an HV quark
-		for iPart in tree.GenParticles:
-			genParticleInAK8Jet.append(-1)
-			genParticleIsFromHVQuark.append(0)
 		numberOfDaughtersAParticleHas = [0 for part in tree.GenParticles]
 		for iPart in range(2,len(tree.GenParticles)):
 			iParent = tree.GenParticles_ParentIdx[iPart]
