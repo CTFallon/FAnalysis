@@ -6,9 +6,9 @@ class baseClass():
 		self.treeList = treeList
 		self.outFileName = outFileName
 		self.objects = []
-		loadFileList()
-		loadTreeList()
-		loadOutFile()
+		self.loadFileList()
+		self.loadTreeList()
+		self.loadOutFile()
 
 	def loadFileList(self):
 		inFile = open(self.fileList)
