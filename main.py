@@ -6,6 +6,7 @@
 
 
 import sys, os
+import analysisBase as ab
 
 # arguments
 # [0] main.py
@@ -41,6 +42,9 @@ for line in iTree:
 print("----------")
 
 os.symlink("../$s"%sys.argv[1], "../src/analysisClass.py")
+
+analysis = ab.baseClass(sys.argv[2], sys.argv[3], sys.argv[4])
+analysis.run()
 
 # create instance ofobject analysisClass with string args (inputList, treeList, outFile)
 
