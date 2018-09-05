@@ -30,13 +30,16 @@ def loop(self):
 	passedLeptonVeto = array('i', [0])
 	passedPreSelection = array('i', [0])
 	
-	#genParticleInAK8Jet = [0 for partile in len(tree.GenParticles)]
+	genParticleInAK8Jet = array('i' ,[-1 for x in tree.GenParticles])
+	genParticleIsFromHVQuark = array('i' ,[0 for x in tree.GenParticles])
 	
 	friend.Branch("passednJets", passednJets, 'passednJets/I')
 	friend.Branch("passedHighPt", passedHighPt, 'passedHighPt/I')
 	friend.Branch("passedMETMTRatio", passedMETMTRatio, 'passedMETMTRatio/I')
 	friend.Branch("passedLeptonVeto", passedLeptonVeto, 'passedLeptonVeto/I')
 	friend.Branch("passedPreSelection", passedPreSelection, 'passedPreSelection/I')
+	friend.Branch("ganParticleInAK8Jet", genParticleInAK8Jet,'genParticleInAK8Jet[iPart]/I')
+	friend.Branch("genParticleIsFromHVQuark", genParticleIsFromHVQuark,'genParticleIsFromHVQuark[iPart]/I')
 	
 	tree.AddFriend(friend)
 	
@@ -65,40 +68,26 @@ def loop(self):
 			continue
 		passedLeptonVeto[0] = 1
 		passedPreSelection[0] = 1
-		# copied from old stuff, probably lots of errors in terms of varible names
-		# UPDATE
-		for iPart in range(2, len(tree.GenParticles)):
-			iParent = tree.GenParticles_ParentIdx[iPart]
-			if iParent != -1: 
-				numberOfDaughtersAParticleHas[iParent] += 1
-		AK8jetsWithHVDecendants = ["0","0","0","0","0"]
-		AK8_nHVParts = [0,0,0,0,0]
-		AK8_nParts = [0,0,0,0,0]
-		AK8_ptHVParts = [0,0,0,0,0]
-		AK8_ptParts = [0,0,0,0,0]
-		#make vector of length nGenParts that is 1 if the particle came from a HV quark
-		isFromHVQuark = [0 for x in range(len(tree.GenParticles))]
-		listOfHVQuarks = []
+		
+		# for each PARTICLE:
+		# record:
+	 	#   if it is inside which AK8 jet
+		#   if it is decendant of an HV quark
+		#   
+
+		numberOfDaughtersAParticleHas = [0 for part in tree.GenParticles]
 		for iPart in range(2,len(tree.GenParticles)):
 			iParent = tree.GenParticles_ParentIdx[iPart]
-			if abs(tree.GenParticles_PdgId[iPart]) == 4900101:
-				listOfHVQuarks.append(tree.GenParticles[iPart])
-			if iParent >= iPart:
-				print("Ut-oh, the parent has a higher index than the child...")
-			if (abs(tree.GenParticles_PdgId[iParent]) == 4900101) or (isFromHVQuark[iParent]):
-				isFromHVQuark[iPart] = 1
-			#finding what Jet a particle is in, only if it decends from a HVQuark:
-			for iJet in range(min(len(tree.JetsAK8),5)):
-				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) < 0.8 and not numberOfDaughtersAParticleHas[iPart] and abs(tree.GenParticles_PdgId[iPart]) < 4900000:
-					AK8_ptParts[-iJet-1] += tree.GenParticles[iPart].Pt()
-					AK8_nParts[-iJet-1] += 1
-			if isFromHVQuark[iPart] and abs(tree.GenParticles_PdgId[iPart]) < 4900000:
-				for iJet in range(min(len(tree.JetsAK8),5)):
-					if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) < 0.8 and not numberOfDaughtersAParticleHas[iPart]:
-						AK8jetsWithHVDecendants[-iJet-1] = "1"
-						AK8_ptHVParts[-iJet-1] += tree.GenParticles[iPart].Pt()
-						AK8_nHVParts[-iJet-1] += 1
-			#UPDATE
+			if iParent != -1:
+				numberOfDaughtersAParticleHas[iParent] += 1
+			if (abs(tree.GenParticles_PdgId[iParent]) == 4900101) or genParticleIsFromHVQuark[iParent]:
+				genParticleIsFromHVQuark[iPart] = 1
+		for iPart in range(len(tree.GenParticles)):
+			for iJet in range(len(tree.JetsAK8)-1,-1,-1):
+				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) > 0.08 and numberOfDaughtersAParticleHas[iPart] == 0:
+					genParticleInAK8Jet[iPart] = iJet
+						
+		
 		friend.Fill()
 
 	
