@@ -81,9 +81,9 @@ class baseClass():
 		print("------------------------")
 	
 	def run(self):
-		selfprint()
-		loop()
-		write()
+		self.selfprint()
+		self.loop()
+		self.write()
 
 
 
