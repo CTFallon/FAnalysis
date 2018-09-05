@@ -3,7 +3,7 @@ from analysisBase import baseClass
 def loop(self):
 	print(self.fileList)
 
-def addLoop:
+def addLoop():
 	baseClass.loop = loop
 
 
