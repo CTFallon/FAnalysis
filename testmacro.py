@@ -1,4 +1,5 @@
 from analysisBase import baseClass
+import ROOT as rt
 
 def loop(self):
 	# set up trees
