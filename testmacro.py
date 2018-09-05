@@ -1,4 +1,4 @@
-from analysisbase import baseClass
+from analysisBase import baseClass
 
 def loop(self):
 	print(self.fileList)

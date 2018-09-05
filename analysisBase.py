@@ -1,6 +1,6 @@
 # base class for FAnalysis, copied from Lucien Lo's PFG HcalTupleAnalyzer, adapted to python
 import ROOT as rt
-class baseClass():
+class baseClass:
 	def __init__(self, fileList, treeList, outFileName):
 		self.fileList = fileList
 		self.treeList = treeList
@@ -14,14 +14,14 @@ class baseClass():
 		inFile = open(self.fileList)
 		self.inputFileList = []
 		for line in inFile:
-			self.inputFileList.append(line)
+			self.inputFileList.append(line[:-1])#ignore new line character
 		inFile.close()
 
 	def loadTreeList(self):
 		treeFile = open(self.treeList)
 		self.treeNameList = []
 		for line in treeFile:
-			self.treeNameList.append(line)
+			self.treeNameList.append(line[:-1])#ignore new line character
 		treeFile.close()
 
 	def loadOutFile(self):
