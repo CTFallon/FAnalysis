@@ -41,7 +41,7 @@ for line in iTree:
 	print(line[:-1])# don't print new line symbol
 print("----------")
 
-os.symlink("../$s"%sys.argv[1], "../src/analysisClass.py")
+os.symlink("../{}",format(sys.argv[1]), "../src/analysisClass.py")
 
 analysis = ab.baseClass(sys.argv[2], sys.argv[3], sys.argv[4])
 analysis.run()
