@@ -8,6 +8,8 @@
 import sys, os
 import analysisBase as ab
 
+if os.path.lexists("analysisClass.py"):
+	os.remove("analysisClass.py")
 os.symlink("{}".format(sys.argv[1]), "analysisClass.py")
 
 import analysisClass as tm
