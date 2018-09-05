@@ -2,8 +2,8 @@
 import ROOT as rt
 class baseClass:
 	def __init__(self, fileList, treeList, outFileName):
-		self.fileList = fileList
-		self.treeList = treeList
+		self.fileList = fileList # list of ROOT files to read
+		self.treeList = treeList # list of Tree names in each ROOT file
 		self.outFileName = outFileName
 		self.objects = []
 		self.loadFileList()
