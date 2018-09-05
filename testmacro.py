@@ -20,6 +20,7 @@ def loop(self):
 	tree.SetBranchStatus("Muons",1)
 
 	# initalize histograms to be made, or create Friend tree to be filled
+	self.outRootFile.cd()
 	friend = rt.TTree("friend","friend")
 	self.objects.append(friend)
 	# create branch variables
