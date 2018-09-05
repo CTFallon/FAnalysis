@@ -21,11 +21,11 @@ def loop(self):
 	friend = rt.TTree("friend","friend")
 	self.objects.append(friend)
 	# create branch variables
-	passednJets = array(f, [0.])
-	passedHighPt = array(f, [0.])
-	passedMETMTRatio = array(f, [0.])
-	passedLeptonVeto = array(f, [0.])
-	passedPreSelection = array(f, [0.])
+	passednJets = array('i', [0])
+	passedHighPt = array('i', [0])
+	passedMETMTRatio = array('i', [0])
+	passedLeptonVeto = array('i', [0])
+	passedPreSelection = array('i', [0])
 	
 	#genParticleInAK8Jet = [0 for partile in len(tree.GenParticles)]
 	
@@ -39,29 +39,29 @@ def loop(self):
 	
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
-		passednJets[0] = 0.
-		passedHighPt[0] = 0.
-		passedMETMTRatio[0] = 0.
-		passedLeptonVeto[0] = 0.
-		passedPreSelection[0] = 0.
+		passednJets[0] = 0
+		passedHighPt[0] = 0
+		passedMETMTRatio[0] = 0
+		passedLeptonVeto[0] = 0
+		passedPreSelection[0] = 0
 		# PreSelection Cuts
 		# At least 2 jets in the event
 		if not (len(jetCollection)>=2): 
 			continue
-		passednJets[0] = 1.
+		passednJets[0] = 1
 		# Both leading jets must have pt > 170
 		if not ((jetCollection[0].Pt() > 170.0) and (jetCollection[1].Pt() > 170.0)): 
 			continue
-		passedHighPt[0] = 1.
+		passedHighPt[0] = 1
 		# MET/MT ratio must be greater than 0.15
 		if not (tree.MET/tree.MT_AK8 > 0.15):
 			continue
-		passedMETMTRatio[0] = 1.
+		passedMETMTRatio[0] = 1
 		# must not have any leptons
 		if not ((len(tree.Electrons) + len(tree.Muons)) == 0):
 			continue
-		passedLeptonVeto[0] = 1.
-		passedPreSelection[0] = 1.
+		passedLeptonVeto[0] = 1
+		passedPreSelection[0] = 1
 		
 		friend.Fill()
 
