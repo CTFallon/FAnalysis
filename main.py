@@ -40,7 +40,7 @@ for line in iTree:
 	print(line[:-1])# don't print new line symbol
 print("----------")
 
-os.symlink("../$s"%argv[1], "../src/analysisClass.py")
+os.symlink("../$s"%sys.argv[1], "../src/analysisClass.py")
 
 # create instance ofobject analysisClass with string args (inputList, treeList, outFile)
 
