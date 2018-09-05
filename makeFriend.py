@@ -30,8 +30,8 @@ def loop(self):
 	passedLeptonVeto = array('i', [0])
 	passedPreSelection = array('i', [0])
 	
-	genParticleInAK8Jet = array('i' ,[-10 for x in range(100)])
-	genParticleIsFromHVQuark = array('i' ,[-10 for x in range(100)])
+	genParticleInAK8Jet = array('i' ,[-10 for x in range(1000)])
+	genParticleIsFromHVQuark = array('i' ,[-10 for x in range(1000)])
 	
 	friend.Branch("passednJets", passednJets, 'passednJets/I')
 	friend.Branch("passedHighPt", passedHighPt, 'passedHighPt/I')
@@ -50,7 +50,7 @@ def loop(self):
 		passedMETMTRatio[0] = 0
 		passedLeptonVeto[0] = 0
 		passedPreSelection[0] = 0
-		for i in range(100):
+		for i in range(1000):
 			genParticleInAK8Jet[i] = -10
 			genParticleIsFromHVQuark[i] = -10
 		# PreSelection Cuts
