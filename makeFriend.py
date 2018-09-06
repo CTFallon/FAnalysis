@@ -39,7 +39,7 @@ def loop(self):
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
 		passedPreSelection[0] = 0
-		for i in range(1000):
+		for i in range(500):
 			genParticleInAK8Jet[i] = -10
 			genParticleIsFromHVQuark[i] = -10
 			numberOfDaughtersAParticleHas[i] = 0
