@@ -25,14 +25,14 @@ def loop(self):
 	self.objects.append(friend)
 	# create branch variables
 	passedPreSelection = array('i', [0])
-	genParticleInAK8Jet = array('l' ,500*[-10])
-	genParticleIsFromHVQuark = array('l' ,500*[-10])
-	numberOfDaughtersAParticleHas = array('l', 500*[0])
+	genParticleInAK8Jet = array('f' ,500*[-10.])
+	genParticleIsFromHVQuark = array('f' ,500*[-10.])
+	numberOfDaughtersAParticleHas = array('f', 500*[0.])
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
-	friend.Branch("ganParticleInAK8Jet",genParticleInAK8Jet,'genParticleInAK8Jet[iPart]/I')
-	friend.Branch("genParticleIsFromHVQuark",genParticleIsFromHVQuark,'genParticleIsFromHVQuark[iPart]/I')
-	friend.Branch("numberOfDaughtersAParticleHas",numberOfDaughtersAParticleHas,'numberOfDaughtersAParticleHas[iPart]/I')
+	friend.Branch("ganParticleInAK8Jet",genParticleInAK8Jet,'genParticleInAK8Jet[iPart]/F')
+	friend.Branch("genParticleIsFromHVQuark",genParticleIsFromHVQuark,'genParticleIsFromHVQuark[iPart]/F')
+	friend.Branch("numberOfDaughtersAParticleHas",numberOfDaughtersAParticleHas,'numberOfDaughtersAParticleHas[iPart]/F')
 	
 	tree.AddFriend(friend)
 	
@@ -40,9 +40,9 @@ def loop(self):
 		tree.GetEvent(iEvent)
 		passedPreSelection[0] = 0
 		for i in range(500):
-			genParticleInAK8Jet[i] = -10
-			genParticleIsFromHVQuark[i] = -10
-			numberOfDaughtersAParticleHas[i] = 0
+			genParticleInAK8Jet[i] = -10.
+			genParticleIsFromHVQuark[i] = -10.
+			numberOfDaughtersAParticleHas[i] = 0.
 		# PreSelection Cuts
 		# At least 2 jets in the event
 		if not (len(tree.JetsAK8)>=2): 
@@ -65,13 +65,13 @@ def loop(self):
 		for iPart in range(2,len(tree.GenParticles)):
 			iParent = tree.GenParticles_ParentIdx[iPart]
 			if iParent != -1:
-				numberOfDaughtersAParticleHas[iParent] += 1
+				numberOfDaughtersAParticleHas[iParent] += 1.
 			if (abs(tree.GenParticles_PdgId[iParent]) == 4900101) or genParticleIsFromHVQuark[iParent]:
-				genParticleIsFromHVQuark[iPart] = 1
+				genParticleIsFromHVQuark[iPart] = float(1)
 		for iPart in range(len(tree.GenParticles)):
 			for iJet in range(len(tree.JetsAK8)-1,-1,-1):
 				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) > 0.08 and numberOfDaughtersAParticleHas[iPart] == 0:
-					genParticleInAK8Jet[iPart] = iJet
+					genParticleInAK8Jet[iPart] = float(iJet)
 		friend.Fill()
 
 	
