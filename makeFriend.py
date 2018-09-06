@@ -26,8 +26,8 @@ def loop(self):
 	# create branch variables
 	passedPreSelection = array('i', [0])
 	numGenParts = array('i',[0])
-	genParticleInAK8Jet = array('f' ,[-10. for x in range(155)])
-	genParticleIsFromHVQuark = array('f' ,[-10. for x in range(155)])
+	genParticleInAK8Jet = array('f' ,[-1. for x in range(155)])
+	genParticleIsFromHVQuark = array('f' ,[-1. for x in range(155)])
 	numberOfDaughtersAParticleHas = array('f', [0. for x in range(155)])
 	print(len(genParticleInAK8Jet))
 	print(len(genParticleIsFromHVQuark))
