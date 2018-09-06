@@ -78,9 +78,9 @@ def loop(self):
 			if (abs(tree.GenParticles_PdgId[iParent]) == 4900101) or genParticleIsFromHVQuark[iParent]:
 				genParticleIsFromHVQuark[iPart] = float(1)
 		for iPart in range(2,len(tree.GenParticles)):
-			for iJet in range(len(tree.JetsAK8),-1,-1):
+			for iJet in range(len(tree.JetsAK8)-1,-1,-1):
 				#print(iJet)
-				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) > 0.08 and numberOfDaughtersAParticleHas[iPart] == 0:
+				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) < 0.8 and numberOfDaughtersAParticleHas[iPart] == 0:
 					genParticleInAK8Jet[iPart] = float(iJet)
 		friend.Fill()
 	print(maxNofParticle)
