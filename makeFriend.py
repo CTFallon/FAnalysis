@@ -26,11 +26,12 @@ def loop(self):
 	# create branch variables
 	passedPreSelection = array('i', [0])
 	numGenParts = array('i',[0])
-	genParticleInAK8Jet = array('f' ,155*[-10.])
-	genParticleIsFromHVQuark = array('f' ,155*[-10.])
-	numberOfDaughtersAParticleHas = array('f', 155*[0.])
-	print(type(numberOfDaughtersAParticleHas))
-	print(type(numberOfDaughtersAParticleHas[0]))
+	genParticleInAK8Jet = array('f' ,[-10. for x in range(155)])
+	genParticleIsFromHVQuark = array('f' ,[-10. for x in range(155)])
+	numberOfDaughtersAParticleHas = array('f', [0. for x in range(155)])
+	print(len(genParticleInAK8Jet))
+	print(len(genParticleIsFromHVQuark))
+	print(len(numberOfDaughtersAParticleHas))
 	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
