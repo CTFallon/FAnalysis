@@ -47,8 +47,8 @@ def loop(self):
 	friend.Branch("numHVPartsInJet",numHVPartsInJet,'numHVPartsInJet[7]/I')
 	friend.Branch("numSMPartsInJet",numSMPartsInJet,'numSMPartsInJet[7]/I')
 	friend.Branch("iJetMaxDeltaPhi",iJetMaxDeltaPhi,'iJetMaxDeltaPhi/I')
-	friend.Branch("pTMaxDeltaPhi",pTMaxDeltaPhi,'pTMaxDeltaPhi/I')
-	friend.Branch("dPhiMaxDeltaPhi",dPhiMaxDeltaPhi,'dPhiMaxDeltaPhi/I')
+	friend.Branch("pTMaxDeltaPhi",pTMaxDeltaPhi,'pTMaxDeltaPhi/F')
+	friend.Branch("dPhiMaxDeltaPhi",dPhiMaxDeltaPhi,'dPhiMaxDeltaPhi/F')
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
