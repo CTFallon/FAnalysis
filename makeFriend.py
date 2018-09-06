@@ -33,6 +33,7 @@ def loop(self):
 	fracPtFromHVQuarks = array("f",[0. for x in range(7)])
 	numHVPartsInJet = array("i",[0 for x in range(7)])
 	numSMPartsInJet = array("i",[0 for x in range(7)])
+	deltaPhiMaxJet = array('i',[-1])
 	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
@@ -43,6 +44,7 @@ def loop(self):
 	friend.Branch("fracPtFromHVQuarks",fracPtFromHVQuarks,'fracPtFromHVQuarks[7]/F')
 	friend.Branch("numHVPartsInJet",numHVPartsInJet,'numHVPartsInJet[7]/I')
 	friend.Branch("numSMPartsInJet",numSMPartsInJet,'numSMPartsInJet[7]/I')
+	friend.Branch("deltaPhiMaxJet",deltaPhiMaxJet,'deltaPhiMaxJet/I')
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
@@ -54,6 +56,7 @@ def loop(self):
 		passedPreSelection[0] = 0
 		numGenParts[0] = len(tree.GenParticles)
 		numJets[0] = len(tree.JetsAK8)
+		deltaPhiMaxJet[0] = -1
 		if maxNofParticle < numGenParts[0]:
 			maxNofParticle = numGenParts[0]
 		if maxNofJets < numJets[0]:
@@ -100,7 +103,13 @@ def loop(self):
 		# for each JET record:
 		# how much of the total PT from daughter-less particles is from HV decendants
 		# number of particles in the jet, total, visible, and invisible
+		# also record which jet is furthest from the METPhi
+		maxDeltaPhi = 0
 		for iJet in range(len(tree.JetsAK8)):
+			deltaPhi = abs(tree.JetsAK8[iJet].Phi()-tree.METPhi())%rt.TMath.Pi()
+			if deltaPhi > maxDeltaPhi:
+				maxDeltaPhi = deltaPhi
+				deltaPhiMaxJet[0] = iJet
 			totalPt = 0.
 			HVPt = 0.
 			for iPart in range(2,len(tree.GenParticles)):
@@ -121,6 +130,7 @@ def loop(self):
 				fracPtFromHVQuarks[iJet] = HVPt/totalPt
 			except ZeroDivisionError:
 				fracPtFromHVQuarks[iJet] = -1
+		
 					
 					
 		friend.Fill()
