@@ -29,6 +29,9 @@ def loop(self):
 	genParticleInAK8Jet = array('f' ,155*[-10.])
 	genParticleIsFromHVQuark = array('f' ,155*[-10.])
 	numberOfDaughtersAParticleHas = array('f', 155*[0.])
+	print(type(numberOfDaughtersAParticleHas))
+	print(type(numberOfDaughtersAParticleHas[0]))
+	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
 	friend.Branch("numGenParts",numGenParts, 'numGenParts/I')
