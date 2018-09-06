@@ -53,8 +53,8 @@ def loop(self):
 			genParticleIsFromHVQuark[i] = 0.
 			numberOfDaughtersAParticleHas[i] = 0.
 		# PreSelection Cuts
-		# At least 2 jets in the event
-		if not (len(tree.JetsAK8)>=2): 
+		# At least 2 jets in the event, temp 3 for 3JetMT purposes
+		if not (len(tree.JetsAK8)>=3): 
 			continue
 		# Both leading jets must have pt > 170
 		if not ((tree.JetsAK8[0].Pt() > 170.0) and (tree.JetsAK8[1].Pt() > 170.0)): 
@@ -77,9 +77,9 @@ def loop(self):
 				numberOfDaughtersAParticleHas[iParent] += 1.
 			if (abs(tree.GenParticles_PdgId[iParent]) == 4900101) or genParticleIsFromHVQuark[iParent]:
 				genParticleIsFromHVQuark[iPart] = float(1)
-		for iPart in range(len(tree.GenParticles)):
+		for iPart in range(2,len(tree.GenParticles)):
 			for iJet in range(len(tree.JetsAK8)-1,-1,-1):
-				print(iJet)
+				#print(iJet)
 				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) > 0.08 and numberOfDaughtersAParticleHas[iPart] == 0:
 					genParticleInAK8Jet[iPart] = float(iJet)
 		friend.Fill()
