@@ -31,8 +31,8 @@ def loop(self):
 	genParticleIsFromHVQuark = array('f' ,[0. for x in range(155)])
 	numberOfDaughtersAParticleHas = array('f', [0. for x in range(155)])
 	fracPtFromHVQuarks = array("f",[0. for x in range(7)])
-	numHVPartsInJet = array("i",[0 for x in range(7)])
-	numSMPartsInJet = array("i",[0 for x in range(7)])
+	numHVPartsInJet = array("i",[-1 for x in range(7)])
+	numSMPartsInJet = array("i",[-1 for x in range(7)])
 	iJetMaxDeltaPhi = array('i',[-1])
 	pTMaxDeltaPhi = array('f',[0.])
 	dPhiMaxDeltaPhi = array('f',[0.])
@@ -73,6 +73,9 @@ def loop(self):
 			numberOfDaughtersAParticleHas[i] = 0.
 		for i in range(7):
 			fracPtFromHVQuarks[i] = 0.
+			numHVPartsInJet[i] = -1
+			numSMPartsInJet[i] = -1
+		for i in range(numJets[0]):
 			numHVPartsInJet[i] = 0
 			numSMPartsInJet[i] = 0
 		# PreSelection Cuts
