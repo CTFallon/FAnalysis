@@ -106,7 +106,10 @@ def loop(self):
 					totalPt += tree.GenParticles[iPart].Pt()
 					if genParticleIsFromHVQuark[iPart] == 1:
 						HVPt += tree.GenParticles[iPart].Pt()
-			fracPtFromHVQuarks[iJet] = HVPt/totalPt
+			try:
+				fracPtFromHVQuarks[iJet] = HVPt/totalPt
+			except ZeroDivisionError:
+				fracPtFromHVQuarks[iJet] = -1
 					
 					
 		friend.Fill()
