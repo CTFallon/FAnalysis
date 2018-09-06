@@ -25,11 +25,13 @@ def loop(self):
 	self.objects.append(friend)
 	# create branch variables
 	passedPreSelection = array('i', [0])
-	genParticleInAK8Jet = array('f' ,74*[-10.])
-	genParticleIsFromHVQuark = array('f' ,74*[-10.])
-	numberOfDaughtersAParticleHas = array('f', 74*[0.])
+	numGenParts = array('i',[0])
+	genParticleInAK8Jet = array('f' ,500*[-10.])
+	genParticleIsFromHVQuark = array('f' ,500*[-10.])
+	numberOfDaughtersAParticleHas = array('f', 500*[0.])
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
+	friend.Branch("numGenParts",numGenParts, 'numGenParts/I')
 	friend.Branch("ganParticleInAK8Jet",genParticleInAK8Jet,'genParticleInAK8Jet[iPart]/F')
 	friend.Branch("genParticleIsFromHVQuark",genParticleIsFromHVQuark,'genParticleIsFromHVQuark[iPart]/F')
 	friend.Branch("numberOfDaughtersAParticleHas",numberOfDaughtersAParticleHas,'numberOfDaughtersAParticleHas[iPart]/F')
@@ -39,7 +41,10 @@ def loop(self):
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
 		passedPreSelection[0] = 0
-		for i in range(74):
+		numGenParts[0] = len(tree.GenParticles)
+		if maxNofParticle < numGenParts[0]:
+			maxNofParticles = numGenParts[0]
+		for i in range(500):
 			genParticleInAK8Jet[i] = -10.
 			genParticleIsFromHVQuark[i] = -10.
 			numberOfDaughtersAParticleHas[i] = 0.
@@ -57,8 +62,6 @@ def loop(self):
 		if not ((len(tree.Electrons) + len(tree.Muons)) == 0):
 			continue
 		passedPreSelection[0] = 1
-		if maxNofParticle < len(tree.GenParticles):
-			maxNofParticles = len(tree.GenParticles)
 		
 		# for each PARTICLE:
 		# record:
