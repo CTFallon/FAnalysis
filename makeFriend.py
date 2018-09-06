@@ -79,7 +79,7 @@ def loop(self):
 				genParticleIsFromHVQuark[iPart] = float(1)
 		for iPart in range(len(tree.GenParticles)):
 			for iJet in range(len(tree.JetsAK8)-1,-1,-1):
-				print("iJet")
+				print(iJet)
 				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) > 0.08 and numberOfDaughtersAParticleHas[iPart] == 0:
 					genParticleInAK8Jet[iPart] = float(iJet)
 		friend.Fill()
