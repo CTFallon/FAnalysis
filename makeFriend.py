@@ -27,7 +27,7 @@ def loop(self):
 	passedPreSelection = array('i', [0])
 	numGenParts = array('i',[0])
 	genParticleInAK8Jet = array('f' ,[-1. for x in range(155)])
-	genParticleIsFromHVQuark = array('f' ,[-1. for x in range(155)])
+	genParticleIsFromHVQuark = array('f' ,[0. for x in range(155)])
 	numberOfDaughtersAParticleHas = array('f', [0. for x in range(155)])
 	print(len(genParticleInAK8Jet))
 	print(len(genParticleIsFromHVQuark))
@@ -36,7 +36,7 @@ def loop(self):
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
 	friend.Branch("numGenParts",numGenParts, 'numGenParts/I')
-	friend.Branch("ganParticleInAK8Jet",genParticleInAK8Jet,'genParticleInAK8Jet[155]/F')
+	friend.Branch("genParticleInAK8Jet",genParticleInAK8Jet,'genParticleInAK8Jet[155]/F')
 	friend.Branch("genParticleIsFromHVQuark",genParticleIsFromHVQuark,'genParticleIsFromHVQuark[155]/F')
 	friend.Branch("numberOfDaughtersAParticleHas",numberOfDaughtersAParticleHas,'numberOfDaughtersAParticleHas[155]/F')
 	
@@ -50,7 +50,7 @@ def loop(self):
 			maxNofParticle = numGenParts[0]
 		for i in range(155):
 			genParticleInAK8Jet[i] = -1.
-			genParticleIsFromHVQuark[i] = -1.
+			genParticleIsFromHVQuark[i] = 0.
 			numberOfDaughtersAParticleHas[i] = 0.
 		# PreSelection Cuts
 		# At least 2 jets in the event
@@ -79,6 +79,7 @@ def loop(self):
 				genParticleIsFromHVQuark[iPart] = float(1)
 		for iPart in range(len(tree.GenParticles)):
 			for iJet in range(len(tree.JetsAK8)-1,-1,-1):
+				print("iJet")
 				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) > 0.08 and numberOfDaughtersAParticleHas[iPart] == 0:
 					genParticleInAK8Jet[iPart] = float(iJet)
 		friend.Fill()
