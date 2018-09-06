@@ -31,6 +31,8 @@ def loop(self):
 	genParticleIsFromHVQuark = array('f' ,[0. for x in range(155)])
 	numberOfDaughtersAParticleHas = array('f', [0. for x in range(155)])
 	fracPtFromHVQuarks = array("f",[0. for x in range(7)])
+	numHVPartsInJet = array("i",[0 for x in range(7)])
+	numSMPartsInJet = array("i",[0 for x in range(7)])
 	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
@@ -39,6 +41,8 @@ def loop(self):
 	friend.Branch("genParticleIsFromHVQuark",genParticleIsFromHVQuark,'genParticleIsFromHVQuark[155]/F')
 	friend.Branch("numberOfDaughtersAParticleHas",numberOfDaughtersAParticleHas,'numberOfDaughtersAParticleHas[155]/F')
 	friend.Branch("fracPtFromHVQuarks",fracPtFromHVQuarks,'fracPtFromHVQuarks[7]/F')
+	friend.Branch("numHVPartsInJet",numHVPartsInJet,'numHVPartsInJet[7]/I')
+	friend.Branch("numSMPartsInJet",numSMPartsInJet,'numSMPartsInJet[7]/I')
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
@@ -60,6 +64,8 @@ def loop(self):
 			numberOfDaughtersAParticleHas[i] = 0.
 		for i in range(7):
 			fracPtFromHVQuarks[i] = 0.
+			numHVPartsInJet[i] = 0
+			numSMPartsInJet[i] = 0
 		# PreSelection Cuts
 		# At least 2 jets in the event, temp 3 for 3JetMT purposes
 		if not (len(tree.JetsAK8)>=3): 
@@ -93,6 +99,7 @@ def loop(self):
 
 		# for each JET record:
 		# how much of the total PT from daughter-less particles is from HV decendants
+		# number of particles in the jet, total, visible, and invisible
 		for iJet in range(len(tree.JetsAK8)):
 			totalPt = 0.
 			HVPt = 0.
@@ -104,9 +111,12 @@ def loop(self):
 				if genParticleInAK8Jet[iPart] != iJet:
 					continue
 				if abs(tree.GenParticles_PdgId[iPart]) < 4900000:
+					numSMPartsInJet[iJet] += 1
 					totalPt += tree.GenParticles[iPart].Pt()
 					if genParticleIsFromHVQuark[iPart] == 1:
 						HVPt += tree.GenParticles[iPart].Pt()
+				else:
+					numHVPartsInJet[iJet] += 1
 			try:
 				fracPtFromHVQuarks[iJet] = HVPt/totalPt
 			except ZeroDivisionError:
