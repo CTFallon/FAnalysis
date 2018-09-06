@@ -25,9 +25,9 @@ def loop(self):
 	self.objects.append(friend)
 	# create branch variables
 	passedPreSelection = array('i', [0])
-	genParticleInAK8Jet = array('i' ,500*[-10])
-	genParticleIsFromHVQuark = array('i' ,500*[-10])
-	numberOfDaughtersAParticleHas = array('i', 500*[0])
+	genParticleInAK8Jet = array('l' ,500*[-10])
+	genParticleIsFromHVQuark = array('l' ,500*[-10])
+	numberOfDaughtersAParticleHas = array('l', 500*[0])
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
 	friend.Branch("ganParticleInAK8Jet",genParticleInAK8Jet,'genParticleInAK8Jet[iPart]/I')
