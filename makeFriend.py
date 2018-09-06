@@ -49,8 +49,8 @@ def loop(self):
 		if maxNofParticle < numGenParts[0]:
 			maxNofParticle = numGenParts[0]
 		for i in range(155):
-			genParticleInAK8Jet[i] = -10.
-			genParticleIsFromHVQuark[i] = -10.
+			genParticleInAK8Jet[i] = -1.
+			genParticleIsFromHVQuark[i] = -1.
 			numberOfDaughtersAParticleHas[i] = 0.
 		# PreSelection Cuts
 		# At least 2 jets in the event
