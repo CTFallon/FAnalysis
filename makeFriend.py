@@ -36,9 +36,9 @@ def loop(self):
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
 	friend.Branch("numGenParts",numGenParts, 'numGenParts/I')
-	friend.Branch("ganParticleInAK8Jet",genParticleInAK8Jet,'genParticleInAK8Jet[iPart]/F')
-	friend.Branch("genParticleIsFromHVQuark",genParticleIsFromHVQuark,'genParticleIsFromHVQuark[iPart]/F')
-	friend.Branch("numberOfDaughtersAParticleHas",numberOfDaughtersAParticleHas,'numberOfDaughtersAParticleHas[iPart]/F')
+	friend.Branch("ganParticleInAK8Jet",genParticleInAK8Jet,'genParticleInAK8Jet[155]/F')
+	friend.Branch("genParticleIsFromHVQuark",genParticleIsFromHVQuark,'genParticleIsFromHVQuark[155]/F')
+	friend.Branch("numberOfDaughtersAParticleHas",numberOfDaughtersAParticleHas,'numberOfDaughtersAParticleHas[155]/F')
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
