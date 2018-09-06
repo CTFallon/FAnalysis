@@ -106,7 +106,7 @@ def loop(self):
 		# also record which jet is furthest from the METPhi
 		maxDeltaPhi = 0
 		for iJet in range(len(tree.JetsAK8)):
-			deltaPhi = abs(tree.JetsAK8[iJet].Phi()-tree.METPhi())%rt.TMath.Pi()
+			deltaPhi = abs(tree.JetsAK8[iJet].Phi()-tree.METPhi)%rt.TMath.Pi()
 			if deltaPhi > maxDeltaPhi:
 				maxDeltaPhi = deltaPhi
 				deltaPhiMaxJet[0] = iJet
