@@ -43,6 +43,8 @@ def loop(self):
 	maxNofParticle = 0
 	maxNofJets = 0 
 	for iEvent in range(nEvents):
+		if iEvent%1000==0:
+			print("Event "+ str(iEvent)+"/"+str(nEvents))
 		tree.GetEvent(iEvent)
 		passedPreSelection[0] = 0
 		numGenParts[0] = len(tree.GenParticles)
@@ -91,8 +93,8 @@ def loop(self):
 		# for each JET record:
 		# how much of the total PT from daughter-less particles is from HV decendants
 		for iJet in range(len(tree.JetsAK8)):
-			totalPt = 0
-			HVPt = 0
+			totalPt = 0.
+			HVPt = 0.
 			for iPart in range(2,len(tree.GenParticles)):
 				# only want final-state particles
 				if numberOfDaughtersAParticleHas[iPart] >= 1:
