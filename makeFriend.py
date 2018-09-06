@@ -43,7 +43,7 @@ def loop(self):
 		passedPreSelection[0] = 0
 		numGenParts[0] = len(tree.GenParticles)
 		if maxNofParticle < numGenParts[0]:
-			maxNofParticles = numGenParts[0]
+			maxNofParticle = numGenParts[0]
 		for i in range(155):
 			genParticleInAK8Jet[i] = -10.
 			genParticleIsFromHVQuark[i] = -10.
@@ -78,7 +78,7 @@ def loop(self):
 				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) > 0.08 and numberOfDaughtersAParticleHas[iPart] == 0:
 					genParticleInAK8Jet[iPart] = float(iJet)
 		friend.Fill()
-	print(maxNofParticles)
+	print(maxNofParticle)
 
 
 def addLoop():
