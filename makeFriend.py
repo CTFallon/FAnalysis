@@ -30,7 +30,7 @@ def loop(self):
 	genParticleInAK8Jet = array('f' ,[-1. for x in range(155)])
 	genParticleIsFromHVQuark = array('f' ,[0. for x in range(155)])
 	numberOfDaughtersAParticleHas = array('f', [0. for x in range(155)])
-	fracPtFromHVQuarks = array("f",[0. for x in range(10)])
+	fracPtFromHVQuarks = array("f",[0. for x in range(7)])
 	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
@@ -38,6 +38,7 @@ def loop(self):
 	friend.Branch("genParticleInAK8Jet",genParticleInAK8Jet,'genParticleInAK8Jet[155]/F')
 	friend.Branch("genParticleIsFromHVQuark",genParticleIsFromHVQuark,'genParticleIsFromHVQuark[155]/F')
 	friend.Branch("numberOfDaughtersAParticleHas",numberOfDaughtersAParticleHas,'numberOfDaughtersAParticleHas[155]/F')
+	friend.Branch("fracPtFromHVQuarks",fracPtFromHVQuarks,'fracPtFromHVQuarks[7]/F')
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
@@ -57,7 +58,7 @@ def loop(self):
 			genParticleInAK8Jet[i] = -1.
 			genParticleIsFromHVQuark[i] = 0.
 			numberOfDaughtersAParticleHas[i] = 0.
-		for i in range(10):
+		for i in range(7):
 			fracPtFromHVQuarks[i] = 0.
 		# PreSelection Cuts
 		# At least 2 jets in the event, temp 3 for 3JetMT purposes
