@@ -35,7 +35,7 @@ def loop(self):
 	friend.Branch("numberOfDaughtersAParticleHas",numberOfDaughtersAParticleHas,'numberOfDaughtersAParticleHas[iPart]/F')
 	
 	tree.AddFriend(friend)
-	
+	maxNofParticle = 0
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
 		passedPreSelection[0] = 0
@@ -57,6 +57,8 @@ def loop(self):
 		if not ((len(tree.Electrons) + len(tree.Muons)) == 0):
 			continue
 		passedPreSelection[0] = 1
+		if maxNofParticle < len(tree.GenParticles):
+			maxNofParticles = len(tree.GenParticles)
 		
 		# for each PARTICLE:
 		# record:
@@ -73,8 +75,8 @@ def loop(self):
 				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) > 0.08 and numberOfDaughtersAParticleHas[iPart] == 0:
 					genParticleInAK8Jet[iPart] = float(iJet)
 		friend.Fill()
+	print(maxNofParticles)
 
-	
 
 def addLoop():
 	baseClass.loop = loop
