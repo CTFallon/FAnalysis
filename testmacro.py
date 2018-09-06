@@ -11,6 +11,8 @@ def loop(self):
 	
 	# Turn off all branches, selective turn on branches
 	tree.SetBranchStatus("*", 0)
+	tree.SetBranchStatus("RunNum",1)
+	tree.SetBranchStatus("EvtNum",1)
 	tree.SetBranchStatus("*AK8*", 1)
 	tree.SetBranchStatus("DeltaPhi*", 1)
 	tree.SetBranchStatus("MET",1)
@@ -21,52 +23,10 @@ def loop(self):
 
 	# initalize histograms to be made, or create Friend tree to be filled
 	self.outRootFile.cd()
-	friend = rt.TTree("friend","friend")
-	self.objects.append(friend)
-	# create branch variables
-	passednJets = array('i', [0])
-	passedHighPt = array('i', [0])
-	passedMETMTRatio = array('i', [0])
-	passedLeptonVeto = array('i', [0])
-	passedPreSelection = array('i', [0])
-	
-	#genParticleInAK8Jet = [0 for partile in len(tree.GenParticles)]
-	
-	friend.Branch("passednJets", passednJets, 'passednJets/I')
-	friend.Branch("passedHighPt", passedHighPt, 'passedHighPt/I')
-	friend.Branch("passedMETMTRatio", passedMETMTRatio, 'passedMETMTRatio/I')
-	friend.Branch("passedLeptonVeto", passedLeptonVeto, 'passedLeptonVeto/I')
-	friend.Branch("passedPreSelection", passedPreSelection, 'passedPreSelection/I')
-	
-	tree.AddFriend(friend)
 	
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
-		passednJets[0] = 0
-		passedHighPt[0] = 0
-		passedMETMTRatio[0] = 0
-		passedLeptonVeto[0] = 0
-		passedPreSelection[0] = 0
-		# PreSelection Cuts
-		# At least 2 jets in the event
-		if not (len(tree.JetsAK8)>=2): 
-			continue
-		passednJets[0] = 1
-		# Both leading jets must have pt > 170
-		if not ((tree.JetsAK8[0].Pt() > 170.0) and (tree.JetsAK8[1].Pt() > 170.0)): 
-			continue
-		passedHighPt[0] = 1
-		# MET/MT ratio must be greater than 0.15
-		if not (tree.MET/tree.MT_AK8 > 0.15):
-			continue
-		passedMETMTRatio[0] = 1
-		# must not have any leptons
-		if not ((len(tree.Electrons) + len(tree.Muons)) == 0):
-			continue
-		passedLeptonVeto[0] = 1
-		passedPreSelection[0] = 1
-		
-		friend.Fill()
+
 
 	
 

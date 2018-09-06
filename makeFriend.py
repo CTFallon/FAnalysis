@@ -24,59 +24,44 @@ def loop(self):
 	friend = rt.TTree("friend","friend")
 	self.objects.append(friend)
 	# create branch variables
-	passednJets = array('i', [0])
-	passedHighPt = array('i', [0])
-	passedMETMTRatio = array('i', [0])
-	passedLeptonVeto = array('i', [0])
 	passedPreSelection = array('i', [0])
-	
-	genParticleInAK8Jet = array('i' ,1000*[-10])
-	genParticleIsFromHVQuark = array('i' ,1000*[-10])
-	
-	friend.Branch("passednJets", passednJets, 'passednJets/I')
-	friend.Branch("passedHighPt", passedHighPt, 'passedHighPt/I')
-	friend.Branch("passedMETMTRatio", passedMETMTRatio, 'passedMETMTRatio/I')
-	friend.Branch("passedLeptonVeto", passedLeptonVeto, 'passedLeptonVeto/I')
-	friend.Branch("passedPreSelection", passedPreSelection, 'passedPreSelection/I')
-	friend.Branch("ganParticleInAK8Jet", genParticleInAK8Jet,'genParticleInAK8Jet[iPart]/I')
-	friend.Branch("genParticleIsFromHVQuark", genParticleIsFromHVQuark,'genParticleIsFromHVQuark[iPart]/I')
+	genParticleInAK8Jet = array('i' ,500*[-10])
+	genParticleIsFromHVQuark = array('i' ,500*[-10])
+	numberOfDaughtersAParticleHas = array('i', 500*[0])
+
+	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
+	friend.Branch("ganParticleInAK8Jet",genParticleInAK8Jet,'genParticleInAK8Jet[iPart]/I')
+	friend.Branch("genParticleIsFromHVQuark",genParticleIsFromHVQuark,'genParticleIsFromHVQuark[iPart]/I')
+	friend.Branch("numberOfDaughtersAParticleHas",numberOfDaughtersAParticleHas,'numberOfDaughtersAParticleHas[iPart]/I')
 	
 	tree.AddFriend(friend)
 	
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
-		passednJets[0] = 0
-		passedHighPt[0] = 0
-		passedMETMTRatio[0] = 0
-		passedLeptonVeto[0] = 0
 		passedPreSelection[0] = 0
 		for i in range(1000):
 			genParticleInAK8Jet[i] = -10
 			genParticleIsFromHVQuark[i] = -10
+			numberOfDaughtersAParticleHas[i] = 0
 		# PreSelection Cuts
 		# At least 2 jets in the event
 		if not (len(tree.JetsAK8)>=2): 
 			continue
-		passednJets[0] = 1
 		# Both leading jets must have pt > 170
 		if not ((tree.JetsAK8[0].Pt() > 170.0) and (tree.JetsAK8[1].Pt() > 170.0)): 
 			continue
-		passedHighPt[0] = 1
 		# MET/MT ratio must be greater than 0.15
 		if not (tree.MET/tree.MT_AK8 > 0.15):
 			continue
-		passedMETMTRatio[0] = 1
 		# must not have any leptons
 		if not ((len(tree.Electrons) + len(tree.Muons)) == 0):
 			continue
-		passedLeptonVeto[0] = 1
 		passedPreSelection[0] = 1
 		
 		# for each PARTICLE:
 		# record:
 	 	#   if it is inside which AK8 jet
 		#   if it is decendant of an HV quark
-		numberOfDaughtersAParticleHas = [0 for part in tree.GenParticles]
 		for iPart in range(2,len(tree.GenParticles)):
 			iParent = tree.GenParticles_ParentIdx[iPart]
 			if iParent != -1:
