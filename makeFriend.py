@@ -26,9 +26,9 @@ def loop(self):
 	# create branch variables
 	passedPreSelection = array('i', [0])
 	numGenParts = array('i',[0])
-	genParticleInAK8Jet = array('f' ,500*[-10.])
-	genParticleIsFromHVQuark = array('f' ,500*[-10.])
-	numberOfDaughtersAParticleHas = array('f', 500*[0.])
+	genParticleInAK8Jet = array('f' ,155*[-10.])
+	genParticleIsFromHVQuark = array('f' ,155*[-10.])
+	numberOfDaughtersAParticleHas = array('f', 155*[0.])
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
 	friend.Branch("numGenParts",numGenParts, 'numGenParts/I')
@@ -44,7 +44,7 @@ def loop(self):
 		numGenParts[0] = len(tree.GenParticles)
 		if maxNofParticle < numGenParts[0]:
 			maxNofParticles = numGenParts[0]
-		for i in range(500):
+		for i in range(155):
 			genParticleInAK8Jet[i] = -10.
 			genParticleIsFromHVQuark[i] = -10.
 			numberOfDaughtersAParticleHas[i] = 0.
