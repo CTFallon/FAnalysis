@@ -59,13 +59,16 @@ def loop(self):
 				histList_2d_iJetvsFracPt[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks[iJet])
 			hist_MTLead2.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
 			for iCut in range(len(cutFractions)):
+				jetsForMt = []
 				cutVal = cutFractions[iCut]
 				if nJets == 2:
-					histList_MTcut[iCut].Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
-				elif tree.fracPtFromHVQuarks[2] > cutVal:
-					histList_MTcut[iCut].Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1],tree.JetsAK8[2]], met, metPhi))
+					jetsForMt.append(tree.JetsAK8[0])
+					jetsForMt.append(tree.JetsAK8[1])
 				else:
-					histList_MTcut[iCut].Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
+					for iJet in range(nJets):
+						if tree.fracPtFromHVQuarks[iJet] > cutVal:
+							jetsForMt.append(tree.JetsAK8[iJet])
+				histList_MTcut[iCut].Fill(trans_mass_Njet(justForMt, met, metPhi))
 	
 	print("No cut has Resolution " + str(hist_MTLead2.GetRMS()/hist_MTLead2.GetMean()))
 	for histo in histList_MTcut:
