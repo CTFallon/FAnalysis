@@ -44,7 +44,7 @@ def loop(self):
 	#coarse grading for optimal MT resolution for fracPt cut
 	cutFractions = [0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
 	#first, only vary the cut on one jet at a time
-	hist_MTLead2 = makeTH1F("hist_MTlead2Jets","Base MT;MT;count/a.u.",100,0,4000))
+	hist_MTLead2 = makeTH1F("hist_MTlead2Jets","Base MT;MT;count/a.u.",100,0,4000)
 	histList_MTcut = []
 	for cutVal in cutFractions:
 		histList_MTcut.append(makeTH1F("hist_MT2jet_"+str(cutVal),"2jet MT;MT;count/a.u.",100,0,4000))
