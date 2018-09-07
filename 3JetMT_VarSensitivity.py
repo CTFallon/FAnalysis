@@ -71,7 +71,7 @@ def loop(self):
 						jetsForMt.append(tree.JetsAK8[1])
 					if tree.fracPtFromHVQuarks[2] > cutVal:
 						jetsForMt.append(tree.JetsAK8[2])
-				histList_MTcut[iCut].Fill(jetsForMT, met, metPhi))
+				histList_MTcut[iCut].Fill(jetsForMT, met, metPhi)
 	
 	print("No cut has Resolution " + str(hist_MTLead2.GetRMS()/hist_MTLead2.GetMean()))
 	for histo in histList_MTcut:
