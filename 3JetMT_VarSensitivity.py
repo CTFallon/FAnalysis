@@ -42,13 +42,28 @@ def loop(self):
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_7Jets", "Events with 7 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 7, 0, 7, 100, -.01, 1.01))
 
 	#coarse grading for optimal MT resolution for fracPt cut
-	cutFractions = [x*0.01 for x in range(0,100)]
+	#cutFractions = [x*0.01 for x in range(0,100)]
 	#first, only vary the cut on one jet at a time
 	hist_MTLead2 = self.makeTH1F("hist_MTlead2Jets","Base MT;MT;count/a.u.",100,0,4000)
-	histList_MTcut = []
-	for cutVal in cutFractions:
-		histList_MTcut.append(self.makeTH1F("hist_MT2jet_"+str(cutVal),"2jet MT;MT;count/a.u.",100,0,4000))
-	
+	#histList_MTcut = []
+	hist_MTcut = self.makeTH1F("hist_MTcut","'true' MT;MT;count/a.u.",100,0,4000)
+	#for cutVal in cutFractions:
+	#	histList_MTcut.append(self.makeTH1F("hist_MT2jet_"+str(cutVal),"2jet MT;MT;count/a.u.",100,0,4000))
+
+	# step 3, plot of 'variables of interest'
+	# SDVar for various jets
+	# jet pt of jet that has highest delta phi
+	# others...
+	hist_SDVar12_2jet = self.makeTH1F("SDVar_12_2jet","SDvar_12_2jet;sdVar;count/a.u.",100,0,0.5)
+	hist_SDVar13_2jet = self.makeTH1F("SDVar_13_2jet","SDvar_13_2jet;sdVar;count/a.u.",100,0,0.5)
+	hist_SDVar23_2jet = self.makeTH1F("SDVar_23_2jet","SDvar_23_2jet;sdVar;count/a.u.",100,0,0.5)
+	hist_jetPtMaxdPhi_2jet = self.makeTH1F("pTMaxdPhi_2jet","Pt of MaxdPhiJet_2jet;pT;count/a.u.",100,0,3000)
+
+	hist_SDVar12_3jet = self.makeTH1F("SDVar_12_3jet","SDvar_12_3jet;sdVar;count/a.u.",100,0,0.5)
+	hist_SDVar13_3jet = self.makeTH1F("SDVar_13_3jet","SDvar_13_3jet;sdVar;count/a.u.",100,0,0.5)
+	hist_SDVar23_3jet = self.makeTH1F("SDVar_23_3jet","SDvar_23_3jet;sdVar;count/a.u.",100,0,0.5)
+	hist_jetPtMaxdPhi_3jet = self.makeTH1F("pTMaxdPhi_3jet","Pt of MaxdPhiJet_3jet;pT;count/a.u.",100,0,3000)
+
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
 		met = tree.MET
@@ -58,27 +73,46 @@ def loop(self):
 			for iJet in range(nJets):
 				histList_2d_iJetvsFracPt[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks[iJet])
 			hist_MTLead2.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
-			for iCut in range(len(cutFractions)):
-				jetsForMt = []
-				cutVal = cutFractions[iCut]
-				if nJets == 2:
-					jetsForMt.append(tree.JetsAK8[0])
-					jetsForMt.append(tree.JetsAK8[1])
-				else:
-					if tree.fracPtFromHVQuarks[0] > 0.0:
-						jetsForMt.append(tree.JetsAK8[0])
-					if tree.fracPtFromHVQuarks[1] > 0.0:
-						jetsForMt.append(tree.JetsAK8[1])
-					if tree.fracPtFromHVQuarks[2] > cutVal:
-						jetsForMt.append(tree.JetsAK8[2])
-				histList_MTcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
-	
-	print("No cut has Resolution " + str(hist_MTLead2.GetRMS()/hist_MTLead2.GetMean()))
-	for histo in histList_MTcut:
-		try:
-			print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
-		except ZeroDivisionError:
-			print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
+			if nJets == 2:
+				jetsToUse = 2
+			elif tree.fracPtFromHVQuarks[2] > 0.2:
+				jetsToUse = 3
+			else:
+				jetsToUse = 2
+			if jetsToUse = 3:
+				hist_MTcut.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1],tree.JetsAK8[2]], met, metPhi))
+				hist_SDVar12_3jet.Fill(tree.JetsAK8[1].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[1].Pt()))
+				hist_SDVar13_3jet.Fill(tree.JetsAK8[2].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[2].Pt()))
+				hist_SDVar23_3jet.Fill(tree.JetsAK8[2].Pt()/(tree.JetsAK8[1].Pt()+tree.JetsAK8[2].Pt()))
+				hist_jetPtMaxdPhi_3jet.Fill(tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt())
+			else:
+				hist_MTcut.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
+				hist_SDVar12_2jet.Fill(tree.JetsAK8[1].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[1].Pt()))
+				hist_SDVar13_2jet.Fill(tree.JetsAK8[2].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[2].Pt()))
+				hist_SDVar23_2jet.Fill(tree.JetsAK8[2].Pt()/(tree.JetsAK8[1].Pt()+tree.JetsAK8[2].Pt()))
+				hist_jetPtMaxdPhi_2jet.Fill(tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt())
+	#		for iCut in range(len(cutFractions)):
+	#			jetsForMt = []
+	#			cutVal = cutFractions[iCut]
+	#			if nJets == 2:
+	#				jetsForMt.append(tree.JetsAK8[0])
+	#				jetsForMt.append(tree.JetsAK8[1])
+	#			else:
+	#				if tree.fracPtFromHVQuarks[0] > 0.0:
+	#					jetsForMt.append(tree.JetsAK8[0])
+	#				if tree.fracPtFromHVQuarks[1] > 0.0:
+	#					jetsForMt.append(tree.JetsAK8[1])
+	#				if tree.fracPtFromHVQuarks[2] > cutVal:
+	#					jetsForMt.append(tree.JetsAK8[2])
+	#			histList_MTcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
+	#
+	#print("No cut has Resolution " + str(hist_MTLead2.GetRMS()/hist_MTLead2.GetMean()))
+	#for histo in histList_MTcut:
+	#	try:
+	#		print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
+	#	except ZeroDivisionError:
+	#		print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
+	# optimal MT resolution is found at a cutVal of .2. So, for all events with 3 or more jets, if jet 3 has ptFrac > .2, include it.
 					
 
 
