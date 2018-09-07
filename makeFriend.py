@@ -79,19 +79,28 @@ def loop(self):
 			numHVPartsInJet[i] = 0
 			numSMPartsInJet[i] = 0
 		# PreSelection Cuts
+		pass1 = 0
+		pass2 = 0
+		pass3 = 0
+		pass4 = 0
 		# At least 2 jets in the event, temp 3 for 3JetMT purposes
-		if not (len(tree.JetsAK8)>=3): 
-			continue
+		if (len(tree.JetsAK8)>=2): 
+			pass1 = 1
 		# Both leading jets must have pt > 170
-		if not ((tree.JetsAK8[0].Pt() > 170.0) and (tree.JetsAK8[1].Pt() > 170.0)): 
-			continue
+		if ((tree.JetsAK8[0].Pt() > 170.0) and (tree.JetsAK8[1].Pt() > 170.0)): 
+			pass2 = 1
 		# MET/MT ratio must be greater than 0.15
-		if not (tree.MET/tree.MT_AK8 > 0.15):
-			continue
+		if (tree.MET/tree.MT_AK8 > 0.15):
+			pass3 = 1
 		# must not have any leptons
-		if not ((len(tree.Electrons) + len(tree.Muons)) == 0):
+		if ((len(tree.Electrons) + len(tree.Muons)) == 0):
+			pass4 = 1
+		if pass1 and pass2 and pass3 and pass4:
+			passedPreSelection[0] = 1
+		else:
+			passedPreSelection[0] = 0
+			friend.Fill()
 			continue
-		passedPreSelection[0] = 1
 		
 		# for each PARTICLE:
 		# record:
