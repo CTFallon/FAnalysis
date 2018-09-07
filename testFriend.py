@@ -27,9 +27,9 @@ def loop(self):
 
 	# initalize histograms to be made, or create Friend tree to be filled
 	self.outRootFile.cd()
-	passed = self.makeTH1F("jet1Pt_passed", 100, 0, 4000)
-	failed = self.makeTH1F("jet1Pt_failed", 100, 0, 4000)
-	total = self.makeTH1F("jet1PT_total", 100, 0, 4000)
+	passed = self.makeTH1F("jet1Pt_passed","jet1Pt_passed", 100, 0, 4000)
+	failed = self.makeTH1F("jet1Pt_failed","jet1Pt_failed", 100, 0, 4000)
+	total = self.makeTH1F("jet1PT_total","jet1PT_total", 100, 0, 4000)
 	
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
