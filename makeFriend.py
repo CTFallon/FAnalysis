@@ -86,6 +86,10 @@ def loop(self):
 		# At least 2 jets in the event, temp 3 for 3JetMT purposes
 		if (len(tree.JetsAK8)>=2): 
 			pass1 = 1
+		else: # special case because next chcek can cause Index Error
+			passedPreSelection[0] = 0
+			friend.Fill()
+			continue
 		# Both leading jets must have pt > 170
 		if ((tree.JetsAK8[0].Pt() > 170.0) and (tree.JetsAK8[1].Pt() > 170.0)): 
 			pass2 = 1
