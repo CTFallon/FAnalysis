@@ -47,7 +47,7 @@ def loop(self):
 	hist_MTLead2 = makeTH1F("hist_MTlead2Jets","Base MT;MT;count/a.u.",100,0,4000)
 	histList_MTcut = []
 	for cutVal in cutFractions:
-		histList_MTcut.append(makeTH1F("hist_MT2jet_"+str(cutVal),"2jet MT;MT;count/a.u.",100,0,4000))
+		histList_MTcut.append(self.makeTH1F("hist_MT2jet_"+str(cutVal),"2jet MT;MT;count/a.u.",100,0,4000))
 	
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
