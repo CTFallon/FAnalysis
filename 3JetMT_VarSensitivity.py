@@ -79,7 +79,7 @@ def loop(self):
 				jetsToUse = 3
 			else:
 				jetsToUse = 2
-			if jetsToUse = 3:
+			if jetsToUse == 3:
 				hist_MTcut.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1],tree.JetsAK8[2]], met, metPhi))
 				hist_SDVar12_3jet.Fill(tree.JetsAK8[1].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[1].Pt()))
 				hist_SDVar13_3jet.Fill(tree.JetsAK8[2].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[2].Pt()))
