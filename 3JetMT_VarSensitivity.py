@@ -74,7 +74,10 @@ def loop(self):
 	
 	print("No cut has Resolution " + str(hist_MTLead2.GetRMS()/hist_MTLead2.GetMean()))
 	for histo in histList_MTcut:
-		print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
+		try:
+			print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
+		except ZeroDivisionError:
+			print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
 					
 
 
