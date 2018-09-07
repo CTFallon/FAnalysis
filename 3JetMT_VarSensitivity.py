@@ -42,7 +42,7 @@ def loop(self):
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_7Jets", "Events with 7 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 7, 0, 7, 100, -.01, 1.01))
 
 	#coarse grading for optimal MT resolution for fracPt cut
-	cutFractions = [x*0.01 for x in range(10,31)]
+	cutFractions = [x*0.01 for x in range(0,100)]
 	#first, only vary the cut on one jet at a time
 	hist_MTLead2 = self.makeTH1F("hist_MTlead2Jets","Base MT;MT;count/a.u.",100,0,4000)
 	histList_MTcut = []
