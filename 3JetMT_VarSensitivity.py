@@ -68,7 +68,7 @@ def loop(self):
 		tree.GetEvent(iEvent)
 		met = tree.MET
 		metPhi = tree.METPhi
-		if tree.passedPreSelection == 1 and len(tree.JetsAK8) == 3:
+		if tree.passedPreSelection == 1:
 			nJets = len(tree.JetsAK8)
 			for iJet in range(nJets):
 				histList_2d_iJetvsFracPt[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks[iJet])
@@ -88,8 +88,9 @@ def loop(self):
 			else:
 				hist_MTcut.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
 				hist_SDVar12_2jet.Fill(tree.JetsAK8[1].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[1].Pt()))
-				hist_SDVar13_2jet.Fill(tree.JetsAK8[2].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[2].Pt()))
-				hist_SDVar23_2jet.Fill(tree.JetsAK8[2].Pt()/(tree.JetsAK8[1].Pt()+tree.JetsAK8[2].Pt()))
+				if nJets > 2:
+					hist_SDVar13_2jet.Fill(tree.JetsAK8[2].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[2].Pt()))
+					hist_SDVar23_2jet.Fill(tree.JetsAK8[2].Pt()/(tree.JetsAK8[1].Pt()+tree.JetsAK8[2].Pt()))
 				hist_jetPtMaxdPhi_2jet.Fill(tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt())
 	#		for iCut in range(len(cutFractions)):
 	#			jetsForMt = []
