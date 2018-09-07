@@ -53,7 +53,7 @@ def loop(self):
 		tree.GetEvent(iEvent)
 		met = tree.MET
 		metPhi = tree.METPhi
-		if tree.passedPreSelection == 1:
+		if tree.passedPreSelection == 1 and len(tree.JetsAK8) == 3:
 			nJets = len(tree.JetsAK8)
 			for iJet in range(nJets):
 				histList_2d_iJetvsFracPt[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks[iJet])
