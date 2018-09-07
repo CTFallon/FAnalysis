@@ -34,12 +34,12 @@ def loop(self):
 	
 	#Step 1, make iJet vs FracPt for events with nJets
 	histList_2d_iJetvsFracPt = [0,0]
-	histList_2d_iJetvsFracPt.append(makeTH2F("hist_iJetvsFracPt_2Jets", "Events with 2 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 2, 0, 2, 100, 0, 1))
-	histList_2d_iJetvsFracPt.append(makeTH2F("hist_iJetvsFracPt_3Jets", "Events with 3 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 3, 0, 3, 100, 0, 1))
-	histList_2d_iJetvsFracPt.append(makeTH2F("hist_iJetvsFracPt_4Jets", "Events with 4 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 4, 0, 4, 100, 0, 1))
-	histList_2d_iJetvsFracPt.append(makeTH2F("hist_iJetvsFracPt_5Jets", "Events with 5 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 5, 0, 5, 100, 0, 1))
-	histList_2d_iJetvsFracPt.append(makeTH2F("hist_iJetvsFracPt_6Jets", "Events with 6 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 6, 0, 6, 100, 0, 1))
-	histList_2d_iJetvsFracPt.append(makeTH2F("hist_iJetvsFracPt_7Jets", "Events with 7 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 7, 0, 7, 100, 0, 1))
+	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_2Jets", "Events with 2 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 2, 0, 2, 100, 0, 1))
+	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_3Jets", "Events with 3 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 3, 0, 3, 100, 0, 1))
+	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_4Jets", "Events with 4 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 4, 0, 4, 100, 0, 1))
+	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_5Jets", "Events with 5 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 5, 0, 5, 100, 0, 1))
+	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_6Jets", "Events with 6 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 6, 0, 6, 100, 0, 1))
+	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_7Jets", "Events with 7 Jets; Jet Number; Fraction of Pt from Visible HV Decendants", 7, 0, 7, 100, 0, 1))
 	
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
