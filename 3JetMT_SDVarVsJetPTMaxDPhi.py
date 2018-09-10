@@ -109,7 +109,7 @@ def loop(self):
 				if jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > sdOptCut:
 					count_shouldwas_sdVar += 1
 				else:
-					count_shouldwasnt_sdvar += 1
+					count_shouldwasnt_sdVar += 1
 				if jets[tree.iJetMaxDeltaPhi].Pt() < pTOptCut:
 					count_shouldwas_jetPt += 1
 				else:
@@ -119,7 +119,7 @@ def loop(self):
 				if jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > sdOptCut:
 					count_shouldntwas_sdVar += 1
 				else:
-					count_shouldntwasnt_sdvar += 1
+					count_shouldntwasnt_sdVar += 1
 				if jets[tree.iJetMaxDeltaPhi].Pt() < pTOptCut:
 					count_shouldntwas_jetPt += 1
 				else:
