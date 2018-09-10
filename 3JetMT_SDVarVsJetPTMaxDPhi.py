@@ -42,30 +42,91 @@ def loop(self):
 	hist_overlap = self.makeTH2F("hist_overlap","Overlap;123 from jetPt(maxdPhi);123 from SDVar_13",2,0,2,2,0,2)
 	
 	# MT distributions
-	hist_MT_12_all = self.makeTH1F("hist_MT_12_all","Dijet MT - all;MT;count/a.u.",100,0,4000)
-	hist_MT_123_all = self.makeTH1F("hist_MT_123_all","Trijet MT - all;MT;count/a.u.",100,0,4000)
-	
-	hist_MT_12_jetPtMaxDPhi = self.makeTH1F("hist_MT_12_jetPtMaxDPhi","Dijet MT - pT(dPhi);MT;count/a.u.",100,0,4000)
-	hist_MT_123_jetPtMaxDPhi = self.makeTH1F("hist_MT_123_jetPtMaxDPhi","Trijet MT - pT(dPhi);MT;count/a.u.",100,0,4000)
 
-	hist_MT_12_SDVar13 = self.makeTH1F("hist_MT_12_SDVar13","Dijet MT - SDVar13;MT;count/a.u.",100,0,4000)
-	hist_MT_123_SDVar13 = self.makeTH1F("hist_MT_123_SDVar13","Trijet MT - SDVar13;MT;count/a.u.",100,0,4000)
+	cutPt = [x*10. for x in range(0,300)]
+	#first, only vary the cut on one jet at a time
+	histList_MT_jetPtMaxDPhicut = []
+	for cutVal in cutPt:
+		histList_jetPtMaxDPhicut.append(self.makeTH1F("hist_MT_jetPtMaxdPhi_"+str(cutVal),"jetPtMaxdPhiCut;MT;count/a.u.",100,0,4000))
+
+	cutSD = [x*0.01 for x in range(0,50)]
+	#first, only vary the cut on one jet at a time
+	histList_MT_SDcut = []
+	for cutVal in cutSD:
+		histList_SDcut.append(self.makeTH1F("hist_MT_SD_"+str(cutVal),"SD;MT;count/a.u.",100,0,4000))
 	
 	
 	
 	for iEvent in range(nEvents):
+		if iEvent%1000 == 0:
+			print(str(iEvent) + "/"+ str(nEvents))
 		tree.GetEvent(iEvent)
 		nJets = len(tree.JetsAK8)
-		if nJets == 2:
-			# fill all histograms for just 2 jet MT
-			hist_MT_12_all.Fill()
-		else:
-			# process algorithm for 12 vs 123 jet MT
+		jets = tree.JetsAK8
+		met = tree.MET
+		metPhi = tree.METPhi
+		if not tree.passedPreSelection:
+			continue
+		print(str(len(jets[0:2])))
+		#Optimize cuts for SDVar13 and jetPT(maxDPhi)
+
+		for iCut in range(len(cutPt)):
+			jetsForMt = []
+			cutVal = cutPt[iCut]
+			if nJets == 2:
+				jetsForMt.append(jets[0])
+				jetsForMt.append(jets[1])
+			else:
+				if tree.fracPtFromHVQuarks[0] > 0.0:
+					jetsForMt.append(tree.JetsAK8[0])
+				if tree.fracPtFromHVQuarks[1] > 0.0:
+					jetsForMt.append(tree.JetsAK8[1])
+				if tree.fracPtFromHVQuarks[2] > 0.02 and jets[tree.iJetMaxDeltaPhi].Pt() > cutVal:
+					jetsForMt.append(tree.JetsAK8[2])
+			histList_jetPtMaxDPhicut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
+
+
+		for iCut in range(len(cutSD)):
+			jetsForMt = []
+			cutVal = cutSD[iCut]
+			if nJets == 2:
+				jetsForMt.append(jets[0])
+				jetsForMt.append(jets[1])
+			else:
+				if tree.fracPtFromHVQuarks[0] > 0.0:
+					jetsForMt.append(tree.JetsAK8[0])
+				if tree.fracPtFromHVQuarks[1] > 0.0:
+					jetsForMt.append(tree.JetsAK8[1])
+				if tree.fracPtFromHVQuarks[2] > 0.02 and jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > cutVal:
+					jetsForMt.append(tree.JetsAK8[2])
+			histList_SDcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
+	
+	print("No cut has Resolution " + str(hist_MTLead2.GetRMS()/hist_MTLead2.GetMean()))
+	for histo in histList_jetPtMaxDPhicut:
+		try:
+			print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
+		except ZeroDivisionError:
+			print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
+	for histo in histList_SDcut:
+		try:
+			print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
+		except ZeroDivisionError:
+			print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
+			
 
 
 	
 
 def addLoop():
 	baseClass.loop = loop
+
+def trans_mass_Njet(jets, met, metPhi):
+	visible = rt.TLorentzVector()
+	for jet in jets:
+		visible += jet
+	jetMass2 = visible.M2()
+	term1 = rt.TMath.Sqrt(jetMass2 + visible.Pt()**2) * met
+	term2 = rt.TMath.Cos(metPhi-visible.Phi())*visible.Pt()*met
+	return rt.TMath.Sqrt(jetMass2 + 2*(term1 - term2))
 
 

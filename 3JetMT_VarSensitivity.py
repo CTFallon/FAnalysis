@@ -101,7 +101,7 @@ def loop(self):
 
 			if len(tree.JetsAK8) >= 3:
 				hist_ptFracJet3_vs_SDVar12.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[1].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[1].Pt()))
-				hist_ptFracJet3_vs_SDVar13.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[1].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[2].Pt()))
+				hist_ptFracJet3_vs_SDVar13.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[0].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[2].Pt()))
 				hist_ptFracJet3_vs_SDVar23.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[2].Pt()/(tree.JetsAK8[1].Pt()+tree.JetsAK8[2].Pt()))
 				hist_ptFracJet3_vs_jetPtMaxdPhi.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt())
 				
