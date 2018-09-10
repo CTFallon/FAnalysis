@@ -102,7 +102,7 @@ def loop(self):
 					count_trueCorrect_jetPt += 1
 	print("Number of Events with (fracPtFromHVQuarks[jet3] > 0.2) = " + str(count_true_total))
 	print("Number of Events with (jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > "+ctr(sdOptCut)+ ") = " + str(count_trueCorrect_sdVar))
-	print("Number of Events with (jets[tree.iJetMaxDeltaPhi].Pt() < "+str(pTOptCut)") = " + str(count_trueCorrect_jetPt))
+	print("Number of Events with (jets[tree.iJetMaxDeltaPhi].Pt() < "+str(pTOptCut) + ") = " + str(count_trueCorrect_jetPt))
 	
 	for histo in histList_jetPtMaxDPhicut:
 		try:
