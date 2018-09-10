@@ -57,12 +57,19 @@ def loop(self):
 	for cutVal in cutSD:
 		histList_SDcut.append(self.makeTH1F("hist_MT_SD_"+str(cutVal),"SD;MT;count/a.u.",100,0,4000))
 	
-	count_trueCorrect_jetPt = 0
-	count_trueCorrect_sdVar = 0
-	count_falseCorrect_jetPt = 0
-	count_falseCorrect_sdVar = 0
-	count_false_total = 0
-	count_true_total = 0
+	count_shouldwas_sdVar = 0
+	count_shouldwasnt_sdVar = 0
+	count_shouldntwas_sdVar = 0
+	count_shouldntwasnt_sdVar = 0
+
+	count_shouldwas_jetPt = 0
+	count_shouldwasnt_sjetPt = 0
+	count_shouldntwas_jetPt = 0
+	count_shouldntwasnt_jetPt = 0
+	
+	count_should_truth = 0
+	count_shouldnt_truth = 0
+	
 	
 	for iEvent in range(nEvents):
 		if iEvent%1000 == 0:
@@ -98,24 +105,38 @@ def loop(self):
 		# check optimal cuts for comparison to 'truth'
 		if nJets != 2:
 			if tree.fracPtFromHVQuarks[2] > 0.2:
-				count_true_total += 1
+				count_should_truth += 1
 				if jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > sdOptCut:
-					count_trueCorrect_sdVar += 1
+					count_shouldwas_sdVar += 1
+				else:
+					count_shouldwasnt_sdvar += 1
 				if jets[tree.iJetMaxDeltaPhi].Pt() < pTOptCut:
-					count_trueCorrect_jetPt += 1
+					count_shouldwas_jetPt += 1
+				else:
+					count_shouldwasnt_jetPT += 1
 			else:
-				count_false_total += 1
+				count_shouldnt_truth += 1
 				if jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > sdOptCut:
-					count_falseCorrect_sdVar += 1
+					count_shouldntwas_sdVar += 1
+				else:
+					count_shouldntwasnt_sdvar += 1
 				if jets[tree.iJetMaxDeltaPhi].Pt() < pTOptCut:
-					count_falseCorrect_jetPt += 1
+					count_shouldntwas_jetPt += 1
+				else:
+					count_shouldntwasnt_jetPT += 1
 
-	print("Number of Events that should be 3 jets: " + str(count_true_total))
-	print("Number of Events that shouldn't be 3 jets: " + str(count_false_total))
-	print("Number of Events that should be 3 jets, and are (sdVar):" + str(count_trueCorrect_sdVar))
-	print("Number of Events that shouldn't be 3 jets, but are (sdVar):" + str(count_falseCorrect_sdVar))
-	print("Number of Events that should be 3 jets, and are (jetPt):" + str(count_trueCorrect_jetPt))
-	print("Number of Events that shouldn't be 3 jets, but are (jetPt):" + str(count_falseCorrect_jetPt))
+	print("Truth: should = " + str(count_should_truth))
+	print("Truth: shouldnt = " + str(count_shouldnt_truth))
+
+	print("sdVar: should, was = " + str(count_shouldwas_sdVar))
+	print("sdVar: should, wasnt = " + str(count_shouldwasnt_sdVar))
+	print("sdVar: shouldnt, was = " + str(count_shouldntwas_sdVar))
+	print("sdVar: shouldnt, wasnt = " + str(count_shouldntwasnt_sdVar))
+
+	print("jetPt: should, was = " + str(count_shouldwas_jetPt))
+	print("jetPt: should, wasnt = " + str(count_shouldwasnt_jetPt))
+	print("jetPt: shouldnt, was = " + str(count_shouldntwas_jetPt))
+	print("jetPt: shouldnt, wasnt = " + str(count_shouldntwasnt_jetPt))
 	
 	for histo in histList_jetPtMaxDPhicut:
 		try:
