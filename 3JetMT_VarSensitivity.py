@@ -17,12 +17,12 @@ def loop(self):
 	tree.SetBranchStatus("RunNum",1)
 	tree.SetBranchStatus("EvtNum",1)
 	tree.SetBranchStatus("*AK8*", 1)
-	tree.SetBranchStatus("DeltaPhi*", 1)
+	#tree.SetBranchStatus("DeltaPhi*", 1)
 	tree.SetBranchStatus("MET",1)
 	tree.SetBranchStatus("METPhi",1)
-	tree.SetBranchStatus("GenParticles*",1)
-	tree.SetBranchStatus("Electrons",1)
-	tree.SetBranchStatus("Muons",1)
+	#tree.SetBranchStatus("GenParticles*",1)
+	#tree.SetBranchStatus("Electrons",1)
+	#tree.SetBranchStatus("Muons",1)
 	tree.SetBranchStatus("passedPreSelection",1)
 	tree.SetBranchStatus("fracPtFromHVQuarks",1)
 	tree.SetBranchStatus("iJetMaxDeltaPhi",1)
@@ -64,6 +64,12 @@ def loop(self):
 	hist_SDVar23_3jet = self.makeTH1F("SDVar_23_3jet","SDvar_23_3jet;sdVar;count/a.u.",100,0,0.5)
 	hist_jetPtMaxdPhi_3jet = self.makeTH1F("pTMaxdPhi_3jet","Pt of MaxdPhiJet_3jet;pT;count/a.u.",100,0,3000)
 
+	# plot ptFrac[2] with 'sensitive variables'
+	hist_ptFracJet3_vs_SDVar12 = self.makeTH2F("ist_ptFracJet3_vs_SDVar12","pTFrac of Jet 3 vs SDVar12;ptFrac;SDVar",100,-.01,1.1,100,0,0.5)
+	hist_ptFracJet3_vs_SDVar13 = self.makeTH2F("ist_ptFracJet3_vs_SDVar13","pTFrac of Jet 3 vs SDVar13;ptFrac;SDVar",100,-.01,1.1,100,0,0.5)
+	hist_ptFracJet3_vs_SDVar23 = self.makeTH2F("ist_ptFracJet3_vs_SDVar23","pTFrac of Jet 3 vs SDVar23;ptFrac;SDVar",100,-.01,1.1,100,0,0.5)
+	hist_ptFracJet3_vs_jetPtMaxdPhi = self.makeTH2F("ist_ptFracJet3_vs_jetPtMaxdPhi","pTFrac of Jet 3 vs jetPt(maxdPhi);ptFrac;pT",100,-.01,1.1,100,0,3000)
+
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
 		met = tree.MET
@@ -92,6 +98,13 @@ def loop(self):
 					hist_SDVar13_2jet.Fill(tree.JetsAK8[2].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[2].Pt()))
 					hist_SDVar23_2jet.Fill(tree.JetsAK8[2].Pt()/(tree.JetsAK8[1].Pt()+tree.JetsAK8[2].Pt()))
 				hist_jetPtMaxdPhi_2jet.Fill(tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt())
+
+			if len(tree.JetsAK8) >= 3:
+				hist_ptFracJet3_vs_SDVar12.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[1].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[1].Pt()))
+				hist_ptFracJet3_vs_SDVar13.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[1].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[2].Pt()))
+				hist_ptFracJet3_vs_SDVar23.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[2].Pt()/(tree.JetsAK8[1].Pt()+tree.JetsAK8[2].Pt()))
+				hist_ptFracJet3_vs_jetPtMaxdPhi.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt())
+				
 	#		for iCut in range(len(cutFractions)):
 	#			jetsForMt = []
 	#			cutVal = cutFractions[iCut]
