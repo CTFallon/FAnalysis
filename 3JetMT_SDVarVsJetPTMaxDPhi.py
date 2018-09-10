@@ -112,10 +112,6 @@ def loop(self):
 			print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
 		except ZeroDivisionError:
 			print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
-			
-
-
-	
 
 def addLoop():
 	baseClass.loop = loop
