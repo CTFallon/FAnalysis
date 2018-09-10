@@ -63,7 +63,7 @@ def loop(self):
 	count_shouldntwasnt_sdVar = 0
 
 	count_shouldwas_jetPt = 0
-	count_shouldwasnt_sjetPt = 0
+	count_shouldwasnt_jetPt = 0
 	count_shouldntwas_jetPt = 0
 	count_shouldntwasnt_jetPt = 0
 	
