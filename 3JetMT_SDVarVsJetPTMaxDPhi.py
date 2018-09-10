@@ -67,7 +67,6 @@ def loop(self):
 		metPhi = tree.METPhi
 		if not tree.passedPreSelection:
 			continue
-		print(str(len(jets[0:2])))
 		#Optimize cuts for SDVar13 and jetPT(maxDPhi)
 
 		for iCut in range(len(cutPt)):
