@@ -113,7 +113,7 @@ def loop(self):
 				if jets[tree.iJetMaxDeltaPhi].Pt() < pTOptCut:
 					count_shouldwas_jetPt += 1
 				else:
-					count_shouldwasnt_jetPT += 1
+					count_shouldwasnt_jetPt += 1
 			else:
 				count_shouldnt_truth += 1
 				if jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > sdOptCut:
@@ -123,7 +123,7 @@ def loop(self):
 				if jets[tree.iJetMaxDeltaPhi].Pt() < pTOptCut:
 					count_shouldntwas_jetPt += 1
 				else:
-					count_shouldntwasnt_jetPT += 1
+					count_shouldntwasnt_jetPt += 1
 
 	print("Truth: should = " + str(count_should_truth))
 	print("Truth: shouldnt = " + str(count_shouldnt_truth))
