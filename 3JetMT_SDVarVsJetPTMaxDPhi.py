@@ -43,7 +43,7 @@ def loop(self):
 	
 	# MT distributions
 
-	cutPt = [x*10. for x in range(0,300)]
+	cutPt = [x*100. for x in range(0,30)]
 	#first, only vary the cut on one jet at a time
 	histList_jetPtMaxDPhicut = []
 	for cutVal in cutPt:
@@ -96,20 +96,20 @@ def loop(self):
 					jetsForMt.append(tree.JetsAK8[0])
 				if tree.fracPtFromHVQuarks[1] > 0.0:
 					jetsForMt.append(tree.JetsAK8[1])
-				if tree.fracPtFromHVQuarks[2] > 0.02 and jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > cutVal:
+				if tree.fracPtFromHVQuarks[2] > 0.02 and jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) < cutVal:
 					jetsForMt.append(tree.JetsAK8[2])
 			histList_SDcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
 	
 	for histo in histList_jetPtMaxDPhicut:
 		try:
-			print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
+			print("Cut at " + histo.GetName() + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
 		except ZeroDivisionError:
-			print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
+			print("Cut at " + histo.GetName() + " Resolution is NULL")
 	for histo in histList_SDcut:
 		try:
-			print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
+			print("Cut at " + histo.GetName() + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
 		except ZeroDivisionError:
-			print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
+			print("Cut at " + histo.GetName() + " Resolution is NULL")
 
 def addLoop():
 	baseClass.loop = loop
