@@ -65,10 +65,10 @@ def loop(self):
 	hist_jetPtMaxdPhi_3jet = self.makeTH1F("pTMaxdPhi_3jet","Pt of MaxdPhiJet_3jet;pT;count/a.u.",100,0,3000)
 
 	# plot ptFrac[2] with 'sensitive variables'
-	hist_ptFracJet3_vs_SDVar12 = self.makeTH2F("ist_ptFracJet3_vs_SDVar12","pTFrac of Jet 3 vs SDVar12;ptFrac;SDVar",100,-.01,1.1,100,0,0.5)
-	hist_ptFracJet3_vs_SDVar13 = self.makeTH2F("ist_ptFracJet3_vs_SDVar13","pTFrac of Jet 3 vs SDVar13;ptFrac;SDVar",100,-.01,1.1,100,0,0.5)
-	hist_ptFracJet3_vs_SDVar23 = self.makeTH2F("ist_ptFracJet3_vs_SDVar23","pTFrac of Jet 3 vs SDVar23;ptFrac;SDVar",100,-.01,1.1,100,0,0.5)
-	hist_ptFracJet3_vs_jetPtMaxdPhi = self.makeTH2F("ist_ptFracJet3_vs_jetPtMaxdPhi","pTFrac of Jet 3 vs jetPt(maxdPhi);ptFrac;pT",100,-.01,1.1,100,0,3000)
+	hist_ptFracJet3_vs_SDVar12 = self.makeTH2F("ist_ptFracJet3_vs_SDVar12","pTFrac of Jet 3 vs SDVar12;ptFrac;SDVar",100,-.01,1.1,100,0,1)
+	hist_ptFracJet3_vs_SDVar13 = self.makeTH2F("ist_ptFracJet3_vs_SDVar13","pTFrac of Jet 3 vs SDVar13;ptFrac;SDVar",100,-.01,1.1,100,0,1)
+	hist_ptFracJet3_vs_SDVar23 = self.makeTH2F("ist_ptFracJet3_vs_SDVar23","pTFrac of Jet 3 vs SDVar23;ptFrac;SDVar",100,-.01,1.1,100,0,1)
+	hist_ptFracJet3_vs_jetPtMaxdPhi = self.makeTH2F("ist_ptFracJet3_vs_jetPtMaxdPhi","pTFrac of Jet 3 vs jetPt(maxdPhi);ptFrac;pT",100,-.01,1.1,100,0,2000)
 
 	for iEvent in range(nEvents):
 		tree.GetEvent(iEvent)
