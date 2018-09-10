@@ -100,7 +100,6 @@ def loop(self):
 					jetsForMt.append(tree.JetsAK8[2])
 			histList_SDcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
 	
-	print("No cut has Resolution " + str(hist_MTLead2.GetRMS()/hist_MTLead2.GetMean()))
 	for histo in histList_jetPtMaxDPhicut:
 		try:
 			print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
