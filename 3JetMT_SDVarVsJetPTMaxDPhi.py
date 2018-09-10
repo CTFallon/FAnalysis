@@ -94,7 +94,7 @@ def loop(self):
 
 		# check optimal cuts for comparison to 'truth'
 		if nJets != 2:
-			if tree.ptFracFromHVQuarks[2] > 0.2:
+			if tree.fracPtFromHVQuarks[2] > 0.2:
 				count_true_total += 1
 				if jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > sdOptCut:
 					count_trueCorrect_sdVar += 1
