@@ -43,19 +43,23 @@ def loop(self):
 	
 	# MT distributions
 
-	cutPt = [x*10. for x in range(0,301)]
+	cutPt = [x*1. for x in range(800,901)]# current optimal is 860 -> 
+	pTOptCut = 860
 	#first, only vary the cut on one jet at a time
 	histList_jetPtMaxDPhicut = []
 	for cutVal in cutPt:
 		histList_jetPtMaxDPhicut.append(self.makeTH1F("hist_MT_jetPtMaxdPhi_"+str(cutVal),"jetPtMaxdPhiCut;MT;count/a.u.",100,0,4000))
 
-	cutSD = [x*0.01 for x in range(0,51)]
+	cutSD = [x*0.001 for x in range(200,250)] # current optimal is .22 ->
+	sdOptCut = 0.22
 	#first, only vary the cut on one jet at a time
 	histList_SDcut = []
 	for cutVal in cutSD:
 		histList_SDcut.append(self.makeTH1F("hist_MT_SD_"+str(cutVal),"SD;MT;count/a.u.",100,0,4000))
 	
-	
+	count_trueCorrect_jetPt = 0
+	count_trueCorrect_sdVar = 0
+	count_true_total = 0
 	
 	for iEvent in range(nEvents):
 		if iEvent%1000 == 0:
@@ -87,6 +91,18 @@ def loop(self):
 			if nJets != 2 and jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > cutVal:
 				jetsForMt.append(tree.JetsAK8[2])
 			histList_SDcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
+
+		# check optimal cuts for comparison to 'truth'
+		if nJets != 2:
+			if tree.ptFracFromHVQuarks[2] > 0.2:
+				count_true_total += 1
+				if jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > sdOptCut:
+					count_trueCorrect_sdVar += 1
+				if jets[tree.iJetMaxDeltaPhi].Pt() < pTOptCut:
+					count_trueCorrect_jetPt += 1
+	print("Number of Events with (fracPtFromHVQuarks[jet3] > 0.2) = " + str(count_true_total))
+	print("Number of Events with (jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > "+ctr(sdOptCut)+ ") = " + str(count_trueCorrect_sdVar))
+	print("Number of Events with (jets[tree.iJetMaxDeltaPhi].Pt() < "+str(pTOptCut)") = " + str(count_trueCorrect_jetPt))
 	
 	for histo in histList_jetPtMaxDPhicut:
 		try:
