@@ -72,10 +72,10 @@ def loop(self):
 		for iCut in range(len(cutPt)):
 			jetsForMt = []
 			cutVal = cutPt[iCut]
-			if nJets == 2:
-				jetsForMt.append(jets[0])
-				jetsForMt.append(jets[1])
-			else:
+			#if nJets == 2:
+			#	jetsForMt.append(jets[0])
+			#	jetsForMt.append(jets[1])
+			if nJets != 2: #else:
 				if tree.fracPtFromHVQuarks[0] > 0.0:
 					jetsForMt.append(tree.JetsAK8[0])
 				if tree.fracPtFromHVQuarks[1] > 0.0:
