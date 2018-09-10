@@ -67,37 +67,25 @@ def loop(self):
 		metPhi = tree.METPhi
 		if not tree.passedPreSelection:
 			continue
-		#Optimize cuts for SDVar13 and jetPT(maxDPhi)
+		#Optimize cuts for SDVar13 and jetPT(maxDPhi), only using RECO level information
 
 		for iCut in range(len(cutPt)):
 			jetsForMt = []
 			cutVal = cutPt[iCut]
-			#if nJets == 2:
-			#	jetsForMt.append(jets[0])
-			#	jetsForMt.append(jets[1])
-			if nJets != 2: #else:
-				if tree.fracPtFromHVQuarks[0] > 0.0:
-					jetsForMt.append(tree.JetsAK8[0])
-				if tree.fracPtFromHVQuarks[1] > 0.0:
-					jetsForMt.append(tree.JetsAK8[1])
-				if tree.fracPtFromHVQuarks[2] > 0.02 and jets[tree.iJetMaxDeltaPhi].Pt() > cutVal:
-					jetsForMt.append(tree.JetsAK8[2])
+			jetsForMt.append(jets[0])
+			jetsForMt.append(jets[1])
+			if nJets != 2 and jets[tree.iJetMaxDeltaPhi].Pt() < cutVal:
+				jetsForMt.append(tree.JetsAK8[2])
 			histList_jetPtMaxDPhicut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
 
 
 		for iCut in range(len(cutSD)):
 			jetsForMt = []
 			cutVal = cutSD[iCut]
-			if nJets == 2:
-				jetsForMt.append(jets[0])
-				jetsForMt.append(jets[1])
-			else:
-				if tree.fracPtFromHVQuarks[0] > 0.0:
-					jetsForMt.append(tree.JetsAK8[0])
-				if tree.fracPtFromHVQuarks[1] > 0.0:
-					jetsForMt.append(tree.JetsAK8[1])
-				if tree.fracPtFromHVQuarks[2] > 0.02 and jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) < cutVal:
-					jetsForMt.append(tree.JetsAK8[2])
+			jetsForMt.append(jets[0])
+			jetsForMt.append(jets[1])
+			if nJets != 2 and jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > cutVal:
+				jetsForMt.append(tree.JetsAK8[2])
 			histList_SDcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
 	
 	for histo in histList_jetPtMaxDPhicut:
