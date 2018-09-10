@@ -45,13 +45,13 @@ def loop(self):
 
 	cutPt = [x*10. for x in range(0,300)]
 	#first, only vary the cut on one jet at a time
-	histList_MT_jetPtMaxDPhicut = []
+	histList_jetPtMaxDPhicut = []
 	for cutVal in cutPt:
 		histList_jetPtMaxDPhicut.append(self.makeTH1F("hist_MT_jetPtMaxdPhi_"+str(cutVal),"jetPtMaxdPhiCut;MT;count/a.u.",100,0,4000))
 
 	cutSD = [x*0.01 for x in range(0,50)]
 	#first, only vary the cut on one jet at a time
-	histList_MT_SDcut = []
+	histList_SDcut = []
 	for cutVal in cutSD:
 		histList_SDcut.append(self.makeTH1F("hist_MT_SD_"+str(cutVal),"SD;MT;count/a.u.",100,0,4000))
 	
