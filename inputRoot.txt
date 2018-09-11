@@ -1,1 +1,1 @@
-root://cmsxrootd.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV14/PrivateSamples.SVJ_mZprime-3000_mDark-20_rinv-0p3_alpha-0p5_n-1000_0_RA2AnalysisTree.root
+root://cmsxrootd.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV14/PrivateSamples.SVJ_mZprime-3000_mDark-20_rinv-0p3_alpha-0p1_n-1000_0_RA2AnalysisTree.root
