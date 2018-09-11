@@ -36,6 +36,7 @@ def loop(self):
 	iJetMaxDeltaPhi = array('i',[-1])
 	pTMaxDeltaPhi = array('f',[0.])
 	dPhiMaxDeltaPhi = array('f',[0.])
+	MTFromParticles = array('f',[0.])
 	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
@@ -49,6 +50,7 @@ def loop(self):
 	friend.Branch("iJetMaxDeltaPhi",iJetMaxDeltaPhi,'iJetMaxDeltaPhi/I')
 	friend.Branch("pTMaxDeltaPhi",pTMaxDeltaPhi,'pTMaxDeltaPhi/F')
 	friend.Branch("dPhiMaxDeltaPhi",dPhiMaxDeltaPhi,'dPhiMaxDeltaPhi/F')
+	friend.Branch("MTFromParticles",MTFromParticles,'MTFromParticles/F')
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
@@ -117,12 +119,19 @@ def loop(self):
 				numberOfDaughtersAParticleHas[iParent] += 1.
 			if (abs(tree.GenParticles_PdgId[iParent]) == 4900101) or genParticleIsFromHVQuark[iParent]:
 				genParticleIsFromHVQuark[iPart] = float(1)
+
+		# calculate the 'final-state' MT from all visible, daughterless particles that are decendants of HV particls
+		# also determin what jets particles belong to
+		particlesForMT = []
 		for iPart in range(2,len(tree.GenParticles)):
+			if genParticleIsFromHVQuarks[iPart] and numberOfDaughtersAParticleHas[iPart] == 0:
+				particlesForMT.append(tree.GenParticles[iPart])
 			for iJet in range(len(tree.JetsAK8)-1,-1,-1):
 				#print(iJet)
 				if tree.JetsAK8[iJet].DeltaR(tree.GenParticles[iPart]) < 0.8 and numberOfDaughtersAParticleHas[iPart] == 0:
 					genParticleInAK8Jet[iPart] = float(iJet)
-
+			
+		MTFromParticles[0] = trans_mass_Njet(particlesForMT, tree.MET, tree.METPhi)
 		# for each JET record:
 		# how much of the total PT from daughter-less particles is from HV decendants
 		# number of particles in the jet, total, visible, and invisible
@@ -163,5 +172,14 @@ def loop(self):
 
 def addLoop():
 	baseClass.loop = loop
+
+def trans_mass_Njet(jets, met, metPhi):
+	visible = rt.TLorentzVector()
+	for jet in jets:
+		visible += jet
+	jetMass2 = visible.M2()
+	term1 = rt.TMath.Sqrt(jetMass2 + visible.Pt()**2) * met
+	term2 = rt.TMath.Cos(metPhi-visible.Phi())*visible.Pt()*met
+	return rt.TMath.Sqrt(jetMass2 + 2*(term1 - term2))
 
 
