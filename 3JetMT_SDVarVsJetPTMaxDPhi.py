@@ -43,14 +43,14 @@ def loop(self):
 	
 	# MT distributions
 
-	cutPt = [x*1. for x in range(860,861)]# current optimal is 860 -> 861
+	cutPt = [x*10. for x in range(0,300)]# current optimal is 860 -> 861
 	pTOptCut = 860
 	#first, only vary the cut on one jet at a time
 	histList_jetPtMaxDPhicut = []
 	for cutVal in cutPt:
 		histList_jetPtMaxDPhicut.append(self.makeTH1F("hist_MT_jetPtMaxdPhi_"+str(cutVal),"jetPtMaxdPhiCut;MT;count/a.u.",100,0,4000))
 
-	cutSD = [x*0.001 for x in range(200,250)] # current optimal is .22 -> 0.242
+	cutSD = [x*0.01 for x in range(0,50)] # current optimal is .22 -> 0.242
 	sdOptCut = 0.22
 	#first, only vary the cut on one jet at a time
 	histList_SDcut = []
