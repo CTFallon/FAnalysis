@@ -59,6 +59,7 @@ def loop(self):
 
 	hist_MT_optimalSDVar = self.makeTH1F("hist_MT_optimalSDVar","SD;MT;count/a.u.", 100, 0, 4000)
 	hist_MT_optimalJetPT = self.makeTH1F("hist_MT_optimalJetPT","PT;MT;count/a.u.", 100, 0, 4000)
+	hist_MT_base = self.makeTH1F("hist_MT_base","base;MT;count/a.u.", 100, 0, 4000)
 	
 	count_shouldwas_sdVar = 0
 	count_shouldwasnt_sdVar = 0
@@ -147,6 +148,7 @@ def loop(self):
 		else:
 			hist_MT_optimalSDVar.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
 			hist_MT_optimalJetPT.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
+		hist_MT_base.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
 
 	print("Truth: should = " + str(count_should_truth))
 	print("Truth: shouldnt = " + str(count_shouldnt_truth))
