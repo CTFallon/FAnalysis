@@ -80,7 +80,11 @@ def loop(self):
 		metPhi = tree.METPhi
 		if tree.passedPreSelection == 1:
 			nJets = len(tree.JetsAK8)
+			if iEvent > 50000:
+				print(iEvent, nJets)
 			for iJet in range(nJets):
+				if iEvent > 50000:
+					print(iEvent, iJet)
 				histList_2d_iJetvsFracPt[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks[iJet])
 			hist_MTLead2.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
 			if nJets == 2:
