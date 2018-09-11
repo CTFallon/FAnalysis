@@ -56,6 +56,9 @@ def loop(self):
 	histList_SDcut = []
 	for cutVal in cutSD:
 		histList_SDcut.append(self.makeTH1F("hist_MT_SD_"+str(cutVal),"SD;MT;count/a.u.",100,0,4000))
+
+	hist_MT_optimalSDVar = self.makeTH1F("hist_MT_optimalSDVar","SD;MT;count/a.u.", 100, 0 4000)
+	hist_MT_optimalJetPT = self.makeTH1F("hist_MT_optimalJetPT","PT;MT;count/a.u.", 100, 0 4000)
 	
 	count_shouldwas_sdVar = 0
 	count_shouldwasnt_sdVar = 0
@@ -131,6 +134,19 @@ def loop(self):
 				else:
 					count_shouldntwasnt_jetPt += 1
 			hist_overlap.Fill(wasjetPt, wasSDVar)
+
+		if nJets != 2:
+			if jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > sdOptCut:
+				hist_MT_optimalSDVar.Fill(trans_mass_Njet(jets[0:3], met, metPhi))
+			else:
+				hist_MT_optimalSDVar.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
+			if jets[tree.iJetMaxDeltaPhi].Pt() < pTOptCut:
+				hist_MT_optimalJetPT.Fill(trans_mass_Njet(jets[0:3], met, metPhi))
+			else:
+				hist_MT_optimalJetPT.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
+		else:
+			hist_MT_optimalSDVar.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
+			hist_MT_optimalJetPT.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
 
 	print("Truth: should = " + str(count_should_truth))
 	print("Truth: shouldnt = " + str(count_shouldnt_truth))
