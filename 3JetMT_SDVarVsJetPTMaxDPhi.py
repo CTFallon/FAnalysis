@@ -57,8 +57,8 @@ def loop(self):
 	for cutVal in cutSD:
 		histList_SDcut.append(self.makeTH1F("hist_MT_SD_"+str(cutVal),"SD;MT;count/a.u.",100,0,4000))
 
-	hist_MT_optimalSDVar = self.makeTH1F("hist_MT_optimalSDVar","SD;MT;count/a.u.", 100, 0 4000)
-	hist_MT_optimalJetPT = self.makeTH1F("hist_MT_optimalJetPT","PT;MT;count/a.u.", 100, 0 4000)
+	hist_MT_optimalSDVar = self.makeTH1F("hist_MT_optimalSDVar","SD;MT;count/a.u.", 100, 0, 4000)
+	hist_MT_optimalJetPT = self.makeTH1F("hist_MT_optimalJetPT","PT;MT;count/a.u.", 100, 0, 4000)
 	
 	count_shouldwas_sdVar = 0
 	count_shouldwasnt_sdVar = 0
