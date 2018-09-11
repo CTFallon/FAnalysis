@@ -124,7 +124,7 @@ def loop(self):
 		# also determin what jets particles belong to
 		particlesForMT = []
 		for iPart in range(2,len(tree.GenParticles)):
-			if genParticleIsFromHVQuarks[iPart] and numberOfDaughtersAParticleHas[iPart] == 0:
+			if genParticleIsFromHVQuark[iPart] and numberOfDaughtersAParticleHas[iPart] == 0:
 				particlesForMT.append(tree.GenParticles[iPart])
 			for iJet in range(len(tree.JetsAK8)-1,-1,-1):
 				#print(iJet)
