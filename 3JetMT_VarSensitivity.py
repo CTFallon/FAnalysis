@@ -84,7 +84,7 @@ def loop(self):
 				print(iEvent, nJets)
 			for iJet in range(nJets):
 				if iEvent > 50000:
-					print(iEvent, iJet)
+					print(iEvent, iJet, len(histList_2d_iJetvsFracPT), len(tree.fracPtFromHVQuarks))
 				histList_2d_iJetvsFracPt[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks[iJet])
 			hist_MTLead2.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
 			if nJets == 2:
