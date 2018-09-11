@@ -41,6 +41,7 @@ def loop(self):
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_6Jets", "Events with 6 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 6, 0, 6, 100, -.01, 1.01))
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_7Jets", "Events with 7 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 7, 0, 7, 100, -.01, 1.01))
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_8Jets", "Events with 8 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 8, 0, 8, 100, -.01, 1.01))
+	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_9Jets", "Events with 9 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 9, 0, 9, 100, -.01, 1.01))
 
 	#coarse grading for optimal MT resolution for fracPt cut
 	cutFractions = [x*0.01 for x in range(0,100)]
@@ -72,6 +73,8 @@ def loop(self):
 	hist_ptFracJet3_vs_jetPtMaxdPhi = self.makeTH2F("ist_ptFracJet3_vs_jetPtMaxdPhi","pTFrac of Jet 3 vs jetPt(maxdPhi);ptFrac;pT",100,-.01,1.1,100,0,2000)
 
 	for iEvent in range(nEvents):
+		if iEvent%1000 == 0:
+			print(str(iEvent)+"/"+str(nEvents))
 		tree.GetEvent(iEvent)
 		met = tree.MET
 		metPhi = tree.METPhi
