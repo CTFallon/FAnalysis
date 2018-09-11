@@ -6,7 +6,7 @@ def loop(self):
 	# set up trees
 	f = rt.TFile.Open(self.inputFileList[0])
 	tree = f.Get(self.treeNameList[0])
-	ff = rt.TFile.Open("outFriend.root")
+	ff = rt.TFile.Open(self.extraDir+"outFriend.root")
 	friendTree = ff.Get("friend")
 	tree.AddFriend(friendTree)
 	nEvents = tree.GetEntries()
@@ -42,13 +42,13 @@ def loop(self):
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_7Jets", "Events with 7 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 7, 0, 7, 100, -.01, 1.01))
 
 	#coarse grading for optimal MT resolution for fracPt cut
-	#cutFractions = [x*0.01 for x in range(0,100)]
+	cutFractions = [x*0.01 for x in range(0,100)]
 	#first, only vary the cut on one jet at a time
 	hist_MTLead2 = self.makeTH1F("hist_MTlead2Jets","Base MT;MT;count/a.u.",100,0,4000)
-	#histList_MTcut = []
+	histList_MTcut = []
 	hist_MTcut = self.makeTH1F("hist_MTcut","'true' MT;MT;count/a.u.",100,0,4000)
-	#for cutVal in cutFractions:
-	#	histList_MTcut.append(self.makeTH1F("hist_MT2jet_"+str(cutVal),"2jet MT;MT;count/a.u.",100,0,4000))
+	for cutVal in cutFractions:
+		histList_MTcut.append(self.makeTH1F("hist_MT2jet_"+str(cutVal),"2jet MT;MT;count/a.u.",100,0,4000))
 
 	# step 3, plot of 'variables of interest'
 	# SDVar for various jets
@@ -105,28 +105,28 @@ def loop(self):
 				hist_ptFracJet3_vs_SDVar23.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[2].Pt()/(tree.JetsAK8[1].Pt()+tree.JetsAK8[2].Pt()))
 				hist_ptFracJet3_vs_jetPtMaxdPhi.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt())
 				
-	#		for iCut in range(len(cutFractions)):
-	#			jetsForMt = []
-	#			cutVal = cutFractions[iCut]
-	#			if nJets == 2:
-	#				jetsForMt.append(tree.JetsAK8[0])
-	#				jetsForMt.append(tree.JetsAK8[1])
-	#			else:
-	#				if tree.fracPtFromHVQuarks[0] > 0.0:
-	#					jetsForMt.append(tree.JetsAK8[0])
-	#				if tree.fracPtFromHVQuarks[1] > 0.0:
-	#					jetsForMt.append(tree.JetsAK8[1])
-	#				if tree.fracPtFromHVQuarks[2] > cutVal:
-	#					jetsForMt.append(tree.JetsAK8[2])
-	#			histList_MTcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
-	#
-	#print("No cut has Resolution " + str(hist_MTLead2.GetRMS()/hist_MTLead2.GetMean()))
-	#for histo in histList_MTcut:
-	#	try:
-	#		print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
-	#	except ZeroDivisionError:
-	#		print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
-	# optimal MT resolution is found at a cutVal of .2. So, for all events with 3 or more jets, if jet 3 has ptFrac > .2, include it.
+			for iCut in range(len(cutFractions)):
+				jetsForMt = []
+				cutVal = cutFractions[iCut]
+				if nJets == 2:
+					jetsForMt.append(tree.JetsAK8[0])
+					jetsForMt.append(tree.JetsAK8[1])
+				else:
+					if tree.fracPtFromHVQuarks[0] > 0.0:
+						jetsForMt.append(tree.JetsAK8[0])
+					if tree.fracPtFromHVQuarks[1] > 0.0:
+						jetsForMt.append(tree.JetsAK8[1])
+					if tree.fracPtFromHVQuarks[2] > cutVal:
+						jetsForMt.append(tree.JetsAK8[2])
+				histList_MTcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
+	
+	print("No cut has Resolution " + str(hist_MTLead2.GetRMS()/hist_MTLead2.GetMean()))
+	for histo in histList_MTcut:
+		try:
+			print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
+		except ZeroDivisionError:
+			print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
+	# optimal MT resolution is found at a cutVal of .2. So, for all events with 3 or more jets, if jet 3 has ptFrac > .2, include it. THIS IS FOR BASELINE
 					
 
 

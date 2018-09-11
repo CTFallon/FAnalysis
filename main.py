@@ -21,7 +21,8 @@ tm.addLoop()
 # [1] macro name/path that has the loop function
 # [2] list of input files
 # [3] list of tree names
-# [4] outputFile name/path
+# [4] directory name for extra root files
+# [5] outputFile name/path
 
 #for iArg in range(len(sys.argv)):
 #	print(str(iArg), sys.argv[iArg])
@@ -50,7 +51,7 @@ if not os.path.exists(sys.argv[3]):
 #print("----------")
 
 
-analysis = ab.baseClass(sys.argv[2], sys.argv[3], sys.argv[4])
+analysis = ab.baseClass(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
 analysis.run()
 
 # create instance ofobject analysisClass with string args (inputList, treeList, outFile)

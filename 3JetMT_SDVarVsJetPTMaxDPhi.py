@@ -6,7 +6,7 @@ def loop(self):
 	# set up trees
 	f = rt.TFile.Open(self.inputFileList[0])
 	tree = f.Get(self.treeNameList[0])
-	ff = rt.TFile.Open("outFriend.root")
+	ff = rt.TFile.Open(self.extraDir+"outFriend.root")
 	friendTree = ff.Get("friend")
 	tree.AddFriend(friendTree)
 	nEvents = tree.GetEntries()

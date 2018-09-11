@@ -1,13 +1,14 @@
 # base class for FAnalysis, copied from Lucien Lo's PFG HcalTupleAnalyzer, adapted to python
 import ROOT as rt
 class baseClass:
-	def __init__(self, fileList, treeList, outFileName):
+	def __init__(self, fileList, treeList, rootDirct, outFileName):
 		self.fileList = fileList # list of ROOT files to read
 		self.treeList = treeList # list of Tree names in each ROOT file
 		self.outFileName = outFileName
 		self.objects = []
 		self.loadFileList()
 		self.loadTreeList()
+		self.extraDir = rootDirt+'/'
 		self.loadOutFile()
 
 	def loadFileList(self):
@@ -25,7 +26,7 @@ class baseClass:
 		treeFile.close()
 
 	def loadOutFile(self):
-		self.outRootFile = rt.TFile.Open(self.outFileName, 'RECREATE')
+		self.outRootFile = rt.TFile.Open(self.extraDir+self.outFileName, 'RECREATE')
 		
 	def getChain(self, tree_name):
 		chain = rt.TChain(tree_name)
