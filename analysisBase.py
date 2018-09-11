@@ -1,14 +1,14 @@
 # base class for FAnalysis, copied from Lucien Lo's PFG HcalTupleAnalyzer, adapted to python
 import ROOT as rt
 class baseClass:
-	def __init__(self, fileList, treeList, rootDirct, outFileName):
+	def __init__(self, fileList, treeList, rootDir, outFileName):
 		self.fileList = fileList # list of ROOT files to read
 		self.treeList = treeList # list of Tree names in each ROOT file
 		self.outFileName = outFileName
 		self.objects = []
 		self.loadFileList()
 		self.loadTreeList()
-		self.extraDir = rootDirt+'/'
+		self.extraDir = rootDir+'/'
 		self.loadOutFile()
 
 	def loadFileList(self):
