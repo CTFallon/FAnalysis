@@ -71,11 +71,12 @@ def loop(self):
 			genParticleInAK8Jet[i] = -1.
 			genParticleIsFromHVQuark[i] = 0.
 			numberOfDaughtersAParticleHas[i] = 0.
-		for i in range(7):
-			fracPtFromHVQuarks[i] = 0.
+		for i in range(10):
+			fracPtFromHVQuarks[i] = -1.
 			numHVPartsInJet[i] = -1
 			numSMPartsInJet[i] = -1
 		for i in range(numJets[0]):
+			fracPtFromHVQuarks[i] = 0.
 			numHVPartsInJet[i] = 0
 			numSMPartsInJet[i] = 0
 		# PreSelection Cuts
