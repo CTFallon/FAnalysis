@@ -102,28 +102,35 @@ def loop(self):
 				jetsForMt.append(tree.JetsAK8[2])
 			histList_SDcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
 
-		# check optimal cuts for comparison to 'truth'
+		# check optimal cuts for comparison to 'truth', and overlap
 		if nJets != 2:
+			wasSDVar = 0
+			wasjetPt = 0
 			if tree.fracPtFromHVQuarks[2] > 0.2:
 				count_should_truth += 1
 				if jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > sdOptCut:
 					count_shouldwas_sdVar += 1
+					wasSDVar = 1
 				else:
 					count_shouldwasnt_sdVar += 1
 				if jets[tree.iJetMaxDeltaPhi].Pt() < pTOptCut:
 					count_shouldwas_jetPt += 1
+					wasjetPt = 1
 				else:
 					count_shouldwasnt_jetPt += 1
 			else:
 				count_shouldnt_truth += 1
 				if jets[2].Pt()/(jets[0].Pt()+jets[2].Pt()) > sdOptCut:
 					count_shouldntwas_sdVar += 1
+					wasSDVar = 1
 				else:
 					count_shouldntwasnt_sdVar += 1
 				if jets[tree.iJetMaxDeltaPhi].Pt() < pTOptCut:
 					count_shouldntwas_jetPt += 1
+					wasjetPt = 1
 				else:
 					count_shouldntwasnt_jetPt += 1
+			hist_overlap.Fill(wasjetPt, wasSDVar)
 
 	print("Truth: should = " + str(count_should_truth))
 	print("Truth: shouldnt = " + str(count_shouldnt_truth))
