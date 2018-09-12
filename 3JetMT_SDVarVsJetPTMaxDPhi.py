@@ -61,6 +61,7 @@ def loop(self):
 	hist_MT_optimalJetPT = self.makeTH1F("hist_MT_optimalJetPT","JetPT;MT;count/a.u.", 100, 0, 4000)
 	hist_MT_optimalPTFrac = self.makeTH1F("hist_MT_optimalPTFrac","PTfrac;MT;count/a.u.", 100, 0, 4000)
 	hist_MT_base = self.makeTH1F("hist_MT_base","base;MT;count/a.u.", 100, 0, 4000)
+	hist_MT_just2jets = self.makeTH1F("hist_MT_just2jets","just2jets;MT;count/a.u.", 100, 0, 4000)
 	
 	count_shouldwas_sdVar = 0
 	count_shouldwasnt_sdVar = 0
@@ -151,6 +152,7 @@ def loop(self):
 			else:
 				hist_MT_optimalPTFrac.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
 		else:
+			hist_MT_just2jets.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
 			hist_MT_optimalSDVar.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
 			hist_MT_optimalJetPT.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
 			hist_MT_optimalPTFrac.Fill(trans_mass_Njet(jets[0:2], met, metPhi))
