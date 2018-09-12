@@ -151,7 +151,7 @@ def loop(self):
 				# only want particles that belong to the jet
 				if genParticleInAK8Jet[iPart] != iJet:
 					continue
-				if abs(tree.GenParticles_PdgId[iPart]) < 4900000:
+				if abs(tree.GenParticles_PdgId[iPart]) < 4900000:# only want visible particles
 					numSMPartsInJet[iJet] += 1
 					totalPt += tree.GenParticles[iPart].Pt()
 					if genParticleIsFromHVQuark[iPart] == 1:
