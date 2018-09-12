@@ -125,7 +125,7 @@ def loop(self):
 				numberOfDaughtersAParticleHas[iParent] += 1.
 			if (abs(tree.GenParticles_PdgId[iParent]) == 4900101) or genParticleIsFromHVQuark[iParent]:
 				genParticleIsFromHVQuark[iPart] = float(1)
-			if tree.GenParticles_PdgID[iPart] == 4900023:
+			if tree.GenParticles_PdgId[iPart] == 4900023:
 				zPrimept[0] = tree.GenParticles[iPart].Pt()
 				zPrimephi[0] = tree.GenParticles[iPart].Phi()
 
