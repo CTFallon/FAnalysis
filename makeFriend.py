@@ -37,6 +37,8 @@ def loop(self):
 	pTMaxDeltaPhi = array('f',[0.])
 	dPhiMaxDeltaPhi = array('f',[0.])
 	MTFromParticles = array('f',[0.])
+	zPrimept = array('f',[0.])
+	zPrimephi = array('f',[0.])
 	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
@@ -51,6 +53,8 @@ def loop(self):
 	friend.Branch("pTMaxDeltaPhi",pTMaxDeltaPhi,'pTMaxDeltaPhi/F')
 	friend.Branch("dPhiMaxDeltaPhi",dPhiMaxDeltaPhi,'dPhiMaxDeltaPhi/F')
 	friend.Branch("MTFromParticles",MTFromParticles,'MTFromParticles/F')
+	friend.Branch("zPrimept",zPrimept, 'zPrimept/F')
+	friend.Branch("zPrimephi",zPrimephi, 'zPrimephi/F')
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
@@ -65,6 +69,8 @@ def loop(self):
 		iJetMaxDeltaPhi[0] = -1
 		pTMaxDeltaPhi[0] = 0.
 		dPhiMaxDeltaPhi[0] = 0.
+		zPrimept[0] = 0.
+		zPrimephi[0] = 0.
 		if maxNofParticle < numGenParts[0]:
 			maxNofParticle = numGenParts[0]
 		if maxNofJets < numJets[0]:
@@ -119,6 +125,9 @@ def loop(self):
 				numberOfDaughtersAParticleHas[iParent] += 1.
 			if (abs(tree.GenParticles_PdgId[iParent]) == 4900101) or genParticleIsFromHVQuark[iParent]:
 				genParticleIsFromHVQuark[iPart] = float(1)
+			if tree.GenParticles_PdgID[iPart] == 4900023:
+				zPrimept[0] = tree.GenParticles[iPart].Pt()
+				zPrimephi[0] = tree.GenParticles[iPart].Phi()
 
 		# calculate the 'final-state' MT from all visible, daughterless particles that are decendants of HV particls
 		# also determin what jets particles belong to

@@ -35,6 +35,8 @@ def loop(self):
 	tree.SetBranchStatus("iJetMaxDeltaPhi",1)
 	tree.SetBranchStatus("pTMaxDeltaPhi",1)
 	tree.SetBranchStatus("dPhiMaxDeltaPhi",1)
+	tree.SetBranchStatus("zPrimept",1)
+	tree.SetBranchStatus("zPrimephi",1)
 
 	# initalize histograms to be made, or create Friend tree to be filled
 	self.outRootFile.cd()
@@ -63,6 +65,9 @@ def loop(self):
 	hist_MT_base = self.makeTH1F("hist_MT_base","base;MT;count/a.u.", 100, 0, 4000)
 	hist_MT_just2jets = self.makeTH1F("hist_MT_just2jets","just2jets;MT;count/a.u.", 100, 0, 4000)
 	
+	hist_pt_zPrime = self.makeTH1F("hist_pt_zPrime","Zprime pt; pt; count/a.u.", 100, 0, 5000)
+	hist_phi_zPrime= self.makeTH1F("hist_phi_zPrime","Zprime phi; phi; count/a.u.", 100, -rt.TMath.Pi(), 2*rt.TMath.Pi())
+	
 	count_shouldwas_sdVar = 0
 	count_shouldwasnt_sdVar = 0
 	count_shouldntwas_sdVar = 0
@@ -89,6 +94,8 @@ def loop(self):
 			continue
 		#Optimize cuts for SDVar13 and jetPT(maxDPhi), only using RECO level information
 
+		hist_pt_zPrime.Fill(tree.zPrimept)
+		hist_phi_zPrime.Fill(tree.zPrimephi)
 		for iCut in range(len(cutPt)):
 			jetsForMt = []
 			cutVal = cutPt[iCut]
