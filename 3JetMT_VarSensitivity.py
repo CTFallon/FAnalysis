@@ -32,7 +32,7 @@ def loop(self):
 	#tree.SetBranchStatus("numberOfDaughtersAParticleHas",1)
 	tree.SetBranchStatus("fracPtFromHVQuarks",1)
 	tree.SetBranchStatus("numHVPartsInJet",1)
-	#tree.SetBranchStatus("numSMPartsInJet",1)
+	tree.SetBranchStatus("numSMPartsInJet",1)
 	tree.SetBranchStatus("iJetMaxDeltaPhi",1)
 	tree.SetBranchStatus("pTMaxDeltaPhi",1)
 	tree.SetBranchStatus("dPhiMaxDeltaPhi",1)
@@ -54,6 +54,7 @@ def loop(self):
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_9Jets", "Events with 9 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 9, 0, 9, 100, -.01, 1.01))
 
 	hist_2d_iJetvsNumHVParts = self.makeTH2F("hist_2d_iJetvsNumHVParts","All events;iJet;Num HV Parts",6,0,6,25,0,25)
+	hist_2d_NumHVPartsvsFracPt = self.makeTH2F("hist_2d_NumHVPartsvsFracPt", "All Events;Num HV;FracPt", 25,0,25,100,-0.01,1.01)
 
 	#coarse grading for optimal MT resolution for fracPt cut
 	cutFractions = [x*0.01 for x in range(0,100)]
@@ -95,6 +96,7 @@ def loop(self):
 			for iJet in range(nJets):
 				histList_2d_iJetvsFracPt[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks[iJet])
 				hist_2d_iJetvsNumHVParts.Fill(iJet,tree.numHVPartsInJet[iJet])
+				hist_2d_NumHVPartsvsFracPt.Fill(tree.numHVPartsInJet[iJet].tree,tree.fracPtFromHVQuarks[iJet])
 			hist_MTLead2.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
 			if nJets == 2:
 				jetsToUse = 2
