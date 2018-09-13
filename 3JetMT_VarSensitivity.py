@@ -53,7 +53,7 @@ def loop(self):
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_8Jets", "Events with 8 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 8, 0, 8, 100, -.01, 1.01))
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_9Jets", "Events with 9 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 9, 0, 9, 100, -.01, 1.01))
 
-	hist_2d_iJetvsNumHVParts = self.makeTH2F("hist_2d_iJetvsNumHVParts","All events;iJet;Num HV Parts",9,0,9,30,0,30)
+	hist_2d_iJetvsNumHVParts = self.makeTH2F("hist_2d_iJetvsNumHVParts","All events;iJet;Num HV Parts",6,0,6,25,0,25)
 
 	#coarse grading for optimal MT resolution for fracPt cut
 	cutFractions = [x*0.01 for x in range(0,100)]
