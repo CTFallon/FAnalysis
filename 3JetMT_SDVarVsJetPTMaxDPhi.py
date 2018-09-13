@@ -65,8 +65,8 @@ def loop(self):
 	hist_MT_base = self.makeTH1F("hist_MT_base","base;MT;count/a.u.", 100, 0, 4000)
 	hist_MT_just2jets = self.makeTH1F("hist_MT_just2jets","just2jets;MT;count/a.u.", 100, 0, 4000)
 	
-	hist_pt_zPrime = self.makeTH1F("hist_pt_zPrime","Zprime pt; pt; count/a.u.", 100, 0, 5000)
-	hist_phi_zPrime= self.makeTH1F("hist_phi_zPrime","Zprime phi; phi; count/a.u.", 100, -rt.TMath.Pi(), 2*rt.TMath.Pi())
+	hist_pt_zPrime = self.makeTH1F("hist_pt_zPrime","Zprime pt; pt; count/a.u.", 100, 0, 200)
+	hist_phi_zPrime= self.makeTH1F("hist_phi_zPrime","Zprime phi; phi; count/a.u.", 100, -rt.TMath.Pi(), rt.TMath.Pi())
 	
 	count_shouldwas_sdVar = 0
 	count_shouldwasnt_sdVar = 0

@@ -120,7 +120,7 @@ def loop(self):
 						jetsForMt.append(tree.JetsAK8[0])
 					if tree.fracPtFromHVQuarks[1] > 0.0:
 						jetsForMt.append(tree.JetsAK8[1])
-					if tree.fracPtFromHVQuarks[2] > cutVal:
+					if tree.fracPtFromHVQuarks[2] >= cutVal:
 						jetsForMt.append(tree.JetsAK8[2])
 				histList_MTcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
 	
