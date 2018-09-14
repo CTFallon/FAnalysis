@@ -156,13 +156,9 @@ def loop(self):
 		# number of particles in the jet, total, visible, and invisible
 		# also record which jet is furthest from the METPhi
 		for iJet in range(len(tree.JetsAK8)):
-			print("Reset TLV1")
 			pGJ_vis = rt.TLorentzVector()
-			print("Reset TLV2")
 			pGJ_inv = rt.TLorentzVector()
-			print("Reset TLV3")
 			pGJ_all = rt.TLorentzVector()
-			print("Done Resetting TLV")
 			deltaPhi = abs(tree.JetsAK8[iJet].Phi()-tree.METPhi)%rt.TMath.Pi()
 			if deltaPhi > dPhiMaxDeltaPhi[0]:
 				iJetMaxDeltaPhi[0] = iJet
@@ -183,9 +179,13 @@ def loop(self):
 				# so we want to fill our pseudoGenJets:
 				pGJ_all += tree.GenParticles[iPart]
 				if abs(tree.GenParticles_PdgId[iPart] < 4900000): # visible
+					print("Adding to vis, x += y")
 					pGJ_vis += tree.GenParticles[iPart]
+					print("Done adding to vis")
 				else: # invisible
-					pGJ_inv += tree.GenParticles[iPart]
+					print("Adding to invis, x = x+y")
+					pGJ_inv = pGJ_inv + tree.GenParticles[iPart]
+					print("Done adding to invis")
 				# now, we want to ignore any particle that isn't from an HVQuark:
 				if (genParticleIsFromHVQuark[iPart] != 1):
 					continue
