@@ -34,9 +34,9 @@ def loop(self):
 	fracPtFromHVQuarks = array("f",[0. for x in range(10)])
 	numHVPartsInJet = array("i",[-1 for x in range(10)])
 	numSMPartsInJet = array("i",[-1 for x in range(10)])
-	pGJ_visible = array('f',[-1. in range(10)])
-	pGJ_invis = array('f',[-1. in range(10)])
-	pGJ_all = array('f',[-1. in range(10)])
+	pGJ_visible = array('f',[-1. for x in range(10)])
+	pGJ_invis = array('f',[-1. for x in range(10)])
+	pGJ_all = array('f',[-1. for x in range(10)])
 	iJetMaxDeltaPhi = array('i',[-1])
 	pTMaxDeltaPhi = array('f',[0.])
 	dPhiMaxDeltaPhi = array('f',[0.])
@@ -94,10 +94,10 @@ def loop(self):
 			fracPtFromHVQuarks[i] = 0.
 			numHVPartsInJet[i] = 0
 			numSMPartsInJet[i] = 0
-		for i in range(3):
-			pGJ_visible[i] = 0.
-			pGJ_invis[i] = 0.
-			pGJ_all[i] = 0.
+		for i in range(10):
+			pGJ_visible[i] = -1.
+			pGJ_invis[i] = -1.
+			pGJ_all[i] = -1.
 		pass1 = 0
 		pass2 = 0
 		pass3 = 0
