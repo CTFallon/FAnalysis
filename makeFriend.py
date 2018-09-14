@@ -1,6 +1,7 @@
 from analysisBase import baseClass
 import ROOT as rt
 from array import array
+import numpy as np
 # this macro makes the friend tree to our analysis ntuple tree
 def loop(self):
 	# set up trees
@@ -39,15 +40,15 @@ def loop(self):
 	MTFromParticles = array('f',[0.])
 	zPrimept = array('f',[0.])
 	zPrimephi = array('f',[0.])
-	pseudoGenJet0_visible = rt.TLorentzVector(0.,0.,0.,0.)
-	pseudoGenJet0_invis = rt.TLorentzVector(0.,0.,0.,0.)
-	pseudoGenJet0_eveything = rt.TLorentzVector(0.,0.,0.,0.)
-	pseudoGenJet1_visible = rt.TLorentzVector(0.,0.,0.,0.)
-	pseudoGenJet1_invis = rt.TLorentzVector(0.,0.,0.,0.)
-	pseudoGenJet1_eveything = rt.TLorentzVector(0.,0.,0.,0.)
-	pseudoGenJet2_visible = rt.TLorentzVector(0.,0.,0.,0.)
-	pseudoGenJet2_invis = rt.TLorentzVector(0.,0.,0.,0.)
-	pseudoGenJet2_eveything = rt.TLorentzVector(0.,0.,0.,0.)
+	pseudoGenJet0_visible = rt.TLorentzVector()
+	pseudoGenJet0_invis = rt.TLorentzVector()
+	pseudoGenJet0_eveything = rt.TLorentzVector()
+	pseudoGenJet1_visible = rt.TLorentzVector()
+	pseudoGenJet1_invis = rt.TLorentzVector()
+	pseudoGenJet1_eveything = rt.TLorentzVector()
+	pseudoGenJet2_visible = rt.TLorentzVector()
+	pseudoGenJet2_invis = rt.TLorentzVector()
+	pseudoGenJet2_eveything = rt.TLorentzVector()
 	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
@@ -64,15 +65,15 @@ def loop(self):
 	friend.Branch("MTFromParticles",MTFromParticles,'MTFromParticles/F')
 	friend.Branch("zPrimept",zPrimept, 'zPrimept/F')
 	friend.Branch("zPrimephi",zPrimephi, 'zPrimephi/F')
-	friend.Branch("pseudoGenJet0_visible",pseudoGenJet0_visible)
-	friend.Branch("pseudoGenJet0_invis",pseudoGenJet0_invis)
-	friend.Branch("pseudoGenJet0_eveything",pseudoGenJet0_eveything)
-	friend.Branch("pseudoGenJet1_visible",pseudoGenJet1_visible)
-	friend.Branch("pseudoGenJet1_invis",pseudoGenJet1_invis)
-	friend.Branch("pseudoGenJet1_eveything",pseudoGenJet1_eveything)
-	friend.Branch("pseudoGenJet2_visible",pseudoGenJet2_visible)
-	friend.Branch("pseudoGenJet2_invis",pseudoGenJet2_invis)
-	friend.Branch("pseudoGenJet2_eveything",pseudoGenJet2_eveything)
+	friend.Branch("pseudoGenJet0_visible","TLorentzVector",pseudoGenJet0_visible)
+	friend.Branch("pseudoGenJet0_invis","TLorentzVector",pseudoGenJet0_invis)
+	friend.Branch("pseudoGenJet0_eveything","TLorentzVector",pseudoGenJet0_eveything)
+	friend.Branch("pseudoGenJet1_visible","TLorentzVector",pseudoGenJet1_visible)
+	friend.Branch("pseudoGenJet1_invis","TLorentzVector",pseudoGenJet1_invis)
+	friend.Branch("pseudoGenJet1_eveything","TLorentzVector",pseudoGenJet1_eveything)
+	friend.Branch("pseudoGenJet2_visible","TLorentzVector",pseudoGenJet2_visible)
+	friend.Branch("pseudoGenJet2_invis","TLorentzVector",pseudoGenJet2_invis)
+	friend.Branch("pseudoGenJet2_eveything","TLorentzVector",pseudoGenJet2_eveything)
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
