@@ -34,24 +34,15 @@ def loop(self):
 	fracPtFromHVQuarks = np.full(10,0.) #array("f",[0. for x in range(10)])
 	numHVPartsInJet = np.full(10,-1) #array("i",[-1 for x in range(10)])
 	numSMPartsInJet = np.full(10,-1) #array("i",[-1 for x in range(10)])
+	pGJ_visible = np.full(10,-1)
+	pGJ_invis = np.full(10,-1)
+	pGJ_all = np.full(10,-1)
 	iJetMaxDeltaPhi = np.full(1,-1)#array('i',[-1])
 	pTMaxDeltaPhi = np.full(1,0.)#array('f',[0.])
 	dPhiMaxDeltaPhi = np.full(1,0.)#array('f',[0.])
 	MTFromParticles = np.full(1,0.)#array('f',[0.])
 	zPrimept = np.full(1,0.)#array('f',[0.])
 	zPrimephi = np.full(1,0.)#array('f',[0.])
-	pseudoGenJet_visible = np.full(3,rt.TLorentzVector(),dtype=object)
-	pseudoGenJet_invis = np.full(3,rt.TLorentzVector(),dtype=object)
-	pseudoGenJet_eveything = np.full(3,rt.TLorentzVector(),dtype=object)
-	#pseudoGenJet0_visible = rt.TLorentzVector()
-	#pseudoGenJet0_invis = rt.TLorentzVector()
-	#pseudoGenJet0_eveything = rt.TLorentzVector()
-	#pseudoGenJet1_visible = rt.TLorentzVector()
-	#pseudoGenJet1_invis = rt.TLorentzVector()
-	#pseudoGenJet1_eveything = rt.TLorentzVector()
-	#pseudoGenJet2_visible = rt.TLorentzVector()
-	#pseudoGenJet2_invis = rt.TLorentzVector()
-	#pseudoGenJet2_eveything = rt.TLorentzVector()
 	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
@@ -68,15 +59,9 @@ def loop(self):
 	friend.Branch("MTFromParticles",MTFromParticles,'MTFromParticles/F')
 	friend.Branch("zPrimept",zPrimept, 'zPrimept/F')
 	friend.Branch("zPrimephi",zPrimephi, 'zPrimephi/F')
-	friend.Branch("pseudoGenJet0_visible","TLorentzVector",pseudoGenJet0_visible)
-	friend.Branch("pseudoGenJet0_invis","TLorentzVector",pseudoGenJet0_invis)
-	friend.Branch("pseudoGenJet0_eveything","TLorentzVector",pseudoGenJet0_eveything)
-	friend.Branch("pseudoGenJet1_visible","TLorentzVector",pseudoGenJet1_visible)
-	friend.Branch("pseudoGenJet1_invis","TLorentzVector",pseudoGenJet1_invis)
-	friend.Branch("pseudoGenJet1_eveything","TLorentzVector",pseudoGenJet1_eveything)
-	friend.Branch("pseudoGenJet2_visible","TLorentzVector",pseudoGenJet2_visible)
-	friend.Branch("pseudoGenJet2_invis","TLorentzVector",pseudoGenJet2_invis)
-	friend.Branch("pseudoGenJet2_eveything","TLorentzVector",pseudoGenJet2_eveything)
+	friend.Branch("pGJ_visible",pGJ_visible,"pGJ_visible[10]/F")
+	friend.Branch("pGJ_invis",pGJ_invis,"pGJ_invis[10]/F")
+	friend.Branch("pGJ_all",pGJ_all,"pGJ_all[10]/F")
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
@@ -171,6 +156,9 @@ def loop(self):
 		# number of particles in the jet, total, visible, and invisible
 		# also record which jet is furthest from the METPhi
 		for iJet in range(len(tree.JetsAK8)):
+			pGJ_vis = rt.TLorentzVector(0.,0.,0.,0.)
+			pGJ_inv = rt.TLorentzVector(0.,0.,0.,0.)
+			pGJ_all = rt.TLorentzVector(0.,0.,0.,0.)
 			deltaPhi = abs(tree.JetsAK8[iJet].Phi()-tree.METPhi)%rt.TMath.Pi()
 			if deltaPhi > dPhiMaxDeltaPhi[0]:
 				iJetMaxDeltaPhi[0] = iJet
@@ -189,12 +177,11 @@ def loop(self):
 					continue
 				# right now, we have all particles that are final state and in the jet
 				# so we want to fill our pseudoGenJets:
-				if iJet <= 2:
-					pseudoGenJet_eveything[iJet] += tree.GenParticles[iPart]
-					if abs(tree.GenParticles_PdgId[iPart] < 4900000): # visible
-						pseudoGenJet_visible[iJet] += tree.GenParticles[iPart]
-					else: # invisible
-						pseudoGenJet_invis[iJet] += tree.GenParticles[iPart]
+				pGJ_all += tree.GenParticles[iPart]
+				if abs(tree.GenParticles_PdgId[iPart] < 4900000): # visible
+					pGJ_vis += tree.GenParticles[iPart]
+				else: # invisible
+					pGJ_inv += tree.GenParticles[iPart]
 				# now, we want to ignore any particle that isn't from an HVQuark:
 				if (genParticleIsFromHVQuark[iPart] != 1):
 					continue
@@ -209,6 +196,9 @@ def loop(self):
 				fracPtFromHVQuarks[iJet] = HVPt/totalPt
 			except ZeroDivisionError:
 				fracPtFromHVQuarks[iJet] = -1
+			pGJ_visible[iJet] = pGJ_vis.Pt()
+			pGJ_invis[iJet] = pGJ_inv.Pt()
+			pGJ_all[iJet] = pGJ_all.Pt()
 		friend.Fill()
 	print(maxNofParticle)
 	print(maxNofJets)
