@@ -39,6 +39,15 @@ def loop(self):
 	MTFromParticles = array('f',[0.])
 	zPrimept = array('f',[0.])
 	zPrimephi = array('f',[0.])
+	pseudoGenJet0_visible = rt.TLorentzVector(0.,0.,0.,0.)
+	pseudoGenJet0_invis = rt.TLorentzVector(0.,0.,0.,0.)
+	pseudoGenJet0_eveything = rt.TLorentzVector(0.,0.,0.,0.)
+	pseudoGenJet1_visible = rt.TLorentzVector(0.,0.,0.,0.)
+	pseudoGenJet1_invis = rt.TLorentzVector(0.,0.,0.,0.)
+	pseudoGenJet1_eveything = rt.TLorentzVector(0.,0.,0.,0.)
+	pseudoGenJet2_visible = rt.TLorentzVector(0.,0.,0.,0.)
+	pseudoGenJet2_invis = rt.TLorentzVector(0.,0.,0.,0.)
+	pseudoGenJet2_eveything = rt.TLorentzVector(0.,0.,0.,0.)
 	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
@@ -55,6 +64,15 @@ def loop(self):
 	friend.Branch("MTFromParticles",MTFromParticles,'MTFromParticles/F')
 	friend.Branch("zPrimept",zPrimept, 'zPrimept/F')
 	friend.Branch("zPrimephi",zPrimephi, 'zPrimephi/F')
+	friend.Branch("pseudoGenJet0_visible",pseudoGenJet0_visible)
+	friend.Branch("pseudoGenJet0_invis",pseudoGenJet0_invis)
+	friend.Branch("pseudoGenJet0_eveything",pseudoGenJet0_eveything)
+	friend.Branch("pseudoGenJet1_visible",pseudoGenJet1_visible)
+	friend.Branch("pseudoGenJet1_invis",pseudoGenJet1_invis)
+	friend.Branch("pseudoGenJet1_eveything",pseudoGenJet1_eveything)
+	friend.Branch("pseudoGenJet2_visible",pseudoGenJet2_visible)
+	friend.Branch("pseudoGenJet2_invis",pseudoGenJet2_invis)
+	friend.Branch("pseudoGenJet2_eveything",pseudoGenJet2_eveything)
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
@@ -87,6 +105,15 @@ def loop(self):
 			fracPtFromHVQuarks[i] = 0.
 			numHVPartsInJet[i] = 0
 			numSMPartsInJet[i] = 0
+		pseudoGenJet0_visible = rt.TLorentzVector(0.,0.,0.,0.)
+		pseudoGenJet0_invis = rt.TLorentzVector(0.,0.,0.,0.)
+		pseudoGenJet0_eveything = rt.TLorentzVector(0.,0.,0.,0.)
+		pseudoGenJet1_visible = rt.TLorentzVector(0.,0.,0.,0.)
+		pseudoGenJet1_invis = rt.TLorentzVector(0.,0.,0.,0.)
+		pseudoGenJet1_eveything = rt.TLorentzVector(0.,0.,0.,0.)
+		pseudoGenJet2_visible = rt.TLorentzVector(0.,0.,0.,0.)
+		pseudoGenJet2_invis = rt.TLorentzVector(0.,0.,0.,0.)
+		pseudoGenJet2_eveything = rt.TLorentzVector(0.,0.,0.,0.)
 		# PreSelection Cuts
 		pass1 = 0
 		pass2 = 0
@@ -155,15 +182,40 @@ def loop(self):
 			HVPt = 0.
 			for iPart in range(2,len(tree.GenParticles)):
 				# only want final-state particles
-				if numberOfDaughtersAParticleHas[iPart] >= 1:
-					continue
 				# only want particles that belong to the jet
-				if genParticleInAK8Jet[iPart] != iJet:
+				# only want particles that descend from HVQuarks
+				# ignore particles that a) have daughters or b) arn't in the jet
+				if (numberOfDaughtersAParticleHas[iPart] != 0):
 					continue
-				if abs(tree.GenParticles_PdgId[iPart]) < 4900000:# only want visible particles
+				if (genParticleInAK8Jet[iPart] != iJet):
+					continue
+				# right now, we have all particles that are final state and in the jet
+				# so we want to fill our pseudoGenJets:
+				if iJet == 0:
+					pseudoGenJet0_eveything += tree.GenParticles[iPart]
+					if abs(tree.GenParticles_PdgId[iPart] < 4900000): # visible
+						pseudoGenJet0_visible += tree.GenParticles[iPart]
+					else: # invisible
+						pseudoGenJet0_invis += tree.GenParticles[iPart]
+				if iJet == 1:
+					pseudoGenJet1_eveything += tree.GenParticles[iPart]
+					if abs(tree.GenParticles_PdgId[iPart] < 4900000): # visible
+						pseudoGenJet1_visible += tree.GenParticles[iPart]
+					else: # invisible
+						pseudoGenJet1_invis += tree.GenParticles[iPart]
+				if iJet == 2:
+					pseudoGenJet2_eveything += tree.GenParticles[iPart]
+					if abs(tree.GenParticles_PdgId[iPart] < 4900000): # visible
+						pseudoGenJet2_visible += tree.GenParticles[iPart]
+					else: # invisible
+						pseudoGenJet2_invis += tree.GenParticles[iPart]
+				# now, we want to ignore any particle that isn't from an HVQuark:
+				if (genParticleIsFromHVQuark[iPart] != 1):
+					continue
+				if abs(tree.GenParticles_PdgId[iPart]) < 4900000: # finally, ignore all invisible particles
 					numSMPartsInJet[iJet] += 1
 					totalPt += tree.GenParticles[iPart].Pt()
-					if genParticleIsFromHVQuark[iPart] == 1:
+					if genParticleIsFromHVQuark[iPart] == 1.:
 						HVPt += tree.GenParticles[iPart].Pt()
 				else:
 					numHVPartsInJet[iJet] += 1
@@ -171,6 +223,8 @@ def loop(self):
 				fracPtFromHVQuarks[iJet] = HVPt/totalPt
 			except ZeroDivisionError:
 				fracPtFromHVQuarks[iJet] = -1
+	
+			#loop over particles again to populate the 
 		
 					
 					
