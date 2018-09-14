@@ -156,9 +156,9 @@ def loop(self):
 		# number of particles in the jet, total, visible, and invisible
 		# also record which jet is furthest from the METPhi
 		for iJet in range(len(tree.JetsAK8)):
-			pGJ_vis = rt.TLorentzVector(0.,0.,0.,0.)
-			pGJ_inv = rt.TLorentzVector(0.,0.,0.,0.)
-			pGJ_all = rt.TLorentzVector(0.,0.,0.,0.)
+			pGJ_vis = rt.TLorentzVector()
+			pGJ_inv = rt.TLorentzVector()
+			pGJ_all = rt.TLorentzVector()
 			deltaPhi = abs(tree.JetsAK8[iJet].Phi()-tree.METPhi)%rt.TMath.Pi()
 			if deltaPhi > dPhiMaxDeltaPhi[0]:
 				iJetMaxDeltaPhi[0] = iJet
