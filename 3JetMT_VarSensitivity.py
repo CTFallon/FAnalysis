@@ -38,10 +38,17 @@ def loop(self):
 	tree.SetBranchStatus("dPhiMaxDeltaPhi",1)
 	tree.SetBranchStatus("zPrimept",1)
 	tree.SetBranchStatus("zPrimephi",1)
+	tree.SetBranchStatus("pGJ_visible",1)
+	tree.SetBranchStatus("pGJ_invis",1)
+	tree.SetBranchStatus("pGJ_every",1)
 
 	# initalize histograms to be made, or create Friend tree to be filled
 	self.outRootFile.cd()
-	
+	# histograms of pseudoGenJets
+	hist_pGJ_visPt = self.makeTH1F("hist_pGJ_visPt","pGJ_vis;Pt;count/a.u.",100,0,3000)
+	hist_pGJ_invPt = self.makeTH1F("hist_pGJ_invPt","pGJ_inv;Pt;count/a.u.",100,0,3000)
+	hist_pGJ_allPt = self.makeTH1F("hist_pGJ_allPt","pGJ_all;Pt;count/a.u.",100,0,3000)
+	hist_AK8_Pt = self.makeTH1F("hist_AK8_Pt","AK8_Pt;Pt;count/a.u.",100,0,3000)
 	#Step 1, make iJet vs FracPt for events with nJets
 	histList_2d_iJetvsFracPt = [0,0]
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_2Jets", "Events with 2 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 2, 0, 2, 100, -.01, 1.01))
@@ -97,6 +104,10 @@ def loop(self):
 				histList_2d_iJetvsFracPt[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks[iJet])
 				hist_2d_iJetvsNumHVParts.Fill(iJet,tree.numHVPartsInJet[iJet])
 				hist_2d_NumHVPartsvsFracPt.Fill(tree.numHVPartsInJet[iJet],tree.fracPtFromHVQuarks[iJet])
+				hist_pGJ_visPt.Fill(tree.pGJ_visible[iJet])
+				hist_pGJ_invPt.Fill(tree.pGJ_invis[iJet])
+				hist_pGJ_allPt.Fill(tree.pGJ_every[iJet])
+				hist_AK8_Pt.Fill(tree.JetsAK8[iJet].Pt())
 			hist_MTLead2.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
 			if nJets == 2:
 				jetsToUse = 2
