@@ -109,16 +109,10 @@ def loop(self):
 			fracPtFromHVQuarks[i] = 0.
 			numHVPartsInJet[i] = 0
 			numSMPartsInJet[i] = 0
-		pseudoGenJet0_visible = rt.TLorentzVector()
-		pseudoGenJet0_invis = rt.TLorentzVector()
-		pseudoGenJet0_eveything = rt.TLorentzVector()
-		pseudoGenJet1_visible = rt.TLorentzVector()
-		pseudoGenJet1_invis = rt.TLorentzVector()
-		pseudoGenJet1_eveything = rt.TLorentzVector()
-		pseudoGenJet2_visible = rt.TLorentzVector()
-		pseudoGenJet2_invis = rt.TLorentzVector()
-		pseudoGenJet2_eveything = rt.TLorentzVector()
-		# PreSelection Cuts
+		for i in range(3):
+			pseudoGenJet_visible[i] = rt.TLorentzVector()
+			pseudoGenJet_invis[i] = rt.TLorentzVector()
+			pseudoGenJet_eveything[i] = rt.TLorentzVector()
 		pass1 = 0
 		pass2 = 0
 		pass3 = 0
