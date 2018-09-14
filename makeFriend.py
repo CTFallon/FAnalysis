@@ -95,9 +95,9 @@ def loop(self):
 			numHVPartsInJet[i] = 0
 			numSMPartsInJet[i] = 0
 		for i in range(3):
-			pGJ_visible[i] = rt.TLorentzVector()
-			pGJ_invis[i] = rt.TLorentzVector()
-			pGJ_all[i] = rt.TLorentzVector()
+			pGJ_visible[i] = 0.
+			pGJ_invis[i] = 0.
+			pGJ_all[i] = 0.
 		pass1 = 0
 		pass2 = 0
 		pass3 = 0
