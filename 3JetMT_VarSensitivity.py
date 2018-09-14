@@ -49,6 +49,7 @@ def loop(self):
 	hist_pGJ_invPt = self.makeTH1F("hist_pGJ_invPt","pGJ_inv;Pt;count/a.u.",100,0,3000)
 	hist_pGJ_allPt = self.makeTH1F("hist_pGJ_allPt","pGJ_all;Pt;count/a.u.",100,0,3000)
 	hist_AK8_Pt = self.makeTH1F("hist_AK8_Pt","AK8_Pt;Pt;count/a.u.",100,0,3000)
+	hist_2d_pGJvisvsAK8 = self.makeTH2F("hist_2d_pGJvisvsAK8", "Vis pGJ vs AK8 pT;Vis pGJ;AK8", 100, 0, 3500, 100, 0, 2000)
 	#Step 1, make iJet vs FracPt for events with nJets
 	histList_2d_iJetvsFracPt = [0,0]
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_2Jets", "Events with 2 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 2, 0, 2, 100, -.01, 1.01))
@@ -108,6 +109,7 @@ def loop(self):
 				hist_pGJ_invPt.Fill(tree.pGJ_invis[iJet])
 				hist_pGJ_allPt.Fill(tree.pGJ_every[iJet])
 				hist_AK8_Pt.Fill(tree.JetsAK8[iJet].Pt())
+				hist_2d_pGJvisvsAK8.Fill(tree.pGJ_visible[iJet],tree.JetsAK8[iJet].Pt())
 			hist_MTLead2.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
 			if nJets == 2:
 				jetsToUse = 2
