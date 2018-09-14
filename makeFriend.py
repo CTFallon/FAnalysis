@@ -1,7 +1,6 @@
 from analysisBase import baseClass
 import ROOT as rt
 from array import array
-import numpy as np
 # this macro makes the friend tree to our analysis ntuple tree
 def loop(self):
 	# set up trees
@@ -25,24 +24,24 @@ def loop(self):
 	friend = rt.TTree("friend","friend")
 	self.objects.append(friend)
 	# create branch variables
-	passedPreSelection = np.full(1,0) #array('i', [0])
-	numGenParts = np.full(1,0) #array('i',[0])
-	numJets = np.full(1,0) #array('i',[0])
-	genParticleInAK8Jet = np.full(155,-1.) #array('f' ,[-1. for x in range(155)])
-	genParticleIsFromHVQuark = np.full(155,0.) #array('f' ,[0. for x in range(155)])
-	numberOfDaughtersAParticleHas = np.full(155,0.) #array('f', [0. for x in range(155)])
-	fracPtFromHVQuarks = np.full(10,0.) #array("f",[0. for x in range(10)])
-	numHVPartsInJet = np.full(10,-1) #array("i",[-1 for x in range(10)])
-	numSMPartsInJet = np.full(10,-1) #array("i",[-1 for x in range(10)])
-	pGJ_visible = np.full(10,-1)
-	pGJ_invis = np.full(10,-1)
-	pGJ_all = np.full(10,-1)
-	iJetMaxDeltaPhi = np.full(1,-1)#array('i',[-1])
-	pTMaxDeltaPhi = np.full(1,0.)#array('f',[0.])
-	dPhiMaxDeltaPhi = np.full(1,0.)#array('f',[0.])
-	MTFromParticles = np.full(1,0.)#array('f',[0.])
-	zPrimept = np.full(1,0.)#array('f',[0.])
-	zPrimephi = np.full(1,0.)#array('f',[0.])
+	passedPreSelection = array('i', [0])
+	numGenParts = array('i',[0])
+	numJets = array('i',[0])
+	genParticleInAK8Jet = array('f' ,[-1. for x in range(155)])
+	genParticleIsFromHVQuark = array('f' ,[0. for x in range(155)])
+	numberOfDaughtersAParticleHas = array('f', [0. for x in range(155)])
+	fracPtFromHVQuarks = array("f",[0. for x in range(10)])
+	numHVPartsInJet = array("i",[-1 for x in range(10)])
+	numSMPartsInJet = array("i",[-1 for x in range(10)])
+	pGJ_visible = array('f',[-1. in range(10)])
+	pGJ_invis = array('f',[-1. in range(10)])
+	pGJ_all = array('f',[-1. in range(10)])
+	iJetMaxDeltaPhi = array('i',[-1])
+	pTMaxDeltaPhi = array('f',[0.])
+	dPhiMaxDeltaPhi = array('f',[0.])
+	MTFromParticles = array('f',[0.])
+	zPrimept = array('f',[0.])
+	zPrimephi = array('f',[0.])
 	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
