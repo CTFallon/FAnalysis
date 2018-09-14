@@ -36,7 +36,7 @@ def loop(self):
 	numSMPartsInJet = array("i",[-1 for x in range(10)])
 	pGJ_visible = array('f',[-1. for x in range(10)])
 	pGJ_invis = array('f',[-1. for x in range(10)])
-	pGJ_all = array('f',[-1. for x in range(10)])
+	pGJ_every = array('f',[-1. for x in range(10)])
 	iJetMaxDeltaPhi = array('i',[-1])
 	pTMaxDeltaPhi = array('f',[0.])
 	dPhiMaxDeltaPhi = array('f',[0.])
@@ -61,7 +61,7 @@ def loop(self):
 	friend.Branch("zPrimephi",zPrimephi, 'zPrimephi/F')
 	friend.Branch("pGJ_visible",pGJ_visible,"pGJ_visible[10]/F")
 	friend.Branch("pGJ_invis",pGJ_invis,"pGJ_invis[10]/F")
-	friend.Branch("pGJ_all",pGJ_all,"pGJ_all[10]/F")
+	friend.Branch("pGJ_every",pGJ_every,"pGJ_every[10]/F")
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
@@ -97,7 +97,7 @@ def loop(self):
 		for i in range(10):
 			pGJ_visible[i] = -1.
 			pGJ_invis[i] = -1.
-			pGJ_all[i] = -1.
+			pGJ_every[i] = -1.
 		pass1 = 0
 		pass2 = 0
 		pass3 = 0
@@ -156,9 +156,9 @@ def loop(self):
 		# number of particles in the jet, total, visible, and invisible
 		# also record which jet is furthest from the METPhi
 		for iJet in range(len(tree.JetsAK8)):
-			pGJ_vis = rt.TLorentzVector()
-			pGJ_inv = rt.TLorentzVector()
-			pGJ_all = rt.TLorentzVector()
+			pGJ_vis = rt.TLorentzVector(0.,0.,0.,0.)
+			pGJ_inv = rt.TLorentzVector(0.,0.,0.,0.)
+			pGJ_all = rt.TLorentzVector(0.,0.,0.,0.)
 			deltaPhi = abs(tree.JetsAK8[iJet].Phi()-tree.METPhi)%rt.TMath.Pi()
 			if deltaPhi > dPhiMaxDeltaPhi[0]:
 				iJetMaxDeltaPhi[0] = iJet
@@ -179,13 +179,9 @@ def loop(self):
 				# so we want to fill our pseudoGenJets:
 				pGJ_all += tree.GenParticles[iPart]
 				if abs(tree.GenParticles_PdgId[iPart] < 4900000): # visible
-					print("Adding to vis, x += y")
 					pGJ_vis += tree.GenParticles[iPart]
-					print("Done adding to vis")
 				else: # invisible
-					print("Adding to invis, x = x+y")
 					pGJ_inv = pGJ_inv + tree.GenParticles[iPart]
-					print("Done adding to invis")
 				# now, we want to ignore any particle that isn't from an HVQuark:
 				if (genParticleIsFromHVQuark[iPart] != 1):
 					continue
@@ -202,7 +198,7 @@ def loop(self):
 				fracPtFromHVQuarks[iJet] = -1
 			pGJ_visible[iJet] = pGJ_vis.Pt()
 			pGJ_invis[iJet] = pGJ_inv.Pt()
-			pGJ_all[iJet] = pGJ_all.Pt()
+			pGJ_every[iJet] = pGJ_all.Pt()
 		friend.Fill()
 	print(maxNofParticle)
 	print(maxNofJets)
