@@ -3,6 +3,7 @@ import ROOT as rt
 from array import array
 # this macro makes the friend tree to our analysis ntuple tree
 def loop(self):
+	print("Starting Loop")
 	# set up trees
 	f = rt.TFile.Open(self.inputFileList[0])
 	tree = f.Get(self.treeNameList[0])
@@ -201,6 +202,7 @@ def loop(self):
 		friend.Fill()
 	print(maxNofParticle)
 	print(maxNofJets)
+	print("Loop Ending")
 
 
 def addLoop():
