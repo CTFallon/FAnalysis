@@ -8,9 +8,9 @@
 import sys, os
 import analysisBase as ab
 
-if os.path.lexists("analysisClass.py"):
-	os.remove("analysisClass.py")
-os.symlink("{}".format(sys.argv[1]), "analysisClass.py")
+if os.path.lexists("macros/analysisClass.py"):
+	os.remove("macros/analysisClass.py")
+os.symlink("{}".format("macros/"+sys.argv[1]), "analysisClass.py")
 
 import analysisClass as tm
 

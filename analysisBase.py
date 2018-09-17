@@ -12,14 +12,14 @@ class baseClass:
 		self.loadOutFile()
 
 	def loadFileList(self):
-		inFile = open(self.fileList)
+		inFile = open("input_conf/"+self.fileList)
 		self.inputFileList = []
 		for line in inFile:
 			self.inputFileList.append(line[:-1])#ignore new line character
 		inFile.close()
 
 	def loadTreeList(self):
-		treeFile = open(self.treeList)
+		treeFile = open("input_conf/"+self.treeList)
 		self.treeNameList = []
 		for line in treeFile:
 			self.treeNameList.append(line[:-1])#ignore new line character
