@@ -8,8 +8,8 @@
 import sys, os
 import analysisBase as ab
 
-if os.path.lexists("macros/analysisClass.py"):
-	os.remove("macros/analysisClass.py")
+if os.path.lexists("analysisClass.py"):
+	os.remove("analysisClass.py")
 os.symlink("{}".format("macros/"+sys.argv[1]), "analysisClass.py")
 
 import analysisClass as tm
@@ -28,13 +28,13 @@ tm.addLoop()
 #	print(str(iArg), sys.argv[iArg])
 
 
-if not os.path.exists(sys.argv[1]):
+if not os.path.exists("macros/"+sys.argv[1]):
 	exit("Macro path doesn't exist")
 #print("----------")
 #print("Macro is:")
 #print(sys.argv[1])
 #print("----------")
-if not os.path.exists(sys.argv[2]):
+if not os.path.exists('input_conf/'+sys.argv[2]):
 	exit("Input List doesn't exist")
 #iFile = open(sys.argv[2])
 #print("Input Files are:")
@@ -42,7 +42,7 @@ if not os.path.exists(sys.argv[2]):
 #	print(line[:-1])# don't print new line symbol
 #print("----------")
 
-if not os.path.exists(sys.argv[3]):
+if not os.path.exists('input_conf/'+sys.argv[3]):
 	exit("Tree List doesn't exist")
 #iTree = open(sys.argv[3])
 #print("Tree Names are:")

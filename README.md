@@ -13,6 +13,6 @@ TTree_name_list.txt must be in /input_conf/
 localStorageDirectory must exist
 outputFileName.root will be called with 'RECREATE'
 
-pyton main.py <macro_name.py> <ROOT_file_list.txt> <TTree_name_list.txt> <localStorageDirectory> <outputFileName.root>
+python main.py [macro_name.py] [ROOT_file_list.txt] [TTree_name_list.txt] [localStorageDirectory] [outputFileName.root]
 
 
