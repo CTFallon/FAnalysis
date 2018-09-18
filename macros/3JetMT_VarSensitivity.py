@@ -23,6 +23,7 @@ def loop(self):
 	#tree.SetBranchStatus("GenParticles*",1)
 	#tree.SetBranchStatus("Electrons",1)
 	#tree.SetBranchStatus("Muons",1)
+	tree.SetBranchStatus("GenJets",1)
 
 	# branches from friend
 	tree.SetBranchStatus("passedPreSelection",1)
@@ -31,6 +32,7 @@ def loop(self):
 	#tree.SetBranchStatus("genParticleIsFromHVQuark",1)
 	#tree.SetBranchStatus("numberOfDaughtersAParticleHas",1)
 	tree.SetBranchStatus("fracPtFromHVQuarks",1)
+	tree.SetBranchStatus("fracPtFromHVQuarks_vector",1)
 	tree.SetBranchStatus("numHVPartsInJet",1)
 	tree.SetBranchStatus("numSMPartsInJet",1)
 	tree.SetBranchStatus("iJetMaxDeltaPhi",1)
@@ -49,6 +51,7 @@ def loop(self):
 	hist_pGJ_invPt = self.makeTH1F("hist_pGJ_invPt","pGJ_inv;Pt;count/a.u.",100,0,3000)
 	hist_pGJ_allPt = self.makeTH1F("hist_pGJ_allPt","pGJ_all;Pt;count/a.u.",100,0,3000)
 	hist_AK8_Pt = self.makeTH1F("hist_AK8_Pt","AK8_Pt;Pt;count/a.u.",100,0,3000)
+	hist_GenJets_Pt = self.makeTH1F("hist_GenJets_Pt","GenJets_Pt;Pt;count/a.u.",100,0,3000)
 	hist_2d_pGJvisvsAK8 = self.makeTH2F("hist_2d_pGJvisvsAK8", "Vis pGJ vs AK8 pT;Vis pGJ;AK8", 100, 0, 3500, 100, 0, 2000)
 	#Step 1, make iJet vs FracPt for events with nJets
 	histList_2d_iJetvsFracPt = [0,0]
@@ -60,6 +63,16 @@ def loop(self):
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_7Jets", "Events with 7 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 7, 0, 7, 100, -.01, 1.01))
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_8Jets", "Events with 8 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 8, 0, 8, 100, -.01, 1.01))
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_9Jets", "Events with 9 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 9, 0, 9, 100, -.01, 1.01))
+	#Step 1, make iJet vs FracPt for events with nJets, but with vectorixed fracPt
+	histList_2d_iJetvsFracPt_vec = [0,0]
+	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_2Jets_vec", "Events with 2 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 2, 0, 2, 100, -.01, 1.01))
+	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_3Jets_vec", "Events with 3 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 3, 0, 3, 100, -.01, 1.01))
+	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_4Jets_vec", "Events with 4 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 4, 0, 4, 100, -.01, 1.01))
+	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_5Jets_vec", "Events with 5 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 5, 0, 5, 100, -.01, 1.01))
+	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_6Jets_vec", "Events with 6 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 6, 0, 6, 100, -.01, 1.01))
+	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_7Jets_vec", "Events with 7 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 7, 0, 7, 100, -.01, 1.01))
+	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_8Jets_vec", "Events with 8 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 8, 0, 8, 100, -.01, 1.01))
+	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_9Jets_vec", "Events with 9 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 9, 0, 9, 100, -.01, 1.01))
 
 	hist_2d_iJetvsNumHVParts = self.makeTH2F("hist_2d_iJetvsNumHVParts","All events;iJet;Num HV Parts",6,0,6,25,0,25)
 	hist_2d_NumHVPartsvsFracPt = self.makeTH2F("hist_2d_NumHVPartsvsFracPt", "All Events;Num HV;FracPt", 25,0,25,100,-0.01,1.01)
@@ -101,8 +114,11 @@ def loop(self):
 		metPhi = tree.METPhi
 		if tree.passedPreSelection == 1:
 			nJets = len(tree.JetsAK8)
+			for gJet in tree.GenJets:
+				hist_GenJets_Pt.Fill(gJet.Pt())
 			for iJet in range(nJets):
 				histList_2d_iJetvsFracPt[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks[iJet])
+				histList_2d_iJetvsFracPt_vec[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks_vector[iJet])
 				hist_2d_iJetvsNumHVParts.Fill(iJet,tree.numHVPartsInJet[iJet])
 				hist_2d_NumHVPartsvsFracPt.Fill(tree.numHVPartsInJet[iJet],tree.fracPtFromHVQuarks[iJet])
 				hist_pGJ_visPt.Fill(tree.pGJ_visible[iJet])

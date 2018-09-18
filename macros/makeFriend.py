@@ -32,6 +32,7 @@ def loop(self):
 	genParticleIsFromHVQuark = array('f' ,[0. for x in range(155)])
 	numberOfDaughtersAParticleHas = array('f', [0. for x in range(155)])
 	fracPtFromHVQuarks = array("f",[0. for x in range(10)])
+	fracPtFromHVQuarks_vector = array("f",[0. for x in range(10)])
 	numHVPartsInJet = array("i",[-1 for x in range(10)])
 	numSMPartsInJet = array("i",[-1 for x in range(10)])
 	pGJ_visible = array('f',[-1. for x in range(10)])
@@ -43,6 +44,10 @@ def loop(self):
 	MTFromParticles = array('f',[0.])
 	zPrimept = array('f',[0.])
 	zPrimephi = array('f',[0.])
+	numPartsStat1Daugher0 = array('i',[0])
+	numPartsStat1Daughternot0 = array('i',[0])
+	numPartsStatnot1Daughter0 = array('i',[0])
+	numPartsStatnot1Daughternot0 = array('i',[0])
 	
 
 	friend.Branch("passedPreSelection",passedPreSelection, 'passedPreSelection/I')
@@ -51,6 +56,7 @@ def loop(self):
 	friend.Branch("genParticleIsFromHVQuark",genParticleIsFromHVQuark,'genParticleIsFromHVQuark[155]/F')
 	friend.Branch("numberOfDaughtersAParticleHas",numberOfDaughtersAParticleHas,'numberOfDaughtersAParticleHas[155]/F')
 	friend.Branch("fracPtFromHVQuarks",fracPtFromHVQuarks,'fracPtFromHVQuarks[10]/F')
+	friend.Branch("fracPtFromHVQuarks_vector",fracPtFromHVQuarks_vector,'fracPtFromHVQuarks_vector[10]/F')
 	friend.Branch("numHVPartsInJet",numHVPartsInJet,'numHVPartsInJet[10]/I')
 	friend.Branch("numSMPartsInJet",numSMPartsInJet,'numSMPartsInJet[10]/I')
 	friend.Branch("iJetMaxDeltaPhi",iJetMaxDeltaPhi,'iJetMaxDeltaPhi/I')
@@ -62,6 +68,10 @@ def loop(self):
 	friend.Branch("pGJ_visible",pGJ_visible,"pGJ_visible[10]/F")
 	friend.Branch("pGJ_invis",pGJ_invis,"pGJ_invis[10]/F")
 	friend.Branch("pGJ_every",pGJ_every,"pGJ_every[10]/F")
+	friend.Branch("numPartsStat1Daugher0",numPartsStat1Daugher0,"numPartsStat1Daugher0/I")
+	friend.Branch("numPartsStat1Daughternot0",numPartsStat1Daughternot0,"numPartsStat1Daughternot0/I")
+	friend.Branch("numPartsStatnot1Daughter0",numPartsStatnot1Daughter0,"numPartsStatnot1Daughter0/I")
+	friend.Branch("numPartsStatnot1Daughternot0",numPartsStatnot1Daughternot0,"numPartsStatnot1Daughternot0/I")
 	
 	tree.AddFriend(friend)
 	maxNofParticle = 0
@@ -78,6 +88,10 @@ def loop(self):
 		dPhiMaxDeltaPhi[0] = 0.
 		zPrimept[0] = 0.
 		zPrimephi[0] = 0.
+		numPartsStat1Daugher0[0] = 0
+		numPartsStat1Daughternot0[0] = 0
+		numPartsStatnot1Daughter0[0] = 0
+		numPartsStatnot1Daughternot0[0] = 0
 		if maxNofParticle < numGenParts[0]:
 			maxNofParticle = numGenParts[0]
 		if maxNofJets < numJets[0]:
@@ -88,10 +102,12 @@ def loop(self):
 			numberOfDaughtersAParticleHas[i] = 0.
 		for i in range(10):
 			fracPtFromHVQuarks[i] = -1.
+			fracPtFromHVQuarks_vector[i] = -1.
 			numHVPartsInJet[i] = -1
 			numSMPartsInJet[i] = -1
 		for i in range(numJets[0]):
 			fracPtFromHVQuarks[i] = 0.
+			fracPtFromHVQuarks_vector[i] = 0.
 			numHVPartsInJet[i] = 0
 			numSMPartsInJet[i] = 0
 		for i in range(10):
@@ -143,6 +159,19 @@ def loop(self):
 		# also determin what jets particles belong to
 		particlesForMT = []
 		for iPart in range(2,len(tree.GenParticles)):
+			## ==== # Results from this block:
+				# If Status == 1, nDaughters == 0. 
+				# But Status != 1, !=> nDaughters != 0 (i.e. there exists a particle that is not stable (stat == 1) but has 0 daugters.)
+			# Check if particle status == 1 correlates with numberOfDaughtersAParticleHas
+			if tree.GenParticles_Status[iPart] == 1 and numberOfDaughtersAParticleHas[iPart] == 0:
+				numPartsStat1Daugher0[0] += 1
+			if tree.GenParticles_Status[iPart] == 1 and numberOfDaughtersAParticleHas[iPart] != 0:
+				numPartsStat1Daughternot0[0] += 1
+			if tree.GenParticles_Status[iPart] != 1 and numberOfDaughtersAParticleHas[iPart] == 0:
+				numPartsStatnot1Daughter0[0] += 1
+			if tree.GenParticles_Status[iPart] != 1 and numberOfDaughtersAParticleHas[iPart] != 0:
+				numPartsStatnot1Daughternot0[0] += 1
+			## ====
 			if genParticleIsFromHVQuark[iPart] and numberOfDaughtersAParticleHas[iPart] == 0:
 				particlesForMT.append(tree.GenParticles[iPart])
 			for iJet in range(len(tree.JetsAK8)-1,-1,-1):
@@ -159,6 +188,8 @@ def loop(self):
 			pGJ_vis = rt.TLorentzVector(0.,0.,0.,0.)
 			pGJ_inv = rt.TLorentzVector(0.,0.,0.,0.)
 			pGJ_all = rt.TLorentzVector(0.,0.,0.,0.)
+			vectorPt = rt.TLorentzVector(0.,0.,0.,0.)
+			HVvecPt = rt.TLorentzVector(0.,0.,0.,0.)
 			deltaPhi = abs(tree.JetsAK8[iJet].Phi()-tree.METPhi)%rt.TMath.Pi()
 			if deltaPhi > dPhiMaxDeltaPhi[0]:
 				iJetMaxDeltaPhi[0] = iJet
@@ -167,35 +198,38 @@ def loop(self):
 			totalPt = 0.
 			HVPt = 0.
 			for iPart in range(2,len(tree.GenParticles)):
-				# only want final-state particles
+				# only want final-state particles (stable)
 				# only want particles that belong to the jet
 				# only want particles that descend from HVQuarks
-				# ignore particles that a) have daughters or b) arn't in the jet
-				if (numberOfDaughtersAParticleHas[iPart] != 0):
+				# ignore particles that a) anr't stable or b) arn't in the jet
+				# ====  old way
+				#if (numberOfDaughtersAParticleHas[iPart] != 0):
+				#	continue
+				# ===
+				if (tree.GenParticles_Status[iPart] != 1):
 					continue
 				if (genParticleInAK8Jet[iPart] != iJet):
 					continue
-				# right now, we have all particles that are final state and in the jet
+				# right now, we have all particles that are stable and in the jet
 				# so we want to fill our pseudoGenJets:
-				pGJ_all += tree.GenParticles[iPart]
-				if abs(tree.GenParticles_PdgId[iPart] < 4900000): # visible
-					pGJ_vis += tree.GenParticles[iPart]
-				else: # invisible
-					pGJ_inv = pGJ_inv + tree.GenParticles[iPart]
-				# now, we want to ignore any particle that isn't from an HVQuark:
-				if (genParticleIsFromHVQuark[iPart] != 1):
-					continue
-				if abs(tree.GenParticles_PdgId[iPart]) < 4900000: # finally, ignore all invisible particles
+				pGJ_all = pGJ_all + tree.GenParticles[iPart]
+				if abs(tree.GenParticles_PdgId[iPart]) < 4900000: #visible particles
+					pGJ_vis = pGJ_vis + tree.GenParticles[iPart]
 					numSMPartsInJet[iJet] += 1
 					totalPt += tree.GenParticles[iPart].Pt()
-					if genParticleIsFromHVQuark[iPart] == 1.:
+					vectorPt = vectorPt + tree.GenParticles[iPart]
+					if genParticleIsFromHVQuark[iPart] == 1.: # isolate particles from HVQuarks
 						HVPt += tree.GenParticles[iPart].Pt()
-				else:
+						HVvecPt = HVvecPt + tree.GenParticles[iPart]
+				else:# invisible
 					numHVPartsInJet[iJet] += 1
+					pGJ_inv = pGJ_inv + tree.GenParticles[iPart]
 			try:
-				fracPtFromHVQuarks[iJet] = HVPt/totalPt
+				fracPtFromHVQuarks[iJet] = float(HVPt)/float(totalPt)
+				fracPtFromHVQuarks_vector[iJet] = float(HVvecPt.Pt())/float(vectorPt.Pt())
 			except ZeroDivisionError:
-				fracPtFromHVQuarks[iJet] = -1
+				fracPtFromHVQuarks[iJet] = -1.
+				fracPtFromHVQuarks_vector[iJet] = -1.
 			pGJ_visible[iJet] = pGJ_vis.Pt()
 			pGJ_invis[iJet] = pGJ_inv.Pt()
 			pGJ_every[iJet] = pGJ_all.Pt()
