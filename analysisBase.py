@@ -1,8 +1,9 @@
 # base class for FAnalysis, copied from Lucien Lo's PFG HcalTupleAnalyzer, adapted to python
 import ROOT as rt
 class baseClass:
-	def __init__(self, fileList, treeList, rootDir, outFileName):
-		self.fileList = fileList # list of ROOT files to read
+	def __init__(self, fileID, treeList, rootDir, outFileName):
+		#self.fileList = fileList # .py file of dictoary
+		self.fileID = fileID
 		self.treeList = treeList # list of Tree names in each ROOT file
 		self.outFileName = outFileName
 		self.objects = []
@@ -12,12 +13,13 @@ class baseClass:
 		self.loadOutFile()
 
 	def loadFileList(self):
-		inFile = open("input_conf/"+self.fileList)
+		from input_conf.inputRoot import fileDict
 		self.inputFileList = []
-		for line in inFile:
-			self.inputFileList.append(line[:-1])#ignore new line character
-		inFile.close()
-
+		try:
+			self.inputFileList.append(fileDict[self.fileID])#ignore new line character
+		except KeyError:
+			exit("Key does not exist in dictonary")
+			
 	def loadTreeList(self):
 		treeFile = open("input_conf/"+self.treeList)
 		self.treeNameList = []
@@ -26,7 +28,10 @@ class baseClass:
 		treeFile.close()
 
 	def loadOutFile(self):
-		self.outRootFile = rt.TFile.Open(self.extraDir+self.outFileName, 'RECREATE')
+		self.outRootFile = rt.TFile.Open(
+			self.extraDir+self.outFileName,
+			'RECREATE'
+			)
 		
 	def getChain(self, tree_name):
 		chain = rt.TChain(tree_name)
@@ -67,7 +72,11 @@ class baseClass:
 	def write(self):
 		self.outRootFile.cd()
 		for thing in self.objects:
-			thing.Write()
+			try:
+				thing.Write()
+				print("Object {} has been written".format(thing.GetName()))
+			except AttributeError:
+				print("Object {} cannot be written!".format(thing))
 
 	def selfprint(self):
 		print("------------------------")
