@@ -160,7 +160,7 @@ def loop(self):
 		FSRJets = []
 		FSRIndex = []
 		for iJet in range(nJets):
-			if not tree.JetsAK8_isISR[iJet]:
+			if tree.JetsAK8_isHV[iJet]:
 				FSRJets.append(tree.JetsAK8[iJet])
 				FSRIndex.append(iJet)
 		MTFSR = trans_mass_Njet(FSRJets, tree.MET, tree.METPhi)

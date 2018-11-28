@@ -137,16 +137,16 @@ def loop(self):
 		var3 = tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt()/allJetsPt
 		var4 = tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt()/lead3JetsPt
 
-		if ((not tree.JetsAK8_isISR[0]) and
-				(not tree.JetsAK8_isISR[1]) and
-				(tree.JetsAK8_isISR[2])):
+		if ((tree.JetsAK8_isHV[0]) and
+				(tree.JetsAK8_isHV[1]) and
+				(not tree.JetsAK8_isHV[2])):
 			hist_2_var1.Fill(var1)
 			hist_2_var2.Fill(var2)
 			hist_2_var3.Fill(var3)
 			hist_2_var4.Fill(var4)
-		elif ((not tree.JetsAK8_isISR[0]) and
-				(not tree.JetsAK8_isISR[1]) and
-				(not tree.JetsAK8_isISR[2])):
+		elif ((tree.JetsAK8_isHV[0]) and
+				(tree.JetsAK8_isHV[1]) and
+				(tree.JetsAK8_isHV[2])):
 			hist_3_var1.Fill(var1)
 			hist_3_var2.Fill(var2)
 			hist_3_var3.Fill(var3)
