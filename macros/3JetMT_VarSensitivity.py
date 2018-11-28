@@ -32,7 +32,7 @@ def loop(self):
 	#tree.SetBranchStatus("genParticleIsFromHVQuark",1)
 	#tree.SetBranchStatus("numberOfDaughtersAParticleHas",1)
 	tree.SetBranchStatus("fracPtFromHVQuarks",1)
-	tree.SetBranchStatus("fracPtFromHVQuarks_vector",1)
+	#tree.SetBranchStatus("fracPtFromHVQuarks_vector",1)
 	tree.SetBranchStatus("numHVPartsInJet",1)
 	tree.SetBranchStatus("numSMPartsInJet",1)
 	tree.SetBranchStatus("iJetMaxDeltaPhi",1)
@@ -63,16 +63,6 @@ def loop(self):
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_7Jets", "Events with 7 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 7, 0, 7, 100, -.01, 1.01))
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_8Jets", "Events with 8 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 8, 0, 8, 100, -.01, 1.01))
 	histList_2d_iJetvsFracPt.append(self.makeTH2F("hist_iJetvsFracPt_9Jets", "Events with 9 Jets;Jet Number;Fraction of Pt from Visible HV Decendants", 9, 0, 9, 100, -.01, 1.01))
-	#Step 1, make iJet vs FracPt for events with nJets, but with vectorixed fracPt
-	histList_2d_iJetvsFracPt_vec = [0,0]
-	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_2Jets_vec", "Events with 2 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 2, 0, 2, 100, -.01, 1.01))
-	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_3Jets_vec", "Events with 3 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 3, 0, 3, 100, -.01, 1.01))
-	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_4Jets_vec", "Events with 4 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 4, 0, 4, 100, -.01, 1.01))
-	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_5Jets_vec", "Events with 5 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 5, 0, 5, 100, -.01, 1.01))
-	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_6Jets_vec", "Events with 6 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 6, 0, 6, 100, -.01, 1.01))
-	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_7Jets_vec", "Events with 7 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 7, 0, 7, 100, -.01, 1.01))
-	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_8Jets_vec", "Events with 8 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 8, 0, 8, 100, -.01, 1.01))
-	histList_2d_iJetvsFracPt_vec.append(self.makeTH2F("hist_iJetvsFracPt_9Jets_vec", "Events with 9 Jets_vec;Jet Number;Fraction of Pt from Visible HV Decendants", 9, 0, 9, 100, -.01, 1.01))
 
 	hist_2d_iJetvsNumHVParts = self.makeTH2F("hist_2d_iJetvsNumHVParts","All events;iJet;Num HV Parts",6,0,6,25,0,25)
 	hist_2d_NumHVPartsvsFracPt = self.makeTH2F("hist_2d_NumHVPartsvsFracPt", "All Events;Num HV;FracPt", 25,0,25,100,-0.01,1.01)
@@ -85,6 +75,10 @@ def loop(self):
 	hist_MTcut = self.makeTH1F("hist_MTcut","'true' MT;MT;count/a.u.",100,0,4000)
 	for cutVal in cutFractions:
 		histList_MTcut.append(self.makeTH1F("hist_MT2jet_"+str(cutVal),"2jet MT;MT;count/a.u.",100,0,4000))
+	#histList_MTcut_vector = []
+	#hist_MTcut_vector = self.makeTH1F("hist_MTcut_vector","'true' MT;MT;count/a.u.",100,0,4000)
+	#for cutVal in cutFractions:
+	#	histList_MTcut_vector.append(self.makeTH1F("hist_MT2jet_vector_"+str(cutVal),"2jet MT;MT;count/a.u.",100,0,4000))
 
 	# step 3, plot of 'variables of interest'
 	# SDVar for various jets
@@ -106,6 +100,9 @@ def loop(self):
 	hist_ptFracJet3_vs_SDVar23 = self.makeTH2F("ist_ptFracJet3_vs_SDVar23","pTFrac of Jet 3 vs SDVar23;ptFrac;SDVar",100,-.01,1.01,100,0,0.5)
 	hist_ptFracJet3_vs_jetPtMaxdPhi = self.makeTH2F("ist_ptFracJet3_vs_jetPtMaxdPhi","pTFrac of Jet 3 vs jetPt(maxdPhi);ptFrac;pT",100,-.01,1.1,100,0,2000)
 
+	#fracPtFromQuarks scalar vs vector
+	hist_2d_fracPtvsFracPt = self.makeTH2F("hist_2d_fracPtvsfracPt","ptFracvspTFrac;Scalar;Vector",100,-0.01,1.01,100,-0.01,1.01)
+
 	for iEvent in range(nEvents):
 		if iEvent%1000 == 0:
 			print(str(iEvent)+"/"+str(nEvents))
@@ -118,7 +115,7 @@ def loop(self):
 				hist_GenJets_Pt.Fill(gJet.Pt())
 			for iJet in range(nJets):
 				histList_2d_iJetvsFracPt[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks[iJet])
-				histList_2d_iJetvsFracPt_vec[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks_vector[iJet])
+				#histList_2d_iJetvsFracPt_vec[nJets].Fill(iJet+0.5, tree.fracPtFromHVQuarks_vector[iJet])
 				hist_2d_iJetvsNumHVParts.Fill(iJet,tree.numHVPartsInJet[iJet])
 				hist_2d_NumHVPartsvsFracPt.Fill(tree.numHVPartsInJet[iJet],tree.fracPtFromHVQuarks[iJet])
 				hist_pGJ_visPt.Fill(tree.pGJ_visible[iJet])
@@ -126,6 +123,7 @@ def loop(self):
 				hist_pGJ_allPt.Fill(tree.pGJ_every[iJet])
 				hist_AK8_Pt.Fill(tree.JetsAK8[iJet].Pt())
 				hist_2d_pGJvisvsAK8.Fill(tree.pGJ_visible[iJet],tree.JetsAK8[iJet].Pt())
+				#hist_2d_fracPtvsFracPt.Fill(tree.fracPtFromHVQuarks[iJet],tree.fracPtFromHVQuarks_vector[iJet])
 			hist_MTLead2.Fill(trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1]], met, metPhi))
 			if nJets == 2:
 				jetsToUse = 2
@@ -151,8 +149,7 @@ def loop(self):
 				hist_ptFracJet3_vs_SDVar12.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[1].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[1].Pt()))
 				hist_ptFracJet3_vs_SDVar13.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[2].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[2].Pt()))
 				hist_ptFracJet3_vs_SDVar23.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[2].Pt()/(tree.JetsAK8[1].Pt()+tree.JetsAK8[2].Pt()))
-				hist_ptFracJet3_vs_jetPtMaxdPhi.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt())
-				
+				hist_ptFracJet3_vs_jetPtMaxdPhi.Fill(tree.fracPtFromHVQuarks[2],tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt())	
 			for iCut in range(len(cutFractions)):
 				jetsForMt = []
 				cutVal = cutFractions[iCut]
@@ -164,17 +161,39 @@ def loop(self):
 						jetsForMt.append(tree.JetsAK8[0])
 					if tree.fracPtFromHVQuarks[1] > 0.0:
 						jetsForMt.append(tree.JetsAK8[1])
-					if tree.fracPtFromHVQuarks[2] >= cutVal:
+					if tree.fracPtFromHVQuarks[2] > cutVal:
 						jetsForMt.append(tree.JetsAK8[2])
 				histList_MTcut[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
-	
+				# === vecotrizing pt doesnt help
+				#jetsForMt = []
+				#if nJets == 2:
+				#	jetsForMt.append(tree.JetsAK8[0])
+				#	jetsForMt.append(tree.JetsAK8[1])
+				#else:
+				#	if tree.fracPtFromHVQuarks_vector[0] > 0.0:
+				#		jetsForMt.append(tree.JetsAK8[0])
+				#	if tree.fracPtFromHVQuarks_vector[1] > 0.0:
+				#		jetsForMt.append(tree.JetsAK8[1])
+				#	if tree.fracPtFromHVQuarks_vector[2] > cutVal:
+				#		jetsForMt.append(tree.JetsAK8[2])
+				#histList_MTcut_vector[iCut].Fill(trans_mass_Njet(jetsForMt, met, metPhi))
+				# ===
+			
 	print("No cut has Resolution " + str(hist_MTLead2.GetRMS()/hist_MTLead2.GetMean()))
+	print("Scalar pT")
 	for histo in histList_MTcut:
 		try:
 			print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
 		except ZeroDivisionError:
 			print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
+	#print("Vector Pt")
+	#for histo in histList_MTcut_vector:
+	#	try:
+	#		print("Cut at " + histo.GetName()[-3:] + " Resolution is " + str(histo.GetRMS()/histo.GetMean()))
+	#	except ZeroDivisionError:
+	#		print("Cut at " + histo.GetName()[-3:] + " Resolution is NULL")
 	# optimal MT resolution is found at a cutVal of .2. So, for all events with 3 or more jets, if jet 3 has ptFrac > .2, include it. THIS IS FOR BASELINE
+	# Also, 'vectorizing' the ptFrac doesn't change anything.
 					
 
 
