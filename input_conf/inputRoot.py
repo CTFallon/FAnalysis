@@ -13,7 +13,6 @@ fileDict = {
 "rinv0":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-20_rinv-0_alpha-peak_n-1000_0_RA2AnalysisTree.root",
 "rinv1":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-20_rinv-0p1_alpha-peak_n-1000_0_RA2AnalysisTree.root",
 "rinv2":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-20_rinv-0p2_alpha-peak_n-1000_0_RA2AnalysisTree.root",
-"rinv3":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-20_rinv-0p3_alpha-peak_n-1000_0_RA2AnalysisTree.root",
 "rinv4":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-20_rinv-0p4_alpha-peak_n-1000_0_RA2AnalysisTree.root",
 "rinv5":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-20_rinv-0p5_alpha-peak_n-1000_0_RA2AnalysisTree.root",
 "rinv6":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-20_rinv-0p6_alpha-peak_n-1000_0_RA2AnalysisTree.root",
@@ -22,5 +21,6 @@ fileDict = {
 "rinv9":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-20_rinv-0p9_alpha-peak_n-1000_0_RA2AnalysisTree.root",
 "rinv10":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-20_rinv-1_alpha-peak_n-1000_0_RA2AnalysisTree.root",
 "md50":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-50_rinv-0p3_alpha-peak_n-1000_0_RA2AnalysisTree.root",
-"md5":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-5_rinv-0p3_alpha-peak_n-1000_0_RA2AnalysisTree.root"
+"md5":"root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-5_rinv-0p3_alpha-peak_n-1000_0_RA2AnalysisTree.root",
+"etaPhiAran":"root://cmseos.fnal.gov//store/user/cfallon/custNtup/PrivateSamples.SVJ_mZprime-3000_mDark-20_rinv-0p3_alpha-0p2_n-1000_0_RA2AnalysisTree.root"
 }

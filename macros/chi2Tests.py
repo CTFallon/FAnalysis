@@ -60,23 +60,32 @@ def loop(self):
 	histList_sdvar13 = []
 	histList_jetPtMaxDPhi = []
 
-	if self.extraDir[-3] == "p":
+	print(self.fileID[:2])
+	print(self.fileID[-1:])
+	print(self.fileID[-2:])
+
+	if self.fileID[:2] == "mz":
+		if self.fileID[-1] == "5":
+			zMass = int(self.fileID[-2:])*100
+		else:
+			zMass = int(self.fileID[-1:])*1000
+	else:	
 		zMass = 3000
-	else:
-		zMass = int(self.extraDir[-5])*1000
+	print("zMass is {}".format(zMass))
+	zMass = 2500
 	
-	nMTBins = 250
+	nMTBins = 100
 	hist_MT_FSR = self.makeTH1F("hist_MT_FSR","FSR Truth;MT;",nMTBins,0,2*zMass)
 	hist_MT_Dijet = self.makeTH1F("hist_MT_Dijet","Dijet;MT;",nMTBins,0,2*zMass)
 	hist_MT_Trijet = self.makeTH1F("hist_MT_Trijet","Trijet;MT;",nMTBins,0,2*zMass)
-	hist_chi2_SDvar13 = self.makeTH1F("hist_chi2_SDVar13","chi2;SDvar13;Chi2",100,0,0.5)
-	hist_chi2_jetPtMaxDPhi = self.makeTH1F("hist_chi2_jetPtMaxDPhi","chi2;jetPtMaxDPhi;Chi2",100,0,2000)
+	hist_chi2_SDvar13 = self.makeTH1F("hist_chi2_SDVar13","\chi^{2};SDvar13;\chi^{2}",100,0,0.5)
+	hist_chi2_jetPtMaxDPhi = self.makeTH1F("hist_chi2_jetPtMaxDPhi","\chi^{2};jetPtMaxDPhi;\chi^{2}",100,0,2000)
 	hist_KS_SDvar13 = self.makeTH1F("hist_KS_SDVar13","KS;SDvar13;KS",100,0,0.5)
 	hist_KS_jetPtMaxDPhi = self.makeTH1F("hist_KS_jetPtMaxDPhi","KS;jetPtMaxDPhi;KS",100,0,2000)
-	hist_Reso_SDvar13 = self.makeTH1F("hist_Reso_SDVar13","Reso;SDvar13;Reso",99,0,0.5)
-	hist_Reso_jetPtMaxDPhi = self.makeTH1F("hist_Reso_jetPtMaxDPhi","Reso;jetPtMaxDPhi;Reso",99,0,2000)
+	hist_Reso_SDvar13 = self.makeTH1F("hist_Reso_SDVar13","MTResoultion;SDvar13;MTResoultion",99,0,0.5)
+	hist_Reso_jetPtMaxDPhi = self.makeTH1F("hist_Reso_jetPtMaxDPhi","MTResoultion;jetPtMaxDPhi;MTResoultion",99,0,2000)
 	hist_DKL_SDvar13 = self.makeTH1F("hist_DKL_SDvar13","DKL;SDvarCut;DKL",100,0,0.5)
-	hist_DKL_jetPtMaxDPhi = self.makeTH1F("hist_DKL_jetPtMaxDPhi","DKL",100,0,2000)
+	hist_DKL_jetPtMaxDPhi = self.makeTH1F("hist_DKL_jetPtMaxDPhi","DKL;jetPtMaxDPhi;DKL",100,0,2000)
 	hist_pTP_SDvar13 = self.makeTH1F("hist_pTP_SDvar13","Percent True Positive;SDvar13;",100,0,0.5)
 	hist_pTN_SDvar13 = self.makeTH1F("hist_pTN_SDvar13","Percent True Negative;SDvar13;",100,0,0.5)
 	hist_pTP_jetPtMaxDPhi = self.makeTH1F("hist_pTP_jetPtMaxDPhi","Percent True Positive;jetPtMaxDPhi;",100,0,2000)
@@ -155,8 +164,11 @@ def loop(self):
 		# task1: make FOM curves for MT Resolution and Chi2Test w.r.t. FSR MT
 
 		nJets = len(tree.JetsAK8)
+		if nJets <= 2:
+			continue
+		
 		MT12 = trans_mass_Njet(tree.JetsAK8[0:2], tree.MET, tree.METPhi)
-
+		
 		FSRJets = []
 		FSRIndex = []
 		for iJet in range(nJets):
@@ -164,18 +176,9 @@ def loop(self):
 				FSRJets.append(tree.JetsAK8[iJet])
 				FSRIndex.append(iJet)
 		MTFSR = trans_mass_Njet(FSRJets, tree.MET, tree.METPhi)
-		#if nJets > 2:
 		hist_MT_FSR.Fill(MTFSR)
 		hist_MT_Dijet.Fill(MT12)
-
-		if nJets > 2:
-			if (0 in FSRIndex) and (1 in FSRIndex) and not (2 in FSRIndex):
-				nEventsFSR12 += 1
-			elif (0 in FSRIndex) and (1 in FSRIndex) and (2 in FSRIndex):
-				nEventsFSR123 += 1
-			else:
-				nEventsFSROther += 1
-
+		
 		if nJets == 2:
 			nEvents2Jets += 1
 			for histo in histList_sdvar13:
@@ -184,7 +187,15 @@ def loop(self):
 				histo.Fill(MT12)
 			hist_MT_Trijet.Fill(MT12)
 			hist_maxDPhiIndex_2jets.Fill([tree.DeltaPhi1, tree.DeltaPhi2].index(max(tree.DeltaPhi1, tree.DeltaPhi2)))
+
 		if nJets > 2:
+			if (0 in FSRIndex) and (1 in FSRIndex) and not (2 in FSRIndex):
+				nEventsFSR12 += 1
+			elif (0 in FSRIndex) and (1 in FSRIndex) and (2 in FSRIndex):
+				nEventsFSR123 += 1
+			else:
+				nEventsFSROther += 1
+			
 			MT123 = trans_mass_Njet(tree.JetsAK8[0:3], tree.MET, tree.METPhi)
 			hist_MT_Trijet.Fill(MT123)
 			sdvar13 = tree.JetsAK8[2].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[2].Pt())
@@ -226,7 +237,7 @@ def loop(self):
 					elif (0 in FSRIndex) and (1 in FSRIndex) and (2 in FSRIndex):
 						nTP_JPMDP[iHisto] += 1
 			hist2d_deltaMT_vs_JetPtMaxDPhi.Fill(MT123-MT12, jetPtMaxDPhi)
-
+			
 	for iHisto in range(len(histList_sdvar13)):
 		hist_chi2_SDvar13.SetBinContent(iHisto,hist_MT_FSR.Chi2Test(histList_sdvar13[iHisto]))
 		hist_KS_SDvar13.SetBinContent(iHisto,hist_MT_FSR.KolmogorovTest(histList_sdvar13[iHisto]))		
@@ -307,7 +318,7 @@ def loop(self):
 	hist_DKL_SDvar13.Draw()
 	c1.SaveAs(self.extraDir+"DKL_sdvar.png")
 
-
+	rt.gStyle.SetOptTitle(0)
 	hist_KS_SDvar13.SetLineColor(2)
 	tempMax = hist_KS_SDvar13.GetMaximum()
 	ksSDMaxBin = hist_KS_SDvar13.GetMaximumBin()
@@ -353,6 +364,8 @@ def loop(self):
 	#hist_pTN_SDvar13.SetLineColor(5)
 	#hist_pTN_SDvar13.Draw("same")
 	c1.BuildLegend(0.1,0.1,0.4,0.4)
+	t = rt.TLatex()
+	t.DrawLatex(0.15,1.05, "FOM Plot, SDvar13")
 	c1.SaveAs(self.extraDir+"FOM_sdvar13.png")
 
 
@@ -400,43 +413,44 @@ def loop(self):
 	#hist_pTN_jetPtMaxDPhi.SetLineColor(5)
 	#hist_pTN_jetPtMaxDPhi.Draw("same")
 	c1.BuildLegend(0.1,0.1,0.4,0.4)
+	t.DrawLatex(500,1.05, "FOM Plot, JetPtMaxDPhi")
 	c1.SaveAs(self.extraDir+"FOM_jetPtMaxDPhi.png")
 
 	#c1.SetLogy()
-	histList_jetPtMaxDPhi[ksPtMaxBin].SetLineColor(2)
-	histList_jetPtMaxDPhi[ksPtMaxBin].Draw()
-	histList_jetPtMaxDPhi[chi2PtMaxBin].SetLineColor(3)
-	histList_jetPtMaxDPhi[chi2PtMaxBin].Draw("same")
+	#histList_jetPtMaxDPhi[ksPtMaxBin].SetLineColor(2)
+	#histList_jetPtMaxDPhi[ksPtMaxBin].Draw()
+	#histList_jetPtMaxDPhi[chi2PtMaxBin].SetLineColor(3)
+	#histList_jetPtMaxDPhi[chi2PtMaxBin].Draw("same")
 	histList_jetPtMaxDPhi[resoPtMaxBin].SetLineColor(4)
-	histList_jetPtMaxDPhi[resoPtMaxBin].Draw("same")
+	histList_jetPtMaxDPhi[resoPtMaxBin].Draw()
 	hist_MT_Dijet.SetLineColor(1)
 	hist_MT_Dijet.SetLineStyle(2)
 	hist_MT_Dijet.Draw('same')
-	hist_MT_Trijet.SetLineColor(1)
+	hist_MT_Trijet.SetLineColor(2)
 	hist_MT_Trijet.SetLineStyle(3)
 	hist_MT_Trijet.Draw('same')
-	hist_MT_FSR.SetLineColor(1)
+	hist_MT_FSR.SetLineColor(3)
 	hist_MT_FSR.SetLineStyle(4)
 	hist_MT_FSR.Draw("same")
-	c1.BuildLegend(0.0,0.7,0.3,0.9)
+	c1.BuildLegend(0.8,0.7,1.0,0.9)
 	c1.SaveAs(self.extraDir+"MTDistro_jetPtOptimal.png")
 
-	histList_sdvar13[ksSDMaxBin].SetLineColor(2)
-	histList_sdvar13[ksSDMaxBin].Draw()
-	histList_sdvar13[chi2SDMaxBin].SetLineColor(3)
-	histList_sdvar13[chi2SDMaxBin].Draw("same")
+	#histList_sdvar13[ksSDMaxBin].SetLineColor(2)
+	#histList_sdvar13[ksSDMaxBin].Draw()
+	#histList_sdvar13[chi2SDMaxBin].SetLineColor(3)
+	#histList_sdvar13[chi2SDMaxBin].Draw("same")
 	histList_sdvar13[resoSDMaxBin].SetLineColor(4)
-	histList_sdvar13[resoSDMaxBin].Draw("same")
+	histList_sdvar13[resoSDMaxBin].Draw()
 	hist_MT_Dijet.SetLineColor(1)
 	hist_MT_Dijet.SetLineStyle(2)
 	hist_MT_Dijet.Draw('same')
-	hist_MT_Trijet.SetLineColor(1)
+	hist_MT_Trijet.SetLineColor(2)
 	hist_MT_Trijet.SetLineStyle(3)
 	hist_MT_Trijet.Draw('same')
-	hist_MT_FSR.SetLineColor(1)
+	hist_MT_FSR.SetLineColor(3)
 	hist_MT_FSR.SetLineStyle(4)
 	hist_MT_FSR.Draw("same")
-	c1.BuildLegend(0.0,0.7,0.3,0.9)
+	c1.BuildLegend(0.8,0.7,1.0,0.9)
 	c1.SaveAs(self.extraDir+"MTDistro_sdVar13Optimal.png")
 
 	hist2d_SDVar13_vs_JetPtMaxDPhi.Draw("colz")

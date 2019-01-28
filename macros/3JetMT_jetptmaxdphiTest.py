@@ -6,16 +6,6 @@ from array import array
 rt.gROOT.SetBatch(True)
 rt.gStyle.SetOptTitle(1)
 tdrstyle.setTDRStyle()
-# macro to look at how using the ratio of pT from a jet can be used to 
-# discriminate against FSRvsISR jets
-
-# ideas:
-	# numerator:
-		# jet pT (max dPhi)
-		# jet0 pT
-	# denominators:
-		# scalar sum of pT's of leading 3 jets
-		# scalar sum of all jets pT's
 
 def loop(self):
 	# set up trees
@@ -69,67 +59,85 @@ def loop(self):
 	# initalize histograms to be made, or create Friend tree to be filled
 	self.outRootFile.cd()
 
-	# var4 - jetMaxDPhi/3Jets
+	#histograms of njets ==2, maxdphi index and maxdphiPt
+	hist_2Jets_mDPhiIndex = self.makeTH1F("hist_2Jets_mDPhiIndex",
+		"Index of MaxDPhi Jet, events with only 2 jets;Index;Count",2,0,2)
+	hist_2Jets_ptMaxDPhi = self.makeTH1F("hist_2Jets_ptMaxDPhi",
+		"Pt of MaxDPhi Jet, events with only 2 jets;pT;count",100,0,2000)
 
+	hist_2Jets_jetPt = self.makeTH1F("hist_2Jets_jetPt",
+		"Jet Pt of all HV Jets, events with only 2 jets; pT; count",
+		100,0,2000)
+		
+	hist_3Jets_jetPt_HV = self.makeTH1F("hist_3Jets_jetPt_HV",
+		"Jet Pt of all HV jets in events with 3 or more jets;pt;count",
+		100,0,2000)
 
-	hist_2_var4 = self.makeTH1F("hist_2_var4",
-		"True Dijet PtFraction MaxDPhi Jet / Leading 3 Jets",
-		100,-0.01,0.85)
-	hist_3_var4 = self.makeTH1F("hist_3_var4",
-		"True Trijet PtFraction MaxDPhi Jet / Leading 3 Jets",
-		100,-0.01,0.85)
-	hist_o_var4 = self.makeTH1F("hist_o_var4",
-		"True Other PtFraction MaxDPhi Jet / Leading 3 Jets",
-		100,-0.01,0.85)
-	hist_eventMTcat = self.makeTH1F("hist_eventMTcat",
-		"MT Category of Events",
-		5,0,5)
+	hist_3Jets_jetPt_notHV = self.makeTH1F("hist_3Jets_jetPt_notHV",
+		"Jet Pt of non-HV jets in events with 3 or more jets;pt;count",
+		100,0,2000)
 
-
+	hist_2Jets_deltaPhi = self.makeTH1F("hist_2Jets_deltaPhi",
+		"DeltaPhi of all HV Jets, events with only 2 jets; deltaPhi; count",
+		100,0,rt.TMath.Pi())
+	hist_3Jets_deltaPhi_HV = self.makeTH1F("hist_3Jets_deltaPhi_HV",
+		"deltaPhi of all HV jets in events with 3;deltaPhi;count",
+		100,0,rt.TMath.Pi())
+	hist_3Jets_deltaPhi_notHV = self.makeTH1F("hist_3Jets_deltaPhi_notHV",
+		"deltaPhi of non-HV jets in events with 3;deltaPhi;count",
+		100,0,rt.TMath.Pi())
+	
 	for iEvent in range(nEvents):
 		if iEvent%1000 == 0:
 			print("Event: " + str(iEvent) + "/" + str(nEvents))
 		tree.GetEvent(iEvent)
 		if tree.passedPreSelection != 1: # skip events that failed preSelection
-			hist_eventMTcat.Fill(0)
 			continue
 		# the above means that each event has at least 2 AK8 jets above 170 GeV
 		# and has zero leptons, with MET/MT above 0.15
 
-		if len(tree.JetsAK8) < 3:
-			hist_eventMTcat.Fill(1)
-			continue
+		nJets = len(tree.JetsAK8)
+		if nJets == 2:
+			hist_2Jets_mDPhiIndex.Fill(tree.iJetMaxDeltaPhi)
+			hist_2Jets_ptMaxDPhi.Fill(tree.pTMaxDeltaPhi)
+			for iJet in range(2):
+				if bool(tree.JetsAK8_isHV[iJet]):
+					hist_2Jets_jetPt.Fill(tree.JetsAK8[iJet].Pt())
+					if iJet == 0:
+						hist_2Jets_deltaPhi.Fill(tree.DeltaPhi1)
+					if iJet == 1:
+						hist_2Jets_deltaPhi.Fill(tree.DeltaPhi2)
+		else:
+			for iJet in range(nJets):
+				if bool(tree.JetsAK8_isHV[iJet]):
+					hist_3Jets_jetPt_HV.Fill(tree.JetsAK8[iJet].Pt())
+					if iJet == 0:
+						hist_3Jets_deltaPhi_HV.Fill(tree.DeltaPhi1)
+					if iJet == 1:
+						hist_3Jets_deltaPhi_HV.Fill(tree.DeltaPhi2)
+					if iJet == 2:
+						hist_3Jets_deltaPhi_HV.Fill(tree.DeltaPhi3)
+				else:
+					hist_3Jets_jetPt_notHV.Fill(tree.JetsAK8[iJet].Pt())
+					if iJet == 0:
+						hist_3Jets_deltaPhi_notHV.Fill(tree.DeltaPhi1)
+					if iJet == 1:
+						hist_3Jets_deltaPhi_notHV.Fill(tree.DeltaPhi2)
+					if iJet == 2:
+						hist_3Jets_deltaPhi_notHV.Fill(tree.DeltaPhi3)
 
-		allJetsPt = 0
-		lead3JetsPt = 0
-		for iJet in range(len(tree.JetsAK8)):
-			allJetsPt += tree.JetsAK8[iJet].Pt()
-			if iJet <= 2:
-				lead3JetsPt += tree.JetsAK8[iJet].Pt()
-		var4 = tree.JetsAK8[tree.iJetMaxDeltaPhi].Pt()/lead3JetsPt
-
-		if not tree.JetsAK8_isHV[2]:
-			hist_eventMTcat.Fill(2)
-			hist_2_var4.Fill(var4)
-		elif tree.JetsAK8_isHV[2]:
-			hist_eventMTcat.Fill(3)
-			hist_3_var4.Fill(var4)
-
-
-	makePlot([hist_2_var4, hist_3_var4],self.extraDir,"mdphiOver3","PtFraction (Jet Max DPhi / Leading 3 Jets);Fraction;Count")
-
-
-	hist_2_var4.Scale(1/hist_2_var4.Integral())
-	hist_3_var4.Scale(1/hist_3_var4.Integral())
-	
-
-	makePlot([hist_2_var4, hist_3_var4],self.extraDir,"mdphiOver3_NORM","PtFraction (Jet Max DPhi / Leading 3 Jets);Fraction;a.u.")
-	hist_eventMTcat.GetXaxis().SetBinLabel(1, "failed")
-	hist_eventMTcat.GetXaxis().SetBinLabel(2, "only 2 jets")
-	hist_eventMTcat.GetXaxis().SetBinLabel(3, "dijet MT")
-	hist_eventMTcat.GetXaxis().SetBinLabel(4, "trijet MT")
-	hist_eventMTcat.GetXaxis().SetBinLabel(5, "other MT")
-	makePlot([hist_eventMTcat],self.extraDir,"eventMTcat","Event MT Category;Category;Count", logY= True)
+	makePlot(
+		[hist_2Jets_jetPt,hist_3Jets_jetPt_HV,hist_3Jets_jetPt_notHV],
+		self.extraDir,
+		"jetPts",
+		"Pt of Jets;pT;count",logY=True
+		)
+	makePlot(
+		[hist_2Jets_deltaPhi,hist_3Jets_deltaPhi_HV,hist_3Jets_deltaPhi_notHV],
+		self.extraDir,
+		"deltaPhis",
+		"Deltaphi of Jets;deltaphi;count",logY=True
+		)
 	
 
 def addLoop():
@@ -157,6 +165,7 @@ def makePlot(ListOfHistos, location, name, stackTitle, logY = False, gs = False)
 		c1.BuildLegend()
 	else:
 		stack.Draw("hist TEXT0")
+	stack.SetTitle(stackTitle[0])
 	stack.GetXaxis().SetTitle(stackTitle[1])
 	stack.GetYaxis().SetTitle(stackTitle[2])
 	rt.gPad.Modified()

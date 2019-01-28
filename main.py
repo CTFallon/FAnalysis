@@ -19,12 +19,13 @@ tm.addLoop()
 # arguments
 # [0] main.py
 # [1] macro name/path that has the loop function
-# [2] unique identifier for subject dataset
-# [3] list of tree names
-# [4] directory name for extra root fileshttps://stackoverflow.com/questions/17255737/importing-variables-from-another-file
-# [5] outputFile name/path
-# python main.py <macro>.py <inputFiles>.py <fileID> <inputTrees>.txt 
-#        <dir> <outputName>
+# [2] input files
+# [3] unique identifier for subject dataset
+# [4] list of tree names
+# [5] directory name for extra root files https://stackoverflow.com/questions/17255737/importing-variables-from-another-file
+# [6] outputFile name
+# python main.py <macro>.py <fileID> <inputTrees>.txt <dir> <outputName>
+
 #for iArg in range(len(sys.argv)):
 #	print(str(iArg), sys.argv[iArg])
 

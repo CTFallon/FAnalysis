@@ -24,6 +24,7 @@ def loop(self):
 	tree.SetBranchStatus("RunNum",1)
 	tree.SetBranchStatus("EvtNum",1)
 	tree.SetBranchStatus("*AK8*", 1)
+	tree.SetBranchStatus("Jets",1)
 	#tree.SetBranchStatus("*CA11*", 1)
 	tree.SetBranchStatus("DeltaPhi*", 1)
 	tree.SetBranchStatus("MET",1)
@@ -37,7 +38,7 @@ def loop(self):
 	#tree.SetBranchStatus("numGenParts",1)
 	#tree.SetBranchStatus("genParticleInAK8Jet",1)
 	tree.SetBranchStatus("genParticleIsFromHVQuark",1)
-	#tree.SetBranchStatus("numberOfDaughtersAParticleHas",1)
+	tree.SetBranchStatus("numberOfDaughtersAParticleHas",1)
 	#tree.SetBranchStatus("fracPtFromHVQuarks",1)
 	tree.SetBranchStatus("numHVPartsInJet",1)
 	tree.SetBranchStatus("numSMPartsInJet",1)
@@ -61,6 +62,8 @@ def loop(self):
 	self.outRootFile.cd()
 	nPass = 0
 	for iEvent in range(nEvents):
+		if nPass > 50:
+			continue
 		if iEvent%1000 == 0:
 			print("Event: " + str(iEvent) + "/" + str(nEvents))
 		tree.GetEvent(iEvent)
@@ -69,38 +72,66 @@ def loop(self):
 		# the above means that each event has at least 2 AK8 jets above 170 GeV
 		# and has zero leptons, with MET/MT above 0.15
 
+		nJetsHV = 0
+		for i in range(len(tree.JetsAK8)):	
+			nJetsHV += int(bool(tree.JetsAK8_isHV[i]))
+		#if nJetsHV > 1:
+		#	continue
+		if not (len(tree.JetsAK8) > 2 and bool(tree.JetsAK8_isHV[2]) == True):
+			continue
 		nPass += 1
-		if nPass < 50:
-			#partsList = []
-			#partsListPdgId = []
-			#partsListisFromHVQuark = []
-			#for iPart in range(len(tree.GenParticles)):
-			#	if (tree.GenParticles_Status[iPart] == 1) or (abs(tree.GenParticles_PdgId[iPart]) == 4900101):
-			#		partsList.append(tree.GenParticles[iPart])
-			#		partsListPdgId.append(tree.GenParticles_PdgId[iPart])
-			#		partsListisFromHVQuark.append(tree.genParticleIsFromHVQuark[iPart])
-			#drawEventEtaPhiPlot(
-			#	tree.JetsAK8,
-			#	partsList,
-			#	partsListPdgId,
-			#	tree.METPhi,
-			#	partsListisFromHVQuark,
-			#	self.extraDir, nPass+100)
-			drawEventEtaPhiPlot(
-				tree.JetsAK8,
-				tree.GenParticles,
-				tree.GenParticles_PdgId,
-				tree.METPhi,
-				tree.genParticleIsFromHVQuark,
-				self.extraDir, nPass)
-	
+		partsList = []
+		partsListPdgId = []
+		partsListisFromHVQuark = []
+		HVQparts = []
+		for iPart in range(len(tree.GenParticles)):
+			if (  
+				( (tree.numberOfDaughtersAParticleHas[iPart] == 0) and (abs(tree.GenParticles_PdgId[iPart]) != 4900101)) or
+				( (abs(tree.GenParticles_PdgId[iPart]) == 4900101) and (tree.GenParticles_Status[iPart] == 71) )
+				):
+				partsList.append(tree.GenParticles[iPart])
+				partsListPdgId.append(tree.GenParticles_PdgId[iPart])
+				partsListisFromHVQuark.append(tree.genParticleIsFromHVQuark[iPart])
+			if ( ( abs( tree.GenParticles_PdgId[iPart] ) == 4900101 ) and ( tree.GenParticles_Status[iPart] == 71 ) ):
+				HVQparts.append(tree.GenParticles[iPart])
+		drawEventEtaPhiPlot(
+			tree.JetsAK8,
+			tree.JetsAK8_isHV,
+			partsList,
+			partsListPdgId,
+			tree.METPhi,
+			partsListisFromHVQuark,
+			self.extraDir+"/etaPhi", str(nPass)+"_prunedGen")
+		#drawEventEtaPhiPlot(
+		#	tree.JetsAK8,
+		#	tree.JetsAK8_isHV,
+		#	tree.GenParticles,
+		#	tree.GenParticles_PdgId,
+		#	tree.METPhi,
+		#	tree.genParticleIsFromHVQuark,
+		#	self.extraDir+"/etaPhi", str(nPass)+"_allGen")
+		drawEventEtaPhiPlot(
+			tree.JetsAK8,
+			tree.JetsAK8_isHV,
+			partsList,
+			partsListPdgId,
+			tree.METPhi,
+			partsListisFromHVQuark,
+			self.extraDir+"/etaPhi", str(nPass)+"_AK4", AK4Jets = tree.Jets)
+		preProcess(
+			tree.JetsAK8,
+			tree.JetsAK8_isHV,
+			tree.METPhi,
+			tree.MET,
+			HVQparts,
+			self.extraDir+"/etaPhi", str(nPass))
 
 def addLoop():
 	baseClass.loop = loop
 
-def drawEventEtaPhiPlot(jetCollectionAK8, partCol, particlePDGID,METPhi, isFromHVQuark, direc, plotNumber):
+def drawEventEtaPhiPlot(jetCollectionAK8, FSRJets, partCol, particlePDGID, METPhi, isFromHVQuark, direc, plotNumber, AK4Jets = []):
 	hozPix = 800
-	etaLim = 5.
+	etaLim = 4.
 	canv = rt.TCanvas("canv","canv",int(etaLim/rt.TMath.Pi()*hozPix),hozPix)
 	histAxis = rt.TH2F("axisHsito", ";\eta;\phi",100,-etaLim,etaLim,100,-rt.TMath.Pi(),rt.TMath.Pi())
 	histAxis.SetStats(False)
@@ -108,24 +139,29 @@ def drawEventEtaPhiPlot(jetCollectionAK8, partCol, particlePDGID,METPhi, isFromH
 	objectList = []
 	for iJet in range(len(jetCollectionAK8)):
 		objectList.append(rt.TEllipse(jetCollectionAK8[iJet].Eta(), jetCollectionAK8[iJet].Phi(), 0.8, 0.8))
-		objectList[-1].SetLineColor(iJet+1)
+		objectList[-1].SetLineColor(iJet+1) # jet color matches PT ordering
 		objectList[-1].SetLineWidth(2)
+		if not FSRJets[iJet]:
+			objectList[-1].SetLineStyle(2) # non-HV jets are dotted circles
+	if len(AK4Jets) > 0:
+		for iJet in range(len(AK4Jets)):
+			objectList.append(rt.TEllipse(AK4Jets[iJet].Eta(), AK4Jets[iJet].Phi(), 0.4, 0.4))
+			objectList[-1].SetLineColor(iJet+1) # jet color matches PT ordering
+			objectList[-1].SetLineWidth(2)
+			objectList[-1].SetLineStyle(3) # AK4 jets are finely dashed circles
 	for iPart in range(len(partCol)):
-		if abs(particlePDGID[iPart]) == 4900023:
-			continue
+		#if abs(particlePDGID[iPart]) == 4900023 or abs(particlePDGID[iPart]) == 4900021: # skip Z' and hv-gluons
+		#	continue
 		objectList.append(rt.TMarker(partCol[iPart].Eta(),partCol[iPart].Phi(),2))
 		objectList[-1].SetMarkerSize(2)
-		if abs(particlePDGID[iPart]) == 4900101:
-			objectList[-1].SetMarkerColor(3)
-			objectList[-1].SetMarkerStyle(22)
-			objectList[-1].SetMarkerSize(3)
-		#elif abs(particlePDGID[iPart]) == 4900023:
-		#	objectList[-1].SetMarkerStyle(43)
-		#	objectList[-1].SetMarkerSize(3)
-		elif abs(particlePDGID[iPart]) > 4900000:
-			objectList[-1].SetMarkerColor(2)
-		if isFromHVQuark[iPart]:
-			objectList[-1].SetMarkerStyle(5)
+		if isFromHVQuark[iPart]: # apply only to particles that are decedants of HV-quarks
+			objectList[-1].SetMarkerStyle(5) # make them X's
+		if abs(particlePDGID[iPart]) == 4900101: # apply only to the HV-quarks
+			objectList[-1].SetMarkerColor(3) # turn them green
+			objectList[-1].SetMarkerStyle(22) # make them triangles
+			objectList[-1].SetMarkerSize(3) # make them big
+		elif abs(particlePDGID[iPart]) > 4900000: # apply only to invisible partilces that arn't the HVquarks
+			objectList[-1].SetMarkerColor(2) # tuen them red
 	objectList.append(rt.TLine(-etaLim,METPhi,etaLim,METPhi))
 	objectList[-1].SetLineStyle(2)
 	objectList[-1].SetLineColor(4)
@@ -192,26 +228,57 @@ def drawEventEtaPhiPlot(jetCollectionAK8, partCol, particlePDGID,METPhi, isFromH
 	leg.AddEntry("legInvFSR","","p")
 	leg.AddEntry("legVisFSR","","p")
 	leg.AddEntry("legISR","","p")
-	""" #Two Columns
-	leg.AddEntry(rt.TObject(), "Jets","")
-	leg.AddEntry(rt.TObject(),"Particles","")
-	leg.AddEntry("leg1Jet","","l")
-	leg.AddEntry("legHVQ","","p")
-	leg.AddEntry("leg2Jet","","l")
-	leg.AddEntry("legInvFSR","","p")
-	if len(jetCollectionAK8) >= 3:
-		leg.AddEntry("leg3Jet","","l")
-	else:
-		leg.AddEntry(rt.TObject()," ","")
-	leg.AddEntry("legVisFSR","","p")
-	if len(jetCollectionAK8) >= 4:
-		leg.AddEntry("leg4Jet","","l")
-	else:
-		leg.AddEntry("legMET","","l")
-	leg.AddEntry("legISR","","p")
-	if len(jetCollectionAK8) >= 4:
-		leg.AddEntry("legMET","","l")
-	"""
 	leg.Draw()
 
-	canv.SaveAs(direc+"/etaPhi_"+str(plotNumber)+".png")
+	canv.SaveAs(direc+"/etaPhi_"+plotNumber+".png")
+
+def preProcess(jetCollectionAK8, FSRJets, METPhi, MET, partCol,direc, plotNumber, AK4Jets = []):
+	# function to draw a "pre-processed" version of the event
+	# in x-y space (phi-pho space)
+	# MET should be pointing UP (+y)
+	# jets are set so that jetMaxDPhi is RIGHT (+x)
+	c1 = rt.TCanvas("c1","c1",800,800)
+
+	dPhi = -METPhi+rt.TMath.Pi()/2.
+	objectList = []
+	metX, metY = rotateVector(dPhi, MET*rt.TMath.Cos(METPhi), MET*rt.TMath.Sin(METPhi))
+	objectList.append(rt.TArrow(0,0,metX,metY,0.05,"|>"))
+	objectList[-1].SetLineColor(rt.kBlue)
+	objectList[-1].SetFillColor(rt.kBlue)
+	objectList[-1].SetLineWidth(2)
+	objectList[-1].SetFillStyle(3003)
+	objectList[-1].SetLineStyle(2)
+	for iJet in range(len(jetCollectionAK8)):
+		jetX, jetY = rotateVector(dPhi,jetCollectionAK8[iJet].Px(),jetCollectionAK8[iJet].Py())
+		if iJet == 0:
+			signJetX = jetX/abs(jetX)
+		objectList.append(rt.TArrow(0,0,signJetX*jetX,jetY))
+		objectList[-1].SetLineColor(iJet+1)
+		objectList[-1].SetLineWidth(2)
+		if not FSRJets[iJet]:
+			objectList[-1].SetLineStyle(2)
+	for particle in partCol:
+		partX, partY = rotateVector(dPhi,particle.Px(), particle.Py())
+		objectList.append(rt.TArrow(0,0,partX,partY,0.025,"|>"))
+		objectList[-1].SetLineColor(rt.kGreen)
+		objectList[-1].SetFillColor(rt.kGreen)
+
+	linVals = []
+	for thing in objectList:
+		linVals.append(abs(thing.GetX2()))
+		linVals.append(abs(thing.GetY2()))
+	Lim = max(linVals)
+	Lim = Lim*1.1
+	histAxis = rt.TH2F("axisHsito", "Transverse Momentum;P(x');P(y')",100,-Lim,Lim,100,-Lim,Lim)
+	histAxis.SetStats(False)
+	histAxis.Draw()
+	for thing in objectList:
+		thing.Draw()
+	c1.SaveAs(direc+"/etaPhi"+plotNumber+"_polar.png")
+
+def rotateVector(phi, oldX, oldY):
+	newX = oldX*rt.TMath.Cos(phi) - oldY*rt.TMath.Sin(phi)
+	newY = oldX*rt.TMath.Sin(phi) + oldY*rt.TMath.Cos(phi)
+	return newX, newY
+
+	

@@ -69,6 +69,22 @@ class baseClass:
 		self.objects.append(graph)
 		return graph
 
+	def makePng(self, LoH, name, doLeg = True):
+		c = rt.TCanvas("c1","c1",1200,900)
+		stack = rt.THStack()
+		for i in range(len(LoH)):
+			LoH[i].SetLineColor(i+1)
+			stack.Add(LoH[i])
+		stack.Draw("nostack")
+		if doLeg:
+			c.BuildLegend(0.6,0.2,0.8,0.4)
+		c.SaveAs(self.extraDir+name+".png")
+		for i in range(len(LoH)):
+			if LoH[i].Integral() != 0:
+				LoH[i].Scale(1/LoH[i].Integral())
+		stack.Draw("nostack")
+		c.SaveAs(self.extraDir+name+"_norm.png")
+
 	def write(self):
 		self.outRootFile.cd()
 		for thing in self.objects:
