@@ -57,10 +57,19 @@ def loop(self):
 	# initalize histograms to be made, or create Friend tree to be filled
 	self.outRootFile.cd()
 
-	if self.extraDir[-3] == "p":
+
+	print(self.fileID[:2])
+	print(self.fileID[-1:])
+	print(self.fileID[-2:])
+
+	if self.fileID[:2] == "mz":
+		if self.fileID[-1] == "5":
+			zMass = int(self.fileID[-2:])*100
+		else:
+			zMass = int(self.fileID[-1:])*1000
+	else:	
 		zMass = 3000
-	else:
-		zMass = int(self.extraDir[-5])*1000
+	print("zMass is {}".format(zMass))
 
 	mtBins = 100
 	hist_MT_FSR = self.makeTH1F("hist_MT_FSR","FSR;MT;",mtBins,0,2*zMass)
@@ -102,7 +111,7 @@ def loop(self):
 		FSRJets = []
 		FSRIndex = []
 		for iJet in range(nJets):
-			if not tree.JetsAK8_isISR[iJet]:
+			if tree.JetsAK8_isHV[iJet]:
 				FSRJets.append(tree.JetsAK8[iJet])
 				FSRIndex.append(iJet)
 		hist_MT_FSR.Fill(trans_mass_Njet(FSRJets,tree.MET,tree.METPhi))

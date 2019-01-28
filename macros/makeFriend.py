@@ -191,13 +191,13 @@ def loop(self):
 		
 		# for each PARTICLE:
 		# record:
-	 	#   if it is inside which AK8 jet
 		#   if it is decendant of an HV quark
+		
 		for iPart in range(2,len(tree.GenParticles)):
 			iParent = tree.GenParticles_ParentIdx[iPart]
 			if iParent != -1:
 				numberOfDaughtersAParticleHas[iParent] += 1.
-			if (abs(tree.GenParticles_PdgId[iParent]) == 4900101) or genParticleIsFromHVQuark[iParent]:
+			if (abs(tree.GenParticles_PdgId[iParent]) == 4900023) or genParticleIsFromHVQuark[iParent]:
 				genParticleIsFromHVQuark[iPart] = 1
 			if tree.GenParticles_PdgId[iPart] == 4900023:
 				zPrimept[0] = tree.GenParticles[iPart].Pt()
@@ -236,7 +236,7 @@ def loop(self):
 			pGJ_all = rt.TLorentzVector(0.,0.,0.,0.)
 			vectorPt = rt.TLorentzVector(0.,0.,0.,0.)
 			HVvecPt = rt.TLorentzVector(0.,0.,0.,0.)
-			deltaPhi = abs(tree.JetsAK8[iJet].Phi()-tree.METPhi)%rt.TMath.Pi()
+			deltaPhi = deltaPhi_calc(tree.JetsAK8[iJet].Phi(),tree.METPhi)
 			if deltaPhi > dPhiMaxDeltaPhi[0]:
 				iJetMaxDeltaPhi[0] = iJet
 				pTMaxDeltaPhi[0] = tree.JetsAK8[iJet].Pt()
@@ -310,7 +310,7 @@ def loop(self):
 	
 		jetCode = [0,0,0,0,0]
 		for iJet in range(len(tree.JetsAK8)):
-			if not tree.JetsAK8_isISR[iJet]:
+			if tree.JetsAK8_isHV[iJet]:
 				if iJet <= 4:
 					jetCode[-iJet-1] = 1
 		jetValue = jetCode[-1]*1+jetCode[-2]*2+jetCode[-3]*4+jetCode[-4]*8+jetCode[-5]*16
@@ -386,5 +386,13 @@ def drawEventEtaPhiPlot(jetCollectionAK8, partCol, particlePDGID,METPhi, isFromH
 	for thing in objectList:
 		thing.Draw()
 	canv.SaveAs("etaPhi_"+str(plotNumber)+".png")
+
+def deltaPhi_calc(phi1, phi2):
+	delta = phi1 - phi2
+	while delta >= rt.TMath.Pi():
+		delta -= 2*rt.TMath.Pi()
+	while delta < -rt.TMath.Pi():
+		delta += 2*rt.TMath.Pi()
+	return abs(delta)
 
 

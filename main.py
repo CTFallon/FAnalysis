@@ -19,10 +19,12 @@ tm.addLoop()
 # arguments
 # [0] main.py
 # [1] macro name/path that has the loop function
-# [2] list of input files
-# [3] list of tree names
-# [4] directory name for extra root files
-# [5] outputFile name/path
+# [2] input files
+# [3] unique identifier for subject dataset
+# [4] list of tree names
+# [5] directory name for extra root files https://stackoverflow.com/questions/17255737/importing-variables-from-another-file
+# [6] outputFile name
+# python main.py <macro>.py <fileID> <inputTrees>.txt <dir> <outputName>
 
 #for iArg in range(len(sys.argv)):
 #	print(str(iArg), sys.argv[iArg])
@@ -30,25 +32,9 @@ tm.addLoop()
 
 if not os.path.exists("macros/"+sys.argv[1]):
 	exit("Macro path doesn't exist")
-#print("----------")
-#print("Macro is:")
-#print(sys.argv[1])
-#print("----------")
-if not os.path.exists('input_conf/'+sys.argv[2]):
-	exit("Input List doesn't exist")
-#iFile = open(sys.argv[2])
-#print("Input Files are:")
-#for line in iFile:
-#	print(line[:-1])# don't print new line symbol
-#print("----------")
 
 if not os.path.exists('input_conf/'+sys.argv[3]):
 	exit("Tree List doesn't exist")
-#iTree = open(sys.argv[3])
-#print("Tree Names are:")
-#for line in iTree:
-#	print(line[:-1])# don't print new line symbol
-#print("----------")
 
 
 analysis = ab.baseClass(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
