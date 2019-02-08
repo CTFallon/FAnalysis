@@ -59,101 +59,168 @@ def loop(self):
 	# initalize histograms to be made, or create Friend tree to be filled
 	self.outRootFile.cd()
 
+	nEventsTot = 0
+	nEventsPassPre = 0
+	nEventsPP3Jets = 0
+
 	nDiT = 0
 	nTriT = 0
-	nDiCutA = 0
-	nTriCutA = 0
-	nDiCutB = 0
-	nTriCutB = 0
+
+	nDiA = 0
+	nTriA = 0
+	nDiB = 0
+	nTriB = 0
+	nDiC = 0
+	nTriC = 0
 
 	nDiR = 0
 	nTriR = 0
 
-	hist_iJetMaxDeltaPhi_dijet = self.makeTH1F("hist_iJetMaxDeltaPhi_dijet","Jet Index - Dijet MT;Jet Index;Count", 5, 0, 5)
-	hist_iJetMaxDeltaPhi_trijet= self.makeTH1F("hist_iJetMaxDeltaPhi_trijet","Jet Index - Trijet MT;Jet Index;Count", 5, 0, 5)
 
-	hist_deltaPhi12_dijet = self.makeTH1F("hist_deltaPhi12_dijet","Delta Phi 12 - Dijet MT;dPhi12;Count", 100, 0, rt.TMath.Pi())
-	hist_deltaPhi12_trijet= self.makeTH1F("hist_deltaPhi12_trijet","Delta Phi 12 - Trijet MT;dPhi12;Count", 100, 0, rt.TMath.Pi())
+	hist_MT_AllEvents_dijet  = self.makeTH1F("hist_MT_AllEvents_dijet" ,"MT(12);MT; a.u."  ,100,0,4000)
+	hist_MT_AllEvents_trijet = self.makeTH1F("hist_MT_AllEvents_trijet","MT(12[3]);MT; a.u.",100,0,4000)
+	hist_MT_AllEvents_algo   = self.makeTH1F("hist_MT_AllEvents_algo"  ,"MT(algo);MT; a.u." ,100,0,4000)
+	hist_MT_AllEvents_perf   = self.makeTH1F("hist_MT_AllEvents_perf"  ,"MT(perf);MT; a.u." ,100,0,4000)
 
+	hist_A_dijet =  self.makeTH1F("hist_A_dijet","gamma3 - Dijet;gamma3;Count/a.u.",200,0,20)
+	hist_A_trijet =  self.makeTH1F("hist_A_trijet","gamma3 - Trijet;gamma3;Count/a.u.",200,0,20)
 
-	testVarName = "deltaPhi23"
-	# failed test variables for cut C: deltaPhi23, deltaPhi13, deltaPt2MDP, pt2/(pt2_mdppt), ptmdp, pt3, pt2, jet eta (123)
-	# list cont: 
-	# pt1 might be useful, but probably just seperating events based on which shower split
-	testVarLow = 0
-	testVarHig = rt.TMath.Pi()
+	hist_B_dijet =  self.makeTH1F("hist_B_dijet","iJetMaxDeltaPhi - Dijet;iJetMaxDeltaPhi;Count/a.u.",5,0,5)
+	hist_B_trijet =  self.makeTH1F("hist_B_trijet","iJetMaxDeltaPhi - Trijet;iJetMaxDeltaPhi;Count/a.u.",5,0,5)
+	
+	testVarName = "d_deltaR13"
+	testVarLow = 0.5
+	testVarHig = 5.5
+	nBins = 100
 
-	hist_test_dijet = self.makeTH1F("hist_test_dijet",testVarName+" - Dijet MT;"+testVarName+";Count", 50, testVarLow, testVarHig)
-	hist_test_trijet = self.makeTH1F("hist_test_trijet",testVarName+" - Trijet MT;"+testVarName+";Count", 50, testVarLow, testVarHig)
+	hist_test_dijet = self.makeTH1F("hist_test_dijet",testVarName+" - Dijet MT;"+testVarName+";Count/a.u.", nBins, testVarLow, testVarHig)
+	hist_test_trijet = self.makeTH1F("hist_test_trijet",testVarName+" - Trijet MT;"+testVarName+";Count/a.u.", nBins, testVarLow, testVarHig)
 	
 	for iEvent in range(nEvents):
 		if iEvent%1000 == 0:
 			print("Event: " + str(iEvent) + "/" + str(nEvents))
 		tree.GetEvent(iEvent)
+		nEventsTot += 1
 		if tree.passedPreSelection != 1: # skip events that failed preSelection
 			continue
+		nEventsPassPre += 1
+		hist_MT_AllEvents_dijet.Fill(tree.MT_AK8)
 		# the above means that each event has at least 2 AK8 jets above 170 GeV
 		# and has zero leptons, with MET/MT above 0.15
 		if len(tree.JetsAK8) <= 2:
+			hist_MT_AllEvents_trijet.Fill(tree.MT_AK8)
+			hist_MT_AllEvents_algo.Fill(tree.MT_AK8)
+			hist_MT_AllEvents_perf.Fill(tree.MT_AK8)
 			continue
+		nEventsPP3Jets += 1
+		MT3 = trans_mass_Njet([tree.JetsAK8[0],tree.JetsAK8[1],tree.JetsAK8[2]], tree.MET, tree.METPhi)
+		hist_MT_AllEvents_trijet.Fill(MT3)
 
 		if bool(tree.JetsAK8_isHV[2]) == True:
 			isTri = True
 			nTriT +=1
+			hist_MT_AllEvents_perf.Fill(MT3)
 		else:
 			nDiT += 1
 			isTri = False
+			hist_MT_AllEvents_perf.Fill(tree.MT_AK8)
+
 
 		if isTri:
-			hist_iJetMaxDeltaPhi_trijet.Fill(tree.iJetMaxDeltaPhi)
+			hist_A_trijet.Fill(tree.JetsAK8[2].Gamma())
 		else:
-			hist_iJetMaxDeltaPhi_dijet.Fill(tree.iJetMaxDeltaPhi)
-		if tree.iJetMaxDeltaPhi == 1:
+			hist_A_dijet.Fill(tree.JetsAK8[2].Gamma())
+		if tree.JetsAK8[2].Gamma() < 5.2:
+			useTri = True
 			if isTri:
-				nTriCutA += 1
+				nTriA += 1
+				hist_B_trijet.Fill(tree.iJetMaxDeltaPhi)
 			else:
-				nDiCutA += 1
-			continue
+				nDiA += 1
+				hist_B_dijet.Fill(tree.iJetMaxDeltaPhi)
+		elif tree.iJetMaxDeltaPhi == 1:
+			useTri = True
+			if isTri:
+				nTriB += 1
+			else:
+				nDiB += 1
 		else:
-			deltaPhi12 = deltaPhi(tree.JetsAK8[0].Phi(),tree.JetsAK8[1].Phi())
+			useTri = False
+		#Test new cuts here
+			testVar = tree.JetsAK8[0].DeltaR(tree.JetsAK8[2])
 			if isTri:
-				hist_deltaPhi12_trijet.Fill(deltaPhi12)
+				nTriR += 1
+				hist_test_trijet.Fill(testVar)
 			else:
-				hist_deltaPhi12_dijet.Fill(deltaPhi12)
-			
-		if deltaPhi(tree.JetsAK8[0].Phi(),tree.JetsAK8[1].Phi()) < 2.65:
-			if isTri:
-				nTriCutB += 1
-			else:
-				nDiCutB += 1
-			continue
+				nDiR += 1
+				hist_test_dijet.Fill(testVar)
 
-		
-		testVar = deltaPhi(tree.JetsAK8[1].Phi(),tree.JetsAK8[2].Phi())
-		if isTri:
-			nTriR += 1
-			hist_test_trijet.Fill(testVar)
+		if useTri:		
+			hist_MT_AllEvents_algo.Fill(MT3)
 		else:
-			nDiR += 1
-			hist_test_dijet.Fill(testVar)
+			hist_MT_AllEvents_algo.Fill(tree.MT_AK8)
+
 			
-	print("iJetMaxDeltaPhi")
-	for iBin in range(1,5):
-		print("{} {} {}".format(iBin,hist_iJetMaxDeltaPhi_dijet.GetBinContent(iBin),hist_iJetMaxDeltaPhi_trijet.GetBinContent(iBin)))
-	print("deltaPhi Jets 1 and 2")
-	for iBin in range(1,100):
-		print("{} {} {}".format(iBin,hist_deltaPhi12_dijet.Integral(0,iBin),hist_deltaPhi12_trijet.Integral(0,iBin)))
+
+	print("-------------------------")
+	print("Number of Events In MC: {}".format(nEventsTot))
+	print("Number of Events Passing PreSelection: {}".format(nEventsPassPre))
+	print("Number of Events Passing PreSelection with 3 or more AK8 Jets: {}".format(nEventsPP3Jets))
+	print("Number of Events PP3+Jets with only 2 HV jets: {}".format(nDiT))
+	print("Number of Events PP3+Jets with 3 HV jets: {}".format(nTriT))
+	print("-------------------------")
 	print(" Cut | nDi | nTri | Total")
-	print("  T  | {} | {} | {}".format(nDiT, nTriT, nDiT+nTriT))
-	print("  A  | {} | {} | {}".format(nDiCutA, nTriCutA, nDiCutA+nTriCutA))
-	print("  B  | {} | {} | {}".format(nDiCutB, nTriCutB, nDiCutB+nTriCutB))
-	print("  R  | {} | {} | {}".format(nDiR, nTriR, nDiR+nTriR))
+	print(" Total | {} | {} | {}".format(nDiT, nTriT, nDiT+nTriT))
+	print(" gamma3 | {} | {} | {}".format(nDiA, nTriA, nDiA+nTriA))
+	print(" Jet Index | {} | {} | {}".format(nDiB, nTriB, nDiB+nTriB))
+	print(" Remaining | {} | {} | {}".format(nDiR, nTriR, nDiR+nTriR))
 
-	self.makePng([hist_iJetMaxDeltaPhi_dijet,hist_iJetMaxDeltaPhi_trijet],"iJetMaxDeltaPhi")
-	self.makePng([hist_deltaPhi12_dijet,hist_deltaPhi12_trijet],"deltaPhi12")
-	self.makePng([hist_test_dijet,hist_test_trijet],testVarName)
+	# add the MT Resolution to each MT distribution's title
+	hist_MT_AllEvents_dijet.SetTitle(hist_MT_AllEvents_dijet.GetTitle()+" {:.4f}".format(hist_MT_AllEvents_dijet.GetRMS()/hist_MT_AllEvents_dijet.GetMean()))
+	hist_MT_AllEvents_trijet.SetTitle(hist_MT_AllEvents_trijet.GetTitle()+" {:.4f}".format(hist_MT_AllEvents_trijet.GetRMS()/hist_MT_AllEvents_trijet.GetMean()))
+	hist_MT_AllEvents_algo.SetTitle(hist_MT_AllEvents_algo.GetTitle()+" {:.4f}".format(hist_MT_AllEvents_algo.GetRMS()/hist_MT_AllEvents_algo.GetMean()))
+	hist_MT_AllEvents_perf.SetTitle(hist_MT_AllEvents_perf.GetTitle()+" {:.4f}".format(hist_MT_AllEvents_perf.GetRMS()/hist_MT_AllEvents_perf.GetMean()))
+
+	self.makeRatio(hist_MT_AllEvents_perf, hist_MT_AllEvents_dijet,"MT_dijet", doLeg = True, log = False)
+	self.makeRatio(hist_MT_AllEvents_perf, hist_MT_AllEvents_trijet,"MT_trijet", doLeg = True, log = False)
+	self.makeRatio(hist_MT_AllEvents_perf, hist_MT_AllEvents_algo,"MT_algo", doLeg = True, log = False)
+
+
+	self.makePng([hist_MT_AllEvents_dijet,hist_MT_AllEvents_trijet,hist_MT_AllEvents_algo,hist_MT_AllEvents_perf],"MT_dtap")
+	self.makePng([hist_A_dijet,hist_A_trijet],"gamma3", log= False, doCum = True)
+	self.makePng([hist_A_dijet.GetCumulative()-hist_A_trijet.GetCumulative()],"gamma3_diff", log= False, doLeg = False)
+
+	self.makePng([hist_B_dijet,hist_B_trijet],"iJetMaxDeltaPhi", log= False, doCum = True)
+	self.makePng([hist_B_dijet.GetCumulative()-hist_B_trijet.GetCumulative()],"iJetMaxDeltaPhi_diff", log= False, doLeg = False)
+
+	"""
+	self.makePng([hist_test_dijet,hist_test_trijet],testVarName, log= False, doCum = True)
+	hist_CumDiff = hist_test_dijet.GetCumulative()-hist_test_trijet.GetCumulative()
+	maximum = hist_CumDiff.GetMaximum()
+	maxBin = hist_CumDiff.GetMaximumBin()
+	minimum = hist_CumDiff.GetMinimum()
+	minBin = hist_CumDiff.GetMinimumBin()
+	print("Maximum Value is {} at bin number {}, corresponding to cut value of {}".format(maximum, maxBin, testVarLow+maxBin*(testVarHig-testVarLow)/float(nBins)))
+	print("Minimum Value is {} at bin number {}, corresponding to cut value of {}".format(minimum, minBin, testVarLow+minBin*(testVarHig-testVarLow)/float(nBins)))
+	self.makePng([hist_CumDiff],testVarName+"_diff", log= False, doLeg = False)
+	"""
 	
-	
+	print("\\begin{frame}{Impact of the Problem, Sample Code "+self.fileID+"}")
+	print("\\begin{center}")
+
+	print("\\begin{tabular}{c|c|c|c}")
+	print("Event Selection & nEvents  & \\% of PreSelec & \\% of 3+ AK8\\\\ \\hline")
+	print("All MC & {} &  - & -\\\\".format(nEventsTot))
+	print("PreSelection & {} & {:.2f}\\% & -\\\\ ".format(nEventsPassPre,100*float(nEventsPassPre)/nEventsPassPre))
+	print("3+ AK8 Jets & {} & {:.2f}\\% & {:.2f}\\% \\\\ \\hline".format(nEventsPP3Jets,100*float(nEventsPP3Jets)/nEventsPassPre,100*float(nEventsPP3Jets)/nEventsPP3Jets))
+	print("3+ AK8 Jets \\& Dijet & {} & {:.2f}\\% & {:.2f}\\%\\\\ ".format(nDiT,100*float(nDiT)/nEventsPassPre,100*float(nDiT)/nEventsPP3Jets))
+	print("3+ AK8 Jets \\& Trijet & {} & {:.2f}\\% & {:.2f}\\%\\\\".format(nTriT,100*float(nTriT)/nEventsPassPre,100*float(nTriT)/nEventsPP3Jets))
+	print("\end{tabular}")
+	print("\end{center}")
+	print("\end{frame}")
+
+
+
 
 def addLoop():
 	baseClass.loop = loop
@@ -174,4 +241,6 @@ def deltaPhi(phi1, phi2):
 	while delta < -rt.TMath.Pi():
 		delta += 2*rt.TMath.Pi()
 	return abs(delta)
+
+	
 
