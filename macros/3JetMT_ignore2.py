@@ -77,10 +77,10 @@ def loop(self):
 	nTriR = 0
 
 
-	hist_MT_AllEvents_dijet  = self.makeTH1F("hist_MT_AllEvents_dijet" ,"MT(12);MT; a.u."  ,100,0,4000)
-	hist_MT_AllEvents_trijet = self.makeTH1F("hist_MT_AllEvents_trijet","MT(12[3]);MT; a.u.",100,0,4000)
-	hist_MT_AllEvents_algo   = self.makeTH1F("hist_MT_AllEvents_algo"  ,"MT(algo);MT; a.u." ,100,0,4000)
-	hist_MT_AllEvents_perf   = self.makeTH1F("hist_MT_AllEvents_perf"  ,"MT(perf);MT; a.u." ,100,0,4000)
+	hist_MT_AllEvents_dijet  = self.makeTH1F("hist_MT_AllEvents_dijet" ,"MT(12);MT; a.u."  ,100,1500,4000)
+	hist_MT_AllEvents_trijet = self.makeTH1F("hist_MT_AllEvents_trijet","MT(12[3]);MT; a.u.",100,1500,4000)
+	hist_MT_AllEvents_algo   = self.makeTH1F("hist_MT_AllEvents_algo"  ,"MT(algo);MT; a.u." ,100,1500,4000)
+	hist_MT_AllEvents_perf   = self.makeTH1F("hist_MT_AllEvents_perf"  ,"MT(perf);MT; a.u." ,100,1500,4000)
 
 	hist_A_dijet =  self.makeTH1F("hist_A_dijet","gamma3 - Dijet;gamma3;Count/a.u.",200,0,20)
 	hist_A_trijet =  self.makeTH1F("hist_A_trijet","gamma3 - Trijet;gamma3;Count/a.u.",200,0,20)
