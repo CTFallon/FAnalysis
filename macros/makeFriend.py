@@ -167,7 +167,7 @@ def loop(self):
 		pass3 = 0 # lead 2 jets each have eta < 2.4
 		pass4 = 0 # deltaEta(jet1, jet2) < 1.5
 		pass5 = 0 # MET/MT > 0.15
-		pass6 = 0 # MT > 1500 GeV
+		pass6 = 1 # MT > 1500 GeV, TEMP TURN OFF
 		pass7 = 0 # lepton veto
 		# At least 2 jets in the event, temp 3 for 3JetMT purposes
 		if (len(tree.JetsAK8)>=2): 
