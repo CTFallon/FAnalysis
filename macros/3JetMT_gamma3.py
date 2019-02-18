@@ -55,6 +55,9 @@ def loop(self):
 	tree.SetBranchStatus("fracTotPTfromInvHVQ",1)
 	tree.SetBranchStatus("fracTotPTfromVis",1)
 	tree.SetBranchStatus("fracVisHVQtoInvHVQ",1)
+	tree.SetBranchStatus("DijetEvent",1)
+	tree.SetBranchStatus("TrijetEvent",1)
+	tree.SetBranchStatus("OtherjetEvent",1)
 
 	# make plots of gamma3 and iJetMaxDeltaPhi
 	# distinguish between Trijet and Dijet Events
@@ -62,13 +65,22 @@ def loop(self):
 	# initalize histograms to be made, or create Friend tree to be filled
 	self.outRootFile.cd()
 	
-	hist_g3_All = self.makeTH1F("hist_g3_All","All;#gamma_{3};count",100,0,15)
-	hist_g3_Dij = self.makeTH1F("hist_g3_Dij","Dijet;#gamma_{3};count",100,0,15)
-	hist_g3_Tri = self.makeTH1F("hist_g3_Tri","Trijet;#gamma_{3};count",100,0,15)
+	hist_g3_All = self.makeTH1F("hist_g3_All","All;#gamma_{3};count",200,1,17)
+	hist_g3_Dij = self.makeTH1F("hist_g3_Dij","Dijet;#gamma_{3};count",200,1,17)
+	hist_g3_Tri = self.makeTH1F("hist_g3_Tri","Trijet;#gamma_{3};count",200,1,17)
 
 	hist_ijmdp_All = self.makeTH1F("hist_ijmdp_All","All;iJetMaxDeltaPhi;count",5,0,5)
 	hist_ijmdp_Dij = self.makeTH1F("hist_ijmdp_Dij","Dijet;iJetMaxDeltaPhi;count",5,0,5)
 	hist_ijmdp_Tri = self.makeTH1F("hist_ijmdp_Tri","Trijet;iJetMaxDeltaPhi;count",5,0,5)
+
+	hist_pt3frac_All = self.makeTH1F("hist_pt3frac_All","All;pt3frac;count",200,-0.01,1.01)
+	hist_pt3frac_Dij = self.makeTH1F("hist_pt3frac_Dij","Dijet;pt3frac;count",200,-0.01,1.01)
+	hist_pt3frac_Tri = self.makeTH1F("hist_pt3frac_Tri","Trijet;pt3frac;count",200,-0.01,1.01)
+
+	hist_sosqrtb_g3 = self.makeTH1F("hist_sosqrtb_g3","S/sqrt(B) for Gamma3 cut;Gamma3;SoSqrtB",200,1,17)
+
+	hist_2d_g3_vs_ijmdp_Dij = self.makeTH2F("hist_2d_g3_vs_ijmdp_Dij", ";jetPt3Frac;isHV3", 200,0,1,2,0,2)
+	hist_2d_g3_vs_ijmdp_Tri = self.makeTH2F("hist_2d_g3_vs_ijmdp_Tri", ";jetPt3Frac;isHV3", 200,0,1,2,0,2)
 	
 	for iEvent in range(nEvents):
 		if iEvent%1000 == 0:
@@ -83,17 +95,58 @@ def loop(self):
 			continue
 		hist_g3_All.Fill(tree.JetsAK8[2].Gamma())
 		hist_ijmdp_All.Fill(tree.iJetMaxDeltaPhi)
+		hist_pt3frac_All.Fill(tree.fracTotPTfromAllHVQ[2])
 		if bool(tree.JetsAK8_isHV[2]) == False:
 			hist_g3_Dij.Fill(tree.JetsAK8[2].Gamma())
 			hist_ijmdp_Dij.Fill(tree.iJetMaxDeltaPhi)
+			hist_2d_g3_vs_ijmdp_Dij.Fill(tree.fracTotPTfromAllHVQ[2],int(bool(tree.JetsAK8_isHV[2])))
+			hist_pt3frac_Dij.Fill(tree.fracTotPTfromAllHVQ[2])
 		elif bool(tree.JetsAK8_isHV[2]) == True:
 			hist_g3_Tri.Fill(tree.JetsAK8[2].Gamma())
 			hist_ijmdp_Tri.Fill(tree.iJetMaxDeltaPhi)
+			hist_2d_g3_vs_ijmdp_Tri.Fill(tree.fracTotPTfromAllHVQ[2],int(bool(tree.JetsAK8_isHV[2])))
+			hist_pt3frac_Tri.Fill(tree.fracTotPTfromAllHVQ[2])
 		else:
-			print("Event is neighter dijet nor trijet!")
+			print("Event is neighter dijet nor trijet")
 
-	self.makePng([hist_g3_All, hist_g3_Dij, hist_g3_Tri],"3JetMT_gamma3_gamma3")
-	self.makePng([hist_ijmdp_All, hist_ijmdp_Dij, hist_ijmdp_Tri],"3JetMT_gamma3_iJetMaxDeltaPhi")
+	for iBin in range(1,hist_ijmdp_All.GetNbinsX()+1):
+		try:
+			ratio = float(hist_ijmdp_Dij.GetBinContent(iBin))/float(hist_ijmdp_Tri.GetBinContent(iBin))
+		except ZeroDivisionError:
+			ratio = -1
+		if ratio != 0:
+			print("When jet #{} is maxDeltaPhi, it has a dijet/trijet (inverse) ratio of {:.2f} ({:.2f})".format(iBin, ratio, 1./ratio))
+
+	for iBin in range(1,hist_g3_All.GetNbinsX()):
+		s = float(hist_g3_Tri.Integral(0,iBin))
+		b = float(hist_g3_Dij.Integral(0,iBin))
+		sqrtB = rt.TMath.Sqrt(b)
+		try:
+			hist_sosqrtb_g3.SetBinContent(iBin,s/sqrtB)
+		except ZeroDivisionError:
+			continue
+
+	self.makePng([hist_g3_Dij, hist_g3_Tri],"3JetMT_gamma3_gamma3", doCum = True)
+	self.makePng([hist_ijmdp_Dij, hist_ijmdp_Tri],"3JetMT_gamma3_iJetMaxDeltaPhi")
+	self.makePng([hist_pt3frac_Dij, hist_pt3frac_Tri],"3JetMT_gamma3_pt3frac", log = True)
+
+	hist_g3_normCumDiff = hist_g3_Tri.GetCumulative().Clone()
+	hist_g3_normCumDiff.SetTitle("Difference of Cumulative Distributions of Normalized Histograms (tri-dij)")
+	hist_g3_normCumDiff.Add(-1*hist_g3_Dij.GetCumulative())
+	ncdMax = hist_g3_normCumDiff.GetMaximum()
+	ncdMaxBin = hist_g3_normCumDiff.GetMaximumBin()
+	self.makePng([hist_g3_normCumDiff,hist_sosqrtb_g3],"3JetMT_gamma3_FOMs")
+	print("Optimal normcumdiff is {} at bin {}".format(ncdMax, ncdMaxBin))
+
+	hist_2d_g3_vs_ijmdp_Dij.SetMarkerStyle(29)
+	hist_2d_g3_vs_ijmdp_Dij.SetMarkerColorAlpha(rt.kRed, .5)
+	hist_2d_g3_vs_ijmdp_Tri.SetMarkerStyle(29)
+	hist_2d_g3_vs_ijmdp_Tri.SetMarkerColorAlpha(rt.kGreen, .5)
+	c1 = rt.TCanvas()
+	hist_2d_g3_vs_ijmdp_Tri.Draw()
+	hist_2d_g3_vs_ijmdp_Dij.Draw("same")
+	c1.BuildLegend()
+	c1.SaveAs(self.extraDir+"_aransrequest.png")
 
 def addLoop():
 	baseClass.loop = loop

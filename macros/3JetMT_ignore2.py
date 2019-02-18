@@ -130,30 +130,30 @@ def loop(self):
 			hist_A_trijet.Fill(tree.JetsAK8[2].Gamma())
 		else:
 			hist_A_dijet.Fill(tree.JetsAK8[2].Gamma())
-		#if tree.JetsAK8[2].Gamma() < 5.2:
-		#	useTri = True
-		#	if isTri:
-		#		nTriA += 1
-		#		hist_B_trijet.Fill(tree.iJetMaxDeltaPhi)
-		#	else:
-		#		nDiA += 1
-		#		hist_B_dijet.Fill(tree.iJetMaxDeltaPhi)
-		#elif tree.iJetMaxDeltaPhi == 1:
-		#	useTri = True
-		#	if isTri:
-		#		nTriB += 1
-		#	else:
-		#		nDiB += 1
-		#else:
-		useTri = False
-		#Test new cuts here
-		testVar = tree.JetsAK8[2].Gamma()
-		if isTri:
-			nTriR += 1
-			hist_test_trijet.Fill(testVar)
+		if tree.JetsAK8[2].Gamma() < 6.1:
+			useTri = True
+			if isTri:
+				nTriA += 1
+				hist_B_trijet.Fill(tree.iJetMaxDeltaPhi)
+			else:
+				nDiA += 1
+				hist_B_dijet.Fill(tree.iJetMaxDeltaPhi)
+		elif tree.iJetMaxDeltaPhi == 1:
+			useTri = True
+			if isTri:
+				nTriB += 1
+			else:
+				nDiB += 1
 		else:
-			nDiR += 1
-			hist_test_dijet.Fill(testVar)
+			useTri = False
+		#Test new cuts here
+		#testVar = tree.JetsAK8[2].Gamma()
+		#if isTri:
+	#		nTriR += 1
+	#		hist_test_trijet.Fill(testVar)
+	#	else:
+	#		nDiR += 1
+	#		hist_test_dijet.Fill(testVar)
 
 		if useTri:		
 			hist_MT_AllEvents_algo.Fill(MT3)
@@ -194,15 +194,15 @@ def loop(self):
 	self.makePng([hist_B_dijet.GetCumulative()-hist_B_trijet.GetCumulative()],"iJetMaxDeltaPhi_diff", log= False, doLeg = False)
 
 	
-	self.makePng([hist_test_dijet,hist_test_trijet],testVarName, log= False, doCum = True)
-	hist_CumDiff = hist_test_dijet.GetCumulative()-hist_test_trijet.GetCumulative()
-	maximum = hist_CumDiff.GetMaximum()
-	maxBin = hist_CumDiff.GetMaximumBin()
-	minimum = hist_CumDiff.GetMinimum()
-	minBin = hist_CumDiff.GetMinimumBin()
-	print("Maximum Value is {} at bin number {}, corresponding to cut value of {}".format(maximum, maxBin, testVarLow+maxBin*(testVarHig-testVarLow)/float(nBins)))
-	print("Minimum Value is {} at bin number {}, corresponding to cut value of {}".format(minimum, minBin, testVarLow+minBin*(testVarHig-testVarLow)/float(nBins)))
-	self.makePng([hist_CumDiff],testVarName+"_diff", log= False, doLeg = False)
+	#self.makePng([hist_test_dijet,hist_test_trijet],testVarName, log= False, doCum = True)
+	#hist_CumDiff = hist_test_dijet.GetCumulative()-hist_test_trijet.GetCumulative()
+	#maximum = hist_CumDiff.GetMaximum()
+	#maxBin = hist_CumDiff.GetMaximumBin()
+	#minimum = hist_CumDiff.GetMinimum()
+	#minBin = hist_CumDiff.GetMinimumBin()
+	#print("Maximum Value is {} at bin number {}, corresponding to cut value of {}".format(maximum, maxBin, testVarLow+maxBin*(testVarHig-testVarLow)/float(nBins)))
+	#print("Minimum Value is {} at bin number {}, corresponding to cut value of {}".format(minimum, minBin, testVarLow+minBin*(testVarHig-testVarLow)/float(nBins)))
+	#self.makePng([hist_CumDiff],testVarName+"_diff", log= False, doLeg = False)
 	
 	
 	print("\\begin{frame}{Impact of the Problem, Sample Code "+self.fileID+"}")
@@ -219,10 +219,10 @@ def loop(self):
 	print("\end{center}")
 	print("\end{frame}")
 	
-	print("ECPN: min minCut max maxCut nMC nPS n3+ nDi nTri nDiG3 nTriG3")
-	print("ECPN: {} {} {} {} {} {} {} {} {} {} {}".format(minimum,testVarLow+minBin*(testVarHig-testVarLow)/float(nBins),
-										maximum,testVarLow+maxBin*(testVarHig-testVarLow)/float(nBins),
-										nEventsTot, nEventsPassPre,nEventsPP3Jets,nDiT,nTriT, nDiR, nTriR))
+	#print("ECPN: min minCut max maxCut nMC nPS n3+ nDi nTri nDiG3 nTriG3")
+	#print("ECPN: {} {} {} {} {} {} {} {} {} {} {}".format(minimum,testVarLow+minBin*(testVarHig-testVarLow)/float(nBins),
+	#									maximum,testVarLow+maxBin*(testVarHig-testVarLow)/float(nBins),
+	#									nEventsTot, nEventsPassPre,nEventsPP3Jets,nDiT,nTriT, nDiR, nTriR))
 
 
 def addLoop():
