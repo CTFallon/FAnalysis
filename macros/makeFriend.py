@@ -324,7 +324,7 @@ def loop(self):
 		jetCode = [0,0,0,0,0]
 		for iJet in range(len(tree.JetsAK8)):
 			if tree.JetsAK8_isHV[iJet]:
-				if iJet <= 4:
+				if iJet <= 2:
 					jetCode[-iJet-1] = 1
 		jetValue = jetCode[-1]*1+jetCode[-2]*2+jetCode[-3]*4+jetCode[-4]*8+jetCode[-5]*16
 		if jetValue == 3:
