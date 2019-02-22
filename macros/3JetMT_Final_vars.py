@@ -55,6 +55,9 @@ def loop(self):
 	tree.SetBranchStatus("fracTotPTfromInvHVQ",1)
 	tree.SetBranchStatus("fracTotPTfromVis",1)
 	tree.SetBranchStatus("fracVisHVQtoInvHVQ",1)
+	tree.SetBranchStatus("DijetEvent",1)
+	tree.SetBranchStatus("TrijetEvent",1)
+	tree.SetBranchStatus("OtherjetEvent",1)
 
 	# initalize histograms to be made, or create Friend tree to be filled
 	self.outRootFile.cd()
@@ -85,7 +88,7 @@ def loop(self):
 	
 	hist_dEta23_Tri = self.makeTH1F("hist_dEta23_Tri","Trijet;dEta23;count",100,-0.01,5)
 	hist_dEta23_Dij = self.makeTH1F("hist_dEta23_Dij","Dijet;dEta23;count",100,-0.01,5)
-	
+	nOther = 0
 	for iEvent in range(nEvents):
 		if iEvent%1000 == 0:
 			print("Event: " + str(iEvent) + "/" + str(nEvents))
@@ -97,20 +100,20 @@ def loop(self):
 		if tree.iJetMaxDeltaPhi == 1: # skip events taken out by the idx cut
 			continue
 
-		if bool(tree.JetsAK8_isHV[2]) == True:
+		if tree.TrijetEvent == 1:#bool(tree.JetsAK8_isHV[2]) == True:
 			hist_gamma3_Tri.Fill(tree.JetsAK8[2].Gamma())
 			hist_jetIdx_Tri.Fill(tree.iJetMaxDeltaPhi)
 			hist_jptmdp_Tri.Fill(tree.pTMaxDeltaPhi)
 			hist_jetPt3_Tri.Fill(tree.JetsAK8[2].Pt())
 			hist_dEta23_Tri.Fill(abs(tree.JetsAK8[1].Eta()-tree.JetsAK8[2].Eta()))
-		elif bool(tree.JetsAK8_isHV[2]) == False:
+		elif tree.DijetEvent == 1:#bool(tree.JetsAK8_isHV[2]) == False:
 			hist_gamma3_Dij.Fill(tree.JetsAK8[2].Gamma())
 			hist_jetIdx_Dij.Fill(tree.iJetMaxDeltaPhi)
 			hist_jptmdp_Dij.Fill(tree.pTMaxDeltaPhi)
 			hist_jetPt3_Dij.Fill(tree.JetsAK8[2].Pt())
 			hist_dEta23_Dij.Fill(abs(tree.JetsAK8[1].Eta()-tree.JetsAK8[2].Eta()))
 		else:
-			print("Jet 3 is neither hv nor not Hv")
+			nOther += 1
 
 	self.makePng([hist_gamma3_Tri,hist_gamma3_Dij],"3JetMT_Final_vars_gamma3", doCum = True)
 	#self.makePng([hist_jetIdx_Tri,hist_jetIdx_Dij],"3JetMT_Final_vars_jetIdx")
@@ -120,32 +123,32 @@ def loop(self):
 
 	hist_csd1 = hist_gamma3_Tri.GetCumulative().Clone()
 	hist_csd1.Add(-1*hist_gamma3_Dij.GetCumulative())
-	print("signal var min max minCut maxCut nDij nTri")
-	print(self.fileID + " gamma3 {} {} {} {} {} {}".format(
+	print("signal var min max minCut maxCut nDij nTri nOther")
+	print(self.fileID + " gamma3 {} {} {} {} {} {} {}".format(
 			hist_csd1.GetMinimum(),hist_csd1.GetMaximum(),
 			hist_csd1.GetMinimumBin(),hist_csd1.GetMaximumBin(),
-			hist_gamma3_Dij.GetEntries(),hist_gamma3_Tri.GetEntries()))
+			hist_gamma3_Dij.GetEntries(),hist_gamma3_Tri.GetEntries(), nOther))
 
 	hist_csd2 = hist_jptmdp_Tri.GetCumulative().Clone()
 	hist_csd2.Add(-1*hist_jptmdp_Dij.GetCumulative())
-	print(self.fileID + " jptmdp {} {} {} {} {} {}".format(
+	print(self.fileID + " jptmdp {} {} {} {} {} {} {}".format(
 			hist_csd2.GetMinimum(),hist_csd2.GetMaximum(),
 			hist_csd2.GetMinimumBin(),hist_csd2.GetMaximumBin(),
-			hist_jptmdp_Dij.GetEntries(),hist_jptmdp_Tri.GetEntries()))
+			hist_jptmdp_Dij.GetEntries(),hist_jptmdp_Tri.GetEntries(), nOther))
 
 	hist_csd3 = hist_jetPt3_Tri.GetCumulative().Clone()
 	hist_csd3.Add(-1*hist_jetPt3_Dij.GetCumulative())
-	print(self.fileID + " jetPt3 {} {} {} {} {} {}".format(
+	print(self.fileID + " jetPt3 {} {} {} {} {} {} {}".format(
 			hist_csd3.GetMinimum(),hist_csd3.GetMaximum(),
 			hist_csd3.GetMinimumBin(),hist_csd3.GetMaximumBin(),
-			hist_jetPt3_Dij.GetEntries(),hist_jetPt3_Tri.GetEntries()))
+			hist_jetPt3_Dij.GetEntries(),hist_jetPt3_Tri.GetEntries(), nOther))
 
 	hist_csd4 = hist_dEta23_Tri.GetCumulative().Clone()
 	hist_csd4.Add(-1*hist_dEta23_Dij.GetCumulative())
-	print(self.fileID + " dEta23 {} {} {} {} {} {}".format(
+	print(self.fileID + " dEta23 {} {} {} {} {} {} {}".format(
 			hist_csd4.GetMinimum(),hist_csd4.GetMaximum(),
 			hist_csd4.GetMinimumBin(),hist_csd4.GetMaximumBin(),
-			hist_dEta23_Dij.GetEntries(),hist_dEta23_Tri.GetEntries()))
+			hist_dEta23_Dij.GetEntries(),hist_dEta23_Tri.GetEntries(), nOther))
 	self.makePng([hist_csd1],"3JetMT_Final_vars_cumDiff_gamma3")
 	self.makePng([hist_csd2],"3JetMT_Final_vars_cumDiff_jptmdp")
 	self.makePng([hist_csd3],"3JetMT_Final_vars_cumDiff_jetPt3")

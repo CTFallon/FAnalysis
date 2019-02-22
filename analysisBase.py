@@ -14,9 +14,8 @@ class baseClass:
 
 	def loadFileList(self):
 		from input_conf.inputRoot import fileDict
-		self.inputFileList = []
 		try:
-			self.inputFileList.append(fileDict[self.fileID])#ignore new line character
+			self.inputFileList = fileDict[self.fileID]
 		except KeyError:
 			exit("Key does not exist in dictonary")
 			
@@ -69,15 +68,18 @@ class baseClass:
 		self.objects.append(graph)
 		return graph
 
-	def makePng(self, LoH, name, doLeg = True, log = False, doCum = False):
+	def makePng(self, LoHi, name, doLeg = True, log = False, doCum = False):
 		c1 = rt.TCanvas("c1","c1",1200,900)
 		if log:
 			c1.SetLogy()
 		stack = rt.THStack()
+		LoH = []
+		for h in LoHi:
+			LoH.append(h.Clone())
 		for i in range(len(LoH)):
 			LoH[i].SetLineColor(i+1)
 			stack.Add(LoH[i])
-		stack.Draw("nostack")
+		stack.Draw("nostack hist")
 		stack.GetXaxis().SetTitle(LoH[0].GetXaxis().GetTitle())
 		stack.GetYaxis().SetTitle("Count")
 		stack.SetTitle(name)
@@ -98,7 +100,7 @@ class baseClass:
 		for i in range(len(LoH)):
 			if LoH[i].Integral() != 0:
 				LoH[i].Scale(1/LoH[i].Integral())
-		stack.Draw("nostack")
+		stack.Draw("nostack hist")
 		stack.GetYaxis().SetTitle("a.u.")
 		c1.Modified()
 		if doLeg:
@@ -130,7 +132,7 @@ class baseClass:
 		h1.SetStats(0)       # No statistics on upper plot
 		stack.Add(h1)			
 		stack.Add(h2)
-		stack.Draw("nostack")         # Draw h2 on top of h1
+		stack.Draw("nostack hist")         # Draw h2 on top of h1
 		stack.GetYaxis().SetTitle(h1.GetTitle().split(" ")[0])
 		if doLeg:
 			pad1.BuildLegend(0.75,0.75,0.95,0.95)
@@ -155,8 +157,8 @@ class baseClass:
 		# Define the ratio plot
 		h3 = h1.Clone("h3")
 		h3.SetLineColor(rt.kBlack)
-		h3.SetMinimum(0.75)  # Define Y ..
-		h3.SetMaximum(1.25) # .. range
+		h3.SetMinimum(0.00)  # Define Y ..
+		h3.SetMaximum(2.00) # .. range
 		h3.Sumw2()
 		h3.SetStats(0)      # No statistics on lower plot
 		h3.Divide(h2)
