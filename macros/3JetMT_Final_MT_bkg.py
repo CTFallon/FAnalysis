@@ -19,12 +19,14 @@ def loop(self):
 	algMT = array('f',[0])
 	passFinal = array('i',[0])
 	weight = array('f',[0])
+	useTriJetMT = array('i',[0])
 
 	newTree.Branch("dijet_MT",dijMT,"dijetMT/F")
 	newTree.Branch("trijet_MT",triMT,"trijetMT/F")
 	newTree.Branch("algo_MT",algMT,"algoMT/F")
 	newTree.Branch("passFinal",passFinal,"passFinal/I")
 	newTree.Branch("weight",weight,"weight/F")
+	newTree.Branch("useTri",useTriJetMT,"useTri/I")
 
 	# make MT histograms for three cases:
 		# all Dijet
@@ -69,6 +71,7 @@ def loop(self):
 			algMT[0] = 0.
 			passFinal[0] = 0
 			weight[0] = 0.
+			useTriJetMT[0] = -1
 			if iEvent%1000 == 0:
 				print("Event: " + str(iEvent+oldnEvents) + "/" + str(nEvents))
 			tree.GetEvent(iEvent)
@@ -144,6 +147,7 @@ def loop(self):
 			dijMT[0] = MT2
 			hist_MT_dij.Fill(MT2,W)
 			if len(tree.JetsAK8)  <= 2:
+				useTriJetMT[0] = 0
 				triMT[0] = MT2
 				algMT[0] = MT2
 				hist_MT_tri.Fill(MT2,W)
@@ -155,10 +159,12 @@ def loop(self):
 				triMT[0] = MT3
 				hist_MT_tri.Fill(MT3,W)
 				if useTri == 1:
+					useTriJetMT[0] = 1
 					hist_MT_alg.Fill(MT3,W)
 					algMT[0] = MT3
 					hist_algoCuts_dijTruthT.Fill(5,W)
 				elif useTri == 0:
+					useTriJetMT[0] = 0
 					hist_MT_alg.Fill(MT2,W)
 					algMT[0] = MT2
 					hist_algoCuts_dijTruthO.Fill(5,W)
