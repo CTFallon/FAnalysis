@@ -58,10 +58,10 @@ def loop(self):
 	tree.SetBranchStatus("fracVisHVQtoInvHVQ",1)
 
 	# Define parameters for the test variable
-	varName = "dPhi12" # dont forget to change the value of varVal in the loop!
-	varLo = 0
-	varHi = rt.TMath.Pi()
-	varSplit = 200
+	varName = "gamma2overgamma1" # dont forget to change the value of varVal in the loop!
+	varLo = 1
+	varHi = 10
+	varSplit = 300
 
 	# initalize histograms to be made, or create Friend tree to be filled
 	self.outRootFile.cd()
@@ -119,10 +119,10 @@ def loop(self):
 		histList_MT_mdp4.append(rt.TH1F("histList_MT_mdp4_{}".format(iBin),
 			";;",100,0,4000))
 
-	losBins = 200
-	losLo = 0
-	losHi = rt.TMath.Pi()
-	losName = "dPhi12" # dont forget to change LOS in the loop
+	losBins = 300
+	losLo = 1
+	losHi = 10
+	losName = "gamma2overgamma1" # dont forget to change LOS in the loop
 	hist_LOS_all = self.makeTH1F("hist_"+losName+"_all",losName + " - All Events;"+losName+";Count",
 		losBins, losLo, losHi)
 	hist_LOS_dijet = self.makeTH1F("hist_"+losName+"_dijet",losName + " - Dijet Events;"+losName+";Count",
@@ -179,7 +179,7 @@ def loop(self):
 		#	continue
 
 		try:
-			varVal = deltaPhi(tree.JetsAK8[0].Phi(), tree.JetsAK8[1].Phi())
+			varVal = tree.JetsAK8[1].Gamma()/tree.JetsAK8[0].Gamma()
 		except IndexError:
 			continue
 
@@ -188,11 +188,12 @@ def loop(self):
 			#dis23 = tree.JetsAK8[1].DeltaR(tree.JetsAK8[2])
 			dis31 = tree.JetsAK8[2].DeltaR(tree.JetsAK8[0])
 			threeJets = [tree.JetsAK8[0],tree.JetsAK8[1],tree.JetsAK8[2]]
-			if tree.iJetMaxDeltaPhi > 2:
+			#skip events that get caught by other cuts
+			if (tree.iJetMaxDeltaPhi == 1) or (deltaPhi(tree.JetsAK8[0].Phi(),tree.JetsAK8[1].Phi()) < 2.65) or (tree.JetsAK8[2].Gamma() < 5.24):
 				continue
 			ptRatio = tree.pTMaxDeltaPhi/(tree.JetsAK8[0].Pt()+tree.JetsAK8[1].Pt()+tree.JetsAK8[2].Pt())
 			#losRatio = tree.JetsAK8[0].Pt()/(tree.JetsAK8[0].Pt()+tree.JetsAK8[1].Pt()+tree.JetsAK8[2].Pt())
-			losRatio = deltaPhi(tree.JetsAK8[0].Phi(), tree.JetsAK8[1].Phi())
+			losRatio = tree.JetsAK8[1].Gamma()/tree.JetsAK8[0].Gamma()
 			hist_LOS_all.Fill(losRatio)
 			#hist2d_ptRatio_vs_deltaR_all.Fill(ptRatio,dis31)
 			if bool(tree.JetsAK8_isHV[2]):

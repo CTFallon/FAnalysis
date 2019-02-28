@@ -162,27 +162,40 @@ def loop(self):
 			pGJ_visible[i] = -1.
 			pGJ_invis[i] = -1.
 			pGJ_every[i] = -1.
-		pass1 = 0
-		pass2 = 0
-		pass3 = 0
-		pass4 = 0
+		pass1 = 0 # atleast 2 AK8 jets
+		pass2 = 0 # lead 2 jets each have pt > 200 GeV
+		pass3 = 0 # lead 2 jets each have eta < 2.4
+		pass4 = 0 # deltaEta(jet1, jet2) < 1.5
+		pass5 = 0 # MET/MT > 0.15
+		pass6 = 1 # MT > 1500 GeV, TEMP TURN OFF
+		pass7 = 0 # lepton veto
 		# At least 2 jets in the event, temp 3 for 3JetMT purposes
 		if (len(tree.JetsAK8)>=2): 
 			pass1 = 1
-		else: # special case because next chcek can cause Index Error
+		else: # special case because next check can cause Index Error
 			passedPreSelection[0] = 0
 			friend.Fill()
 			continue
 		# Both leading jets must have pt > 170
-		if ((tree.JetsAK8[0].Pt() > 170.0) and (tree.JetsAK8[1].Pt() > 170.0)): 
+			# updated to 200 GeV on Feb 13
+		if ((tree.JetsAK8[0].Pt() > 200.0) and (tree.JetsAK8[1].Pt() > 200.0)): 
 			pass2 = 1
+		# both leading jets must have |eta| < 2.4, Feb 13 update
+		if ((abs(tree.JetsAK8[0].Eta()) < 2.4) and (abs(tree.JetsAK8[1].Eta()) < 2.4)): 
+			pass3 = 1
+		# leading jets must be within 1.5 delta eta of eachother, feb 13
+		if abs(tree.JetsAK8[0].Eta()-tree.JetsAK8[1].Eta()) < 1.5:
+			pass4 = 1
 		# MET/MT ratio must be greater than 0.15
 		if (tree.MET/tree.MT_AK8 > 0.15):
-			pass3 = 1
+			pass5 = 1
+		# MT must be greater than 1500 GeV, feb 13
+		if tree.MT_AK8 > 1500:
+			pass6 = 1
 		# must not have any leptons
 		if ((len(tree.Electrons) + len(tree.Muons)) == 0):
-			pass4 = 1
-		if pass1 and pass2 and pass3 and pass4:
+			pass7 = 1
+		if pass1 and pass2 and pass3 and pass4 and pass5 and pass6 and pass7:
 			passedPreSelection[0] = 1
 		else:
 			passedPreSelection[0] = 0
@@ -311,7 +324,7 @@ def loop(self):
 		jetCode = [0,0,0,0,0]
 		for iJet in range(len(tree.JetsAK8)):
 			if tree.JetsAK8_isHV[iJet]:
-				if iJet <= 4:
+				if iJet <= 2:
 					jetCode[-iJet-1] = 1
 		jetValue = jetCode[-1]*1+jetCode[-2]*2+jetCode[-3]*4+jetCode[-4]*8+jetCode[-5]*16
 		if jetValue == 3:
