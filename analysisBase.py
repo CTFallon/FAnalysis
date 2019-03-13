@@ -200,6 +200,35 @@ class baseClass:
 		#save as .png
 		c.SaveAs(self.extraDir+name+"_ratio.png")
 
+	def passedPreselection(self, eventJetsAK8, eventMET, eventMT_AK8, eventNElectrons, eventNMuons):
+		nJets = len(eventJetsAK8)
+		jet1Pt = eventJetsAK8[0].Pt()
+		jet2Pt = eventJetsAK8[1].Pt()
+		jet1Eta = eventJetsAK8[0].Eta()
+		jet2Eta = eventJetsAK8[1].Eta()
+		deltaEta = abs(jet1Eta-jet2Eta)
+		METoverMT = eventMET/eventMT_AK8
+		nLep = eventNElectrons+eventNMuons
+		#missing MET filters?
+		
+		test1 = (nJets >= 2)
+		test2 = (jet1Pt > 200) and (jet2Pt > 200)
+		test3 = ((abs(jet1Eta) < 2.4) and (abs(jet2Eta) < 2.4))
+		test4 = (deltaEta < 1.5)
+
+		test5 = (METoverMT > 0.15)
+		test6 = (eventMT_AK8 > 1500)
+
+		test7 = (nLep == 0)
+
+		testJets = test1 and test2 and test3 and test4
+		testMT = test5 and test6
+		testLeps = test7
+		if testJets and testLeps and testMT:
+			return True
+		else:
+			return False
+			
 		
 
 	def make2dPng(self, hist, name):
