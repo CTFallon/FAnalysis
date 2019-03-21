@@ -1,5 +1,6 @@
 # base class for FAnalysis, copied from Lucien Lo's PFG HcalTupleAnalyzer, adapted to python
 import ROOT as rt
+import datetime
 class baseClass:
 	def __init__(self, fileID, treeList, rootDir, outFileName):
 		#self.fileList = fileList # .py file of dictoary
@@ -14,10 +15,15 @@ class baseClass:
 
 	def loadFileList(self):
 		from input_conf.inputRoot import fileDict
+		from input_conf.inputRoot import plotDict
 		try:
 			self.inputFileList = fileDict[self.fileID]
 		except KeyError:
-			exit("Key does not exist in dictonary")
+			print("Key does not exist in fileDict. Switching to Plotting Mode.")
+			try:
+				self.inputFileList = plotDict[self.fileID]
+			except KeyError:
+				exit("Key does not exist in plotDict. Exiting.")
 			
 	def loadTreeList(self):
 		treeFile = open("input_conf/"+self.treeList)
@@ -200,8 +206,86 @@ class baseClass:
 		#save as .png
 		c.SaveAs(self.extraDir+name+"_ratio.png")
 
+	def makeRatioStack(self, stack, data , name, doLeg = True, log = False):
+		# C++ Author: Olivier Couet, adapted to python by Colin Fallon
+		# Define the Canvas
+		c = rt.TCanvas("c", "canvas", 800, 800)
+
+		# Upper plot will be in pad1
+		pad1 = rt.TPad("pad1", "pad1", 0, 0.3, 1, 1.0)
+		pad1.SetBottomMargin(0) # Upper and lower plot are joined
+		pad1.SetGridx()         # Vertical grid
+		pad1.Draw()             # Draw the upper pad: pad1
+		pad1.cd()               # pad1 becomes the current pad
+		data.SetStats(0)       # No statistics on upper plot
+		stack.Draw("hist")
+		data.Draw("same E1")
+		if doLeg:
+			pad1.BuildLegend(0.75,0.75,0.95,0.95)
+
+		# Do not draw the Y axis label on the upper plot and redraw a small
+		# axis instead, in order to avoid the first label (0) to be clipped.
+		#h1.GetYaxis().SetLabelSize(0.)
+		#axis = rt.TGaxis( -5, 20, -5, 220, 20,220,510,"")
+		#axis.SetLabelFont(43) # Absolute font size in pixel (precision 3)
+		#axis.SetLabelSize(15)
+		#axis.Draw()
+
+		# lower plot will be in pad
+		c.cd()          # Go back to the main canvas before defining pad2
+		pad2 = rt.TPad("pad2", "pad2", 0, 0.05, 1, 0.3)
+		pad2.SetTopMargin(0)
+		pad2.SetBottomMargin(0.2)
+		pad2.SetGridx() # vertical grid
+		pad2.Draw()
+		pad2.cd()       # pad2 becomes the current pad
+
+		# Define the ratio plot
+		h3 = data.Clone("h3")
+		h3.SetLineColor(rt.kBlack)
+		h3.SetMinimum(0.00)  # Define Y ..
+		h3.SetMaximum(2.00) # .. range
+		h3.Sumw2()
+		h3.SetStats(0)      # No statistics on lower plot
+		h3.Divide(stack.GetStack().Last())
+		h3.SetMarkerStyle(21)
+		h3.Draw("ep")       # Draw the ratio plot
+
+		# h1 settings
+		data.SetLineColor(rt.kBlue+1)
+		data.SetLineWidth(2)
+
+		# Y axis h1 plot settings
+		data.GetYaxis().SetTitleSize(20)
+		data.GetYaxis().SetTitleFont(43)
+		data.GetYaxis().SetTitleOffset(1.55)
+
+		# Ratio plot (h3) settings
+		h3.SetTitle("") # Remove the ratio title
+
+		# Y axis ratio plot settings
+		h3.GetYaxis().SetTitle("Data/Background")
+		h3.GetYaxis().SetNdivisions(505)
+		h3.GetYaxis().SetTitleSize(20)
+		h3.GetYaxis().SetTitleFont(43)
+		h3.GetYaxis().SetTitleOffset(1.55)
+		h3.GetYaxis().SetLabelFont(43) # Absolute font size in pixel (precision 3)
+		h3.GetYaxis().SetLabelSize(15)
+
+		# X axis ratio plot settings
+		h3.GetXaxis().SetTitleSize(20)
+		h3.GetXaxis().SetTitleFont(43)
+		h3.GetXaxis().SetTitleOffset(4.)
+		h3.GetXaxis().SetLabelFont(43); # Absolute font size in pixel (precision 3)
+		h3.GetXaxis().SetLabelSize(15)
+
+		#save as .png
+		c.SaveAs(self.extraDir+name+"_ratio.png")
+
 	def passedPreselection(self, eventJetsAK8, eventMET, eventMT_AK8, eventNElectrons, eventNMuons):
 		nJets = len(eventJetsAK8)
+		if nJets < 2:
+			return False
 		jet1Pt = eventJetsAK8[0].Pt()
 		jet2Pt = eventJetsAK8[1].Pt()
 		jet1Eta = eventJetsAK8[0].Eta()
@@ -246,6 +330,7 @@ class baseClass:
 				print("Object {} cannot be written!".format(thing))
 
 	def selfprint(self):
+		print(str(datetime.datetime.now()))
 		print("------------------------")
 		print("Analysing these files:")
 		for line in self.inputFileList:

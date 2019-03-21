@@ -100,7 +100,7 @@ fileDict = {
 	#"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_QCD_HT-1000to1500_MC2017.root",
 	#"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_QCD_HT-1500to2000_MC2017.root",
 	#"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_QCD_HT-2000toInf_MC2017.root",
-	#root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_QCD_HT-200to300_MC2017.root",
+	#"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_QCD_HT-200to300_MC2017.root",
 	#"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_QCD_HT-300to500_MC2017.root",
 	#"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_QCD_HT-500to700_MC2017.root",
 	#"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_QCD_HT-700to1000_MC2017.root",
@@ -149,6 +149,28 @@ fileDict = {
 	"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_ZJetsToNuNu_HT-2500toInf_MC2017.root",
 	"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_ZJetsToNuNu_HT-400to600_MC2017.root",
 	"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_ZJetsToNuNu_HT-600to800_MC2017.root",
-	"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_ZJetsToNuNu_HT-800to1200_MC2017.root"]
+	"root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahad/tree_ZJetsToNuNu_HT-800to1200_MC2017.root"],
+"G16":["root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV16/Skims/tree_dijetmtdetahadmf/tree_QCD_Pt_1000to1400_MC2016.root"],
+"gSig":["root://cmseos.fnal.gov//store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV16/PrivateSamples.SVJ_2017_mZprime-3000_mDark-20_rinv-0p3_alpha-peak_n-1000_0_RA2AnalysisTree.root"]
+}
+
+plotDict = {
+"noiseFilters16":
+	[
+	"/outputs/noiseFilters/Data16/nF_test.root",
+	"/outputs/noiseFilters/QCD16/nF_test.root",
+	"/outputs/noiseFilters/TTJets16/nF_test.root",
+	"/outputs/noiseFilters/WJets16/nF_test.root",
+	"/outputs/noiseFilters/ZJets16/nF_test.root",
+	],
+
+"noiseFilters17":
+	[
+	"/outputs/noiseFilters/Data17/nF_test.root",
+	"/outputs/noiseFilters/QCD17/nF_test.root",
+	"/outputs/noiseFilters/TTJets17/nF_test.root",
+	"/outputs/noiseFilters/WJets17/nF_test.root",
+	"/outputs/noiseFilters/ZJets17/nF_test.root",
+	]
 }
 
