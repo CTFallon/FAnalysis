@@ -37,7 +37,35 @@ class baseClass:
 		for fileName in self.inputFileList:
 			chain.Add(fileName)
 		return chain
-	
+
+	def stitchTT(self, name, madHT, nEle, nMuo, nTau, GenMET):
+		#return True to Skip event
+		disc = name.split("_")
+		if disc[2][:2] == "MC":
+			if not (madHT < 600 and nEle==0 and nMuo()==0 and ntau==0):
+				return True
+			else:
+				return False
+		elif disc[2][:2] == "HT":
+			if not (madHT >= 600):
+				return True
+			else:
+				return False
+		elif disc[3][:2] == "MC":
+			if not (madHT < 600 and GenMET < 150):
+				return True
+			else:
+				return False
+		elif disc[3][:2] == "ge":
+			if not madHT < 600 and GenMET >= 150):
+				return True
+			else:
+				return False
+		else:
+			print("TTBar stitiching error!")
+			print(rootID.split("_")[2:])
+			return True
+
 	def makeTH1F(self, name, nbinsx, xmin, xmax):
 		hist = rt.TH1F(name, name, nbinsx, xmin, xmax)
 		self.objects.append(hist)
