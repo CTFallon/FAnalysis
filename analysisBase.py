@@ -43,28 +43,6 @@ class baseClass:
 		for fileName in self.inputFileList:
 			chain.Add(fileName)
 		return chain
-
-	def stitchTT(self, eventFileName, madHT, GenMET, nLeptons):
-		# return True means skip event
-		#print(eventFileName)
-		name = eventFileName.split("/")[-1].split("_")
-		if "201" in name[2]:
-			if not ((madHT < 600) and (nLeptons != 0)):
-				return True
-		elif "HT" in name[2]:
-			if not (madHT >= 600):
-				return True
-		elif "201" in name[3]:
-			if not (madHT < 600 and GenMET < 150):
-				return True
-		elif "201" in name[4]:
-			if not (madHT < 600 and GenMET >= 150):
-				return True
-		else:
-			print("TTBar stitiching error!")
-			print(name)
-			return True
-		return False
 	
 	def makeTH1F(self, name, nbinsx, xmin, xmax):
 		hist = rt.TH1F(name, name, nbinsx, xmin, xmax)
@@ -85,7 +63,7 @@ class baseClass:
 		hist = rt.TH2F(name, title, nbinsx, xmin, xmax, nbinsy, ymin, ymax)
 		self.objects.append(hist)
 		return hist
-
+	
 	def makeTH3F(self, name, nbinsx, xmin, xmax, nbinsy, ymin, ymax, nbinsz, zmin, zmax):
 		hist = rt.TH3F(name, name, nbinsx, xmin, xmax, nbinsy, ymin, ymax, nbinsz, zmin, zmax)
 		self.objects.append(hist)
@@ -95,7 +73,7 @@ class baseClass:
 		hist = rt.TH3F(name, title, nbinsx, xmin, xmax, nbinsy, ymin, ymax, nbinsz, zmin, zmax)
 		self.objects.append(hist)
 		return hist
-	
+
 	def makeTGraph(self, n, x, y):
 		graph = rt.TGraph(n,x,y)
 		self.objects.append(graph)
@@ -105,6 +83,34 @@ class baseClass:
 		graph = rt.TGraph()
 		self.objects.append(graph)
 		return graph
+
+	def stitchTT(self, name, madHT, nEle, nMuo, nTau, GenMET):
+		#return True to Skip event
+		disc = name.split("_")
+		if disc[2][:2] == "MC":
+			if not (madHT < 600 and nEle==0 and nMuo==0 and nTau==0):
+				return True
+			else:
+				return False
+		elif disc[2][:2] == "HT":
+			if not (madHT >= 600):
+				return True
+			else:
+				return False
+		elif disc[3][:2] == "MC":
+			if not (madHT < 600 and GenMET < 150):
+				return True
+			else:
+				return False
+		elif disc[3][:2] == "ge":
+			if not (madHT < 600 and GenMET >= 150):
+				return True
+			else:
+				return False
+		else:
+			print("TTBar stitiching error!")
+			print(rootID.split("_")[2:])
+			return True
 
 	def makePng(self, LoHi, name, doLeg = True, log = False, doCum = False):
 		c1 = rt.TCanvas("c1","c1",1200,900)
@@ -314,37 +320,6 @@ class baseClass:
 		#save as .png
 		c.SaveAs(self.extraDir+name+"_ratio.png")
 
-	def passedPreselection(self, eventJetsAK8, eventMET, eventMT_AK8, eventNElectrons, eventNMuons):
-		nJets = len(eventJetsAK8)
-		if nJets < 2:
-			return False
-		jet1Pt = eventJetsAK8[0].Pt()
-		jet2Pt = eventJetsAK8[1].Pt()
-		jet1Eta = eventJetsAK8[0].Eta()
-		jet2Eta = eventJetsAK8[1].Eta()
-		deltaEta = abs(jet1Eta-jet2Eta)
-		METoverMT = eventMET/eventMT_AK8
-		nLep = eventNElectrons+eventNMuons
-		#missing MET filters?
-		
-		test1 = (nJets >= 2)
-		test2 = (jet1Pt > 200) and (jet2Pt > 200)
-		test3 = ((abs(jet1Eta) < 2.4) and (abs(jet2Eta) < 2.4))
-		test4 = (deltaEta < 1.5)
-
-		test5 = (METoverMT > 0.15)
-		test6 = (eventMT_AK8 > 1500)
-
-		test7 = (nLep == 0)
-
-		testJets = test1 and test2 and test3 and test4
-		testMT = test5 and test6
-		testLeps = test7
-		if testJets and testLeps and testMT:
-			return True
-		else:
-			return False
-			
 		
 
 	def make2dPng(self, hist, name):
@@ -362,7 +337,6 @@ class baseClass:
 				print("Object {} cannot be written!".format(thing))
 
 	def selfprint(self):
-		print(str(datetime.datetime.now()))
 		print("------------------------")
 		print("Analysing these files:")
 		for line in self.inputFileList:
@@ -371,7 +345,7 @@ class baseClass:
 		for line in self.treeNameList:
 			print(line)
 		print("And saving output here:")
-		print(self.extraDir+self.outFileName)
+		print(self.outFileName)
 		print("------------------------")
 	
 	def run(self):
