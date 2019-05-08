@@ -43,6 +43,28 @@ class baseClass:
 		for fileName in self.inputFileList:
 			chain.Add(fileName)
 		return chain
+
+	def stitchTT(self, eventFileName, madHT, GenMET, nLeptons):
+		# return True means skip event
+		#print(eventFileName)
+		name = eventFileName.split("/")[-1].split("_")
+		if "201" in name[2]:
+			if not ((madHT < 600) and (nLeptons != 0)):
+				return True
+		elif "HT" in name[2]:
+			if not (madHT >= 600):
+				return True
+		elif "201" in name[3]:
+			if not (madHT < 600 and GenMET < 150):
+				return True
+		elif "201" in name[4]:
+			if not (madHT < 600 and GenMET >= 150):
+				return True
+		else:
+			print("TTBar stitiching error!")
+			print(name)
+			return True
+		return False
 	
 	def makeTH1F(self, name, nbinsx, xmin, xmax):
 		hist = rt.TH1F(name, name, nbinsx, xmin, xmax)
@@ -61,6 +83,16 @@ class baseClass:
 
 	def makeTH2F(self, name, title, nbinsx, xmin, xmax, nbinsy, ymin, ymax):
 		hist = rt.TH2F(name, title, nbinsx, xmin, xmax, nbinsy, ymin, ymax)
+		self.objects.append(hist)
+		return hist
+
+	def makeTH3F(self, name, nbinsx, xmin, xmax, nbinsy, ymin, ymax, nbinsz, zmin, zmax):
+		hist = rt.TH3F(name, name, nbinsx, xmin, xmax, nbinsy, ymin, ymax, nbinsz, zmin, zmax)
+		self.objects.append(hist)
+		return hist
+
+	def makeTH3F(self, name, title, nbinsx, xmin, xmax, nbinsy, ymin, ymax, nbinsz, zmin, zmax):
+		hist = rt.TH3F(name, title, nbinsx, xmin, xmax, nbinsy, ymin, ymax, nbinsz, zmin, zmax)
 		self.objects.append(hist)
 		return hist
 	
@@ -339,7 +371,7 @@ class baseClass:
 		for line in self.treeNameList:
 			print(line)
 		print("And saving output here:")
-		print(self.outFileName)
+		print(self.extraDir+self.outFileName)
 		print("------------------------")
 	
 	def run(self):
