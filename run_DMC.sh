@@ -8,8 +8,7 @@ OUT="$NAME.root"
 echo "Submitting jobs for $NAME"
 
 
-#for fileID in QCD16 TTJets16 WJets16 ZJets16 QCD17 TTJets17 WJets17 ZJets17
-for fileID in Data16 Data17
+for fileID in Data16 Data17 Data18PRE Data18POST ST16 ST17 ST18PRE ST18POST QCD16 QCD17 QCD18PRE QCD18POST TTJets16 TTJets17 TTJets18PRE TTJets18POST WJets16 WJets17 WJets18PRE WJets18POST ZJets16 ZJets17 ZJets18PRE ZJets18POST
 do
 	if [ ! -d "outputs/dmc/$fileID" ]; then
 		mkdir outputs/dmc/$fileID

@@ -14,16 +14,12 @@ class baseClass:
 		self.loadOutFile()
 
 	def loadFileList(self):
-		from input_conf.inputRoot import fileDict
-		from input_conf.inputRoot import plotDict
+		from input_conf.inputRoot_fullRun2 import fileDict
 		try:
 			self.inputFileList = fileDict[self.fileID]
 		except KeyError:
-			print("Key does not exist in fileDict. Switching to Plotting Mode.")
-			try:
-				self.inputFileList = plotDict[self.fileID]
-			except KeyError:
-				exit("Key does not exist in plotDict. Exiting.")
+			print("Key does not exist in fileDict. Exiting")
+			sys.exit(0)
 			
 	def loadTreeList(self):
 		treeFile = open("input_conf/"+self.treeList)
@@ -84,33 +80,54 @@ class baseClass:
 		self.objects.append(graph)
 		return graph
 
-	def stitchTT(self, name, madHT, nEle, nMuo, nTau, GenMET):
+	def stitchTT(self, name, madHT, nEle, nMuo, nTau, GenMET, fileID):
 		#return True to Skip event
 		disc = name.split("_")
-		if disc[2][:2] == "MC":
-			if not (madHT < 600 and nEle==0 and nMuo==0 and nTau==0):
-				return True
+		if "18" in fileID:# 2018 doesnt have GenMET samples, so we dont do the GenMET cuts for this year
+			if disc[2][:2] == "MC":
+				if not (madHT < 600 and nEle==0 and nMuo==0 and nTau==0):
+					return True
+				else:
+					return False
+			elif disc[2][:2] == "HT":
+				if not (madHT >= 600):
+					return True
+				else:
+					return False
+			elif disc[3][:2] == "MC":
+				if not (madHT < 600):
+					return True
+				else:
+					return False
 			else:
-				return False
-		elif disc[2][:2] == "HT":
-			if not (madHT >= 600):
+				print("TTBar stitiching error!")
+				print(rootID.split("_")[2:])
 				return True
+		else: 
+			if disc[2][:2] == "MC":
+				if not (madHT < 600 and nEle==0 and nMuo==0 and nTau==0):
+					return True
+				else:
+					return False
+			elif disc[2][:2] == "HT":
+				if not (madHT >= 600):
+					return True
+				else:
+					return False
+			elif disc[3][:2] == "MC":
+				if not (madHT < 600 and GenMET < 150):
+					return True
+				else:
+					return False
+			elif disc[3][:2] == "ge":
+				if not (madHT < 600 and GenMET >= 150):
+					return True
+				else:
+					return False
 			else:
-				return False
-		elif disc[3][:2] == "MC":
-			if not (madHT < 600 and GenMET < 150):
+				print("TTBar stitiching error!")
+				print(rootID.split("_")[2:])
 				return True
-			else:
-				return False
-		elif disc[3][:2] == "ge":
-			if not (madHT < 600 and GenMET >= 150):
-				return True
-			else:
-				return False
-		else:
-			print("TTBar stitiching error!")
-			print(rootID.split("_")[2:])
-			return True
 
 	def makePng(self, LoHi, name, doLeg = True, log = False, doCum = False):
 		c1 = rt.TCanvas("c1","c1",1200,900)
