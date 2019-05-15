@@ -35,6 +35,8 @@ def makeRatioBkgStack(bkgList, data , title, xlabel, ylabel, name, doLeg = True,
 	if doLeg:
 		if (("deltaR" in xlabel) or ("Eta" in xlabel) or ("ptD" in xlabel) or ("BvsAll" in xlabel) or ("ecf" in xlabel) or ("chgH" in xlabel)):
 			leg = rt.TLegend(0.3,0.0,0.7,0.3,title,"brNDC") # pos bot mid
+		elif "DeltaPhi" in xlabel:
+			leg = rt.TLegend(0.3,0.6,0.7,0.9,title,"brNDC") # pos top mid
 		else:		
 			leg = rt.TLegend(0.5,0.6,0.9,0.9,title,"brNDC") # pos top right
 		leg.SetNColumns(2)
@@ -122,7 +124,7 @@ def makeRatioBkgStack(bkgList, data , title, xlabel, ylabel, name, doLeg = True,
 	one.Draw("same")
 	#h3.Fit("line","Q+")
 	#save as .png
-	c.SaveAs("plots2/"+name)
+	c.SaveAs("plots3/"+name)
 	print(name.split("_")[0] + ' ' + name.split("_")[1] + ' ' + name.split("_")[2]+ " {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} ".format(
 bkgList[0].Integral(),bkgList[1].Integral(),bkgList[2].Integral(),bkgList[3].Integral(),totBkg.Integral(),data.Integral(),
 bkgList[0].GetEntries(),bkgList[1].GetEntries(),bkgList[2].GetEntries(),bkgList[3].GetEntries(),totBkg.GetEntries(),data.GetEntries(), const.GetParameter(0), line.GetParameter(0), line.GetParameter(1)))
@@ -133,6 +135,7 @@ bkgList = ['TTJets',  'WJets', 'ZJets','QCD', "ST"]
 # make plots comparing each data year to bkg year 
 varList = {
 	'MET':['MET [GeV]'],
+	'MHT':['MHT [GeV]'],
 	'JetsAK8[0].Pt()':["Leading Jet Pt [GeV]"],
 	'JetsAK8[1].Pt()':["Subleading Jet Pt [GeV]"],
 	'JetsAK8[0].Eta()':["Leading Jet #eta"],
@@ -172,7 +175,11 @@ varList = {
 	'tau23_lead':['Leading Jet #tau_{23}'],
 	'tau12_lead':['Leading Jet #tau_{12}'],
 	'tau23_sub':['Subleading Jet #tau_{23}'],
-	'tau12_sub':['Subleading Jet #tau_{12}']
+	'tau12_sub':['Subleading Jet #tau_{12}'],
+	'JetsAK8_bdtSVJtag[0]':["Leading Jet SVJ BDT Output"],
+	'JetsAK8_bdtSVJtag[1]':["Subleading Jet SVJ BDT Output"],
+	'DeltaPhi1':["#Delta#phi(j_1, MET)"],
+	'DeltaPhi2':["#Delta#phi(j_2, MET)"],
 }
 
 # <var>_<sample>
@@ -216,7 +223,8 @@ for year in ['16','17','18PRE', '18POST']:
 		print("var yr Filter yTT yW yZ yQCD yBkg yData nTT nW nZ nQCD nBkg nData avgRatio")
 		showLog = True
 		if "Phi" in var:
-			showLog = False
+			if not ("Delta" in var):
+				showLog = False
 		makeRatioBkgStack(
 			[tempHist["TTJets"],tempHist["WJets"],tempHist["ZJets"],tempHist["QCD"], tempHist["ST"]], #bkg list
 			tempHist["Data"], # data

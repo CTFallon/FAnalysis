@@ -70,7 +70,11 @@ def loop(self):
 	'tau23_lead':["spec",100,0,7,self.fileID+";Leading Jet #tau_{23};Events"],
 	'tau12_lead':["spec",100,0,15,self.fileID+";Subleading Jet #tau_{12};Events"],
 	'tau23_sub':["spec",100,0,7,self.fileID+";Leading Jet #tau_{23};Events"],
-	'tau12_sub':["spec",100,0,15,self.fileID+";Subeading Jet #tau_{12};Events"]
+	'tau12_sub':["spec",100,0,15,self.fileID+";Subeading Jet #tau_{12};Events"],
+	'JetsAK8_bdtSVJtag[0]':["vI",100,0,1,self.fileID+"; SVJ BDT Output; Events"],
+	'JetsAK8_bdtSVJtag[1]':["vI",100,0,1,self.fileID+"; SVJ BDT Output; Events"],
+	'DeltaPhi1':["s",100,0,3.14,self.fileID+"; #Delta#phi(j_1, MET); Events"],
+	'DeltaPhi2':["s",100,0,3.14,self.fileID+"; #Delta#phi(j_2, MET); Events"],
 	}
 	branchList = tree.GetListOfBranches()
 	branchListNames = []
@@ -135,10 +139,12 @@ def loop(self):
 			weight = 1.
 		
 		if "18" in self.fileID:
-			if (("PRE" in self.fileID) and (tree.RunNum >= 319077)):
+			if (("PRE" in self.fileID) and ("Data" in self.fileID) and (tree.RunNum >= 319077)):
 				continue
 			elif "POST" in self.fileID:
-				if ((tree.RunNum < 319077) or (tree.HEMOptVetoFilter == 0)):
+				if (("Data" in self.fileID) and ((tree.RunNum < 319077) or (tree.HEMOptVetoFilter == 0)):
+					continue
+				elif tree.HEMOptVetoFilter == 0:
 					continue
 
 		for plotVar in plotDict.keys():
