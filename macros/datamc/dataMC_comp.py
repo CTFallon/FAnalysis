@@ -142,7 +142,7 @@ def loop(self):
 			if (("PRE" in self.fileID) and ("Data" in self.fileID) and (tree.RunNum >= 319077)):
 				continue
 			elif "POST" in self.fileID:
-				if (("Data" in self.fileID) and ((tree.RunNum < 319077) or (tree.HEMOptVetoFilter == 0)):
+				if (("Data" in self.fileID) and ((tree.RunNum < 319077) or (tree.HEMOptVetoFilter == 0))):
 					continue
 				elif tree.HEMOptVetoFilter == 0:
 					continue
