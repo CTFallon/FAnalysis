@@ -30,6 +30,7 @@ def loop(self):
 				#				 "vIF" - vector, indexed function (ie 'JetsAK8[0].Pt()', only Pt of leading AK8 Jet)
 				#				 "vR", "vRF
 	'MET':["s",100,200,2000,self.fileID+";MET; Events"],
+	'METPhi':["s",100,-3.5,3.5,self.fileID+";MET#Phi; Events"],
 	'MHT':["s",100,200,2000,self.fileID+";MHT; Events"],
 	'JetsAK8[0].Pt()':["vIF",100,0,3000,self.fileID+";Jet Pt;Events"],
 	'JetsAK8[1].Pt()':["vIF",100,0,1800,self.fileID+";Jet Pt;Events"],
@@ -63,7 +64,7 @@ def loop(self):
 	'JetsAK8_electronEnergyFraction[1]':["vI",100,0,1,self.fileID+"; fEle; Events"],
 	'JetsAK8_muonEnergyFraction[0]':["vI",100,0,1,self.fileID+"; fMu; Events"],
 	'JetsAK8_muonEnergyFraction[1]':["vI",100,0,1,self.fileID+"; fMu; Events"],
-	'detlaR12':["spec",100,0.8,3.5,self.fileID+";#Delta R(1,2);Events"],
+	'deltaR12':["spec",100,0.8,5.0,self.fileID+";#Delta R(j_{1},j_{2});Events"],
 	'metR':["spec",100,0.15,0.7,self.fileID+";MET/m_{T};Events"],
 	'nJetsAK8':["spec",7,1,8,self.fileID+";nAK8 Jets;Events"],
 	'nJetsAK4':["spec",40,0,40,self.fileID+";nAK4 Jets;Events"],
@@ -73,8 +74,8 @@ def loop(self):
 	'tau12_sub':["spec",100,0,15,self.fileID+";Subeading Jet #tau_{12};Events"],
 	'JetsAK8_bdtSVJtag[0]':["vI",100,0,1,self.fileID+"; SVJ BDT Output; Events"],
 	'JetsAK8_bdtSVJtag[1]':["vI",100,0,1,self.fileID+"; SVJ BDT Output; Events"],
-	'DeltaPhi1':["s",100,0,3.14,self.fileID+"; #Delta#phi(j_1, MET); Events"],
-	'DeltaPhi2':["s",100,0,3.14,self.fileID+"; #Delta#phi(j_2, MET); Events"],
+	'DeltaPhi1':["s",100,0,3.14,self.fileID+"; #Delta#phi(j_{1}, MET); Events"],
+	'DeltaPhi2':["s",100,0,3.14,self.fileID+"; #Delta#phi(j_{2}, MET); Events"],
 	}
 	branchList = tree.GetListOfBranches()
 	branchListNames = []
@@ -195,7 +196,7 @@ def loop(self):
 			tau12_sub = tree.JetsAK8_NsubjettinessTau1[1]/tree.JetsAK8_NsubjettinessTau2[1]
 		except ZeroDivisionError:
 			tau12_sub = 0
-		histDict['detlaR12'].Fill(detlaR12,weight*lumi)
+		histDict['deltaR12'].Fill(detlaR12,weight*lumi)
 		histDict['metR'].Fill(metR,weight*lumi)
 		histDict['nJetsAK8'].Fill(nJetsAK8,weight*lumi)
 		histDict['nJetsAK4'].Fill(nJetsAK4,weight*lumi)

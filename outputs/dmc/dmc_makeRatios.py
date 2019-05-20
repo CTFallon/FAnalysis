@@ -33,9 +33,9 @@ def makeRatioBkgStack(bkgList, data , title, xlabel, ylabel, name, doLeg = True,
 	data.Draw("E1 same")
 	stack.GetYaxis().SetTitle(ylabel)
 	if doLeg:
-		if (("deltaR" in xlabel) or ("Eta" in xlabel) or ("ptD" in xlabel) or ("BvsAll" in xlabel) or ("ecf" in xlabel) or ("chgH" in xlabel)):
+		if (("deltaR" in xlabel) or ("Output" in xlabel) or ("Num." in xlabel) or ("#eta" in xlabel) or ("ptD" in xlabel) or ("BvsAll" in xlabel) or ("ecf" in xlabel) or ("chgH" in xlabel)):
 			leg = rt.TLegend(0.3,0.0,0.7,0.3,title,"brNDC") # pos bot mid
-		elif "DeltaPhi" in xlabel:
+		elif (("#Delta#phi" in xlabel)):
 			leg = rt.TLegend(0.3,0.6,0.7,0.9,title,"brNDC") # pos top mid
 		else:		
 			leg = rt.TLegend(0.5,0.6,0.9,0.9,title,"brNDC") # pos top right
@@ -135,6 +135,7 @@ bkgList = ['TTJets',  'WJets', 'ZJets','QCD', "ST"]
 # make plots comparing each data year to bkg year 
 varList = {
 	'MET':['MET [GeV]'],
+	'METPhi':['#Phi(MET)'],
 	'MHT':['MHT [GeV]'],
 	'JetsAK8[0].Pt()':["Leading Jet Pt [GeV]"],
 	'JetsAK8[1].Pt()':["Subleading Jet Pt [GeV]"],
@@ -168,7 +169,7 @@ varList = {
 	'JetsAK8_electronEnergyFraction[1]':["Subleading Jet eleEnrgyFrctn"],
 	'JetsAK8_muonEnergyFraction[0]':["Leading Jet muEnrgyFrctn"],
 	'JetsAK8_muonEnergyFraction[1]':["Subleading Jet muEnrgyFrctn"],
-	'detlaR12':["#DeltaR(j_{1,2})"],
+	'deltaR12':["#DeltaR(j_{1,2})"],
 	'metR':["MET/m_{T}"],
 	'nJetsAK8':['Num. AK8 Jets'],
 	'nJetsAK4':['Num. AK4 Jets'],
@@ -178,8 +179,8 @@ varList = {
 	'tau12_sub':['Subleading Jet #tau_{12}'],
 	'JetsAK8_bdtSVJtag[0]':["Leading Jet SVJ BDT Output"],
 	'JetsAK8_bdtSVJtag[1]':["Subleading Jet SVJ BDT Output"],
-	'DeltaPhi1':["#Delta#phi(j_1, MET)"],
-	'DeltaPhi2':["#Delta#phi(j_2, MET)"],
+	'DeltaPhi1':["#Delta#phi(j_{1}, MET)"],
+	'DeltaPhi2':["#Delta#phi(j_{2}, MET)"]
 }
 
 # <var>_<sample>
