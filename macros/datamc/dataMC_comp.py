@@ -30,14 +30,14 @@ def loop(self):
 				#				 "vIF" - vector, indexed function (ie 'JetsAK8[0].Pt()', only Pt of leading AK8 Jet)
 				#				 "vR", "vRF
 	'MET':["s",100,200,2000,self.fileID+";MET; Events"],
-	'METPhi':["s",100,-3.5,3.5,self.fileID+";MET#Phi; Events"],
+	'METPhi':["s",100,-rt.TMath.Pi(),rt.TMath.Pi(),self.fileID+";MET#Phi; Events"],
 	'MHT':["s",100,200,2000,self.fileID+";MHT; Events"],
 	'JetsAK8[0].Pt()':["vIF",100,0,3000,self.fileID+";Jet Pt;Events"],
 	'JetsAK8[1].Pt()':["vIF",100,0,1800,self.fileID+";Jet Pt;Events"],
-	'JetsAK8[0].Eta()':["vIF",100,-2.5,2.5,self.fileID+";Jet Eta;Events"],
-	'JetsAK8[1].Eta()':["vIF",100,-2.5,2.5,self.fileID+";Jet Eta;Events"],
-	'JetsAK8[0].Phi()':["vIF",100,-3.2,3.2,self.fileID+";Jet Phi;Events"],
-	'JetsAK8[1].Phi()':["vIF",100,-3.2,3.2,self.fileID+";Jet Phi;Events"],
+	'JetsAK8[0].Eta()':["vIF",100,-2.4,2.4,self.fileID+";Jet Eta;Events"],
+	'JetsAK8[1].Eta()':["vIF",100,-2.4,2.4,self.fileID+";Jet Eta;Events"],
+	'JetsAK8[0].Phi()':["vIF",100,-rt.TMath.Pi(),rt.TMath.Pi(),self.fileID+";Jet Phi;Events"],
+	'JetsAK8[1].Phi()':["vIF",100,-rt.TMath.Pi(),rt.TMath.Pi(),self.fileID+";Jet Phi;Events"],
 	'JetsAK8_girth[0]':["vI",100,0,0.5,self.fileID+"; Girth; Events"],
 	'JetsAK8_girth[1]':["vI",100,0,0.5,self.fileID+"; Girth; Events"],
 	'JetsAK8_softDropMass[0]':["vI",100,0,600,self.fileID+"; SoftDrop Mass; Events"],
@@ -46,10 +46,10 @@ def loop(self):
 	'JetsAK8_axismajor[1]':["vI",100,0,0.5,self.fileID+"; Major Axis; Events"],
 	'JetsAK8_axisminor[0]':["vI",100,0,0.3,self.fileID+"; Minor Axis; Events"],
 	'JetsAK8_axisminor[1]':["vI",100,0,0.3,self.fileID+"; Minor Axis; Events"],
-	'JetsAK8_ptdrlog[0]':["vI",100,0,450,self.fileID+"; ptdrlog; Events"],
-	'JetsAK8_ptdrlog[1]':["vI",100,0,450,self.fileID+"; ptdrlog; Events"],
-	'JetsAK8_ptD[0]':["vI",100,0,1,self.fileID+"; ptD; Events"],
-	'JetsAK8_ptD[1]':["vI",100,0,1,self.fileID+"; ptD; Events"],
+	'JetsAK8_ptdrlog[0]':["vI",100,0,400,self.fileID+"; ptdrlog; Events"],
+	'JetsAK8_ptdrlog[1]':["vI",100,0,400,self.fileID+"; ptdrlog; Events"],
+	'JetsAK8_ptD[0]':["vI",100,0.1,1,self.fileID+"; ptD; Events"],
+	'JetsAK8_ptD[1]':["vI",100,0.1,1,self.fileID+"; ptD; Events"],
 	'JetsAK8_maxBvsAll[0]':["vI",100,0,1,self.fileID+"; maxBvsAll; Events"],
 	'JetsAK8_maxBvsAll[1]':["vI",100,0,1,self.fileID+"; maxBvsAll; Events"],
 	'JetsAK8_ecfN2b1[0]':["vI",100,0,0.5,self.fileID+"; ecfN2b1; Events"],
@@ -64,7 +64,7 @@ def loop(self):
 	'JetsAK8_electronEnergyFraction[1]':["vI",100,0,1,self.fileID+"; fEle; Events"],
 	'JetsAK8_muonEnergyFraction[0]':["vI",100,0,1,self.fileID+"; fMu; Events"],
 	'JetsAK8_muonEnergyFraction[1]':["vI",100,0,1,self.fileID+"; fMu; Events"],
-	'deltaR12':["spec",100,0.8,5.0,self.fileID+";#Delta R(j_{1},j_{2});Events"],
+	'deltaR12':["spec",100,0.8,3.5,self.fileID+";#Delta R(j_{1},j_{2});Events"],
 	'metR':["spec",100,0.15,0.7,self.fileID+";MET/m_{T};Events"],
 	'nJetsAK8':["spec",7,1,8,self.fileID+";nAK8 Jets;Events"],
 	'nJetsAK4':["spec",40,0,40,self.fileID+";nAK4 Jets;Events"],
@@ -140,12 +140,13 @@ def loop(self):
 			weight = 1.
 		
 		if "18" in self.fileID:
+			print("2018 data")
 			if (("PRE" in self.fileID) and ("Data" in self.fileID) and (tree.RunNum >= 319077)):
+				print("pre HEM issue")
 				continue
 			elif "POST" in self.fileID:
-				if (("Data" in self.fileID) and ((tree.RunNum < 319077) or (tree.HEMOptVetoFilter == 0))):
-					continue
-				elif tree.HEMOptVetoFilter == 0:
+				if ((("Data" in self.fileID) and (tree.RunNum < 319077)) or (tree.HEMOptVetoFilter == 0)):
+					print("post HEM issue")
 					continue
 
 		for plotVar in plotDict.keys():

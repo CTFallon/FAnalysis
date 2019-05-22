@@ -28,12 +28,12 @@ def makeRatioBkgStack(bkgList, data , title, xlabel, ylabel, name, doLeg = True,
 	#stack.SetStats(0)       # No statistics on upper plot
 	#data.SetStats(0)       # No statistics on upper plot
 	stack.SetMinimum(1)
-	stack.SetMaximum(max(stack.GetMaximum(),data.GetMaximum())*1.5)
+	stack.SetMaximum(max(stack.GetStack().Last().GetMaximum(),data.GetMaximum())*1.5)
 	stack.Draw("hist")        
 	data.Draw("E1 same")
 	stack.GetYaxis().SetTitle(ylabel)
 	if doLeg:
-		if (("deltaR" in xlabel) or ("Output" in xlabel) or ("Num." in xlabel) or ("#eta" in xlabel) or ("ptD" in xlabel) or ("BvsAll" in xlabel) or ("ecf" in xlabel) or ("chgH" in xlabel)):
+		if (("DeltaR" in xlabel) or ("Output" in xlabel) or ("Num." in xlabel) or ("#eta" in xlabel) or ("ptD" in xlabel) or ("BvsAll" in xlabel) or ("ecf" in xlabel) or ("chgH" in xlabel)):
 			leg = rt.TLegend(0.3,0.0,0.7,0.3,title,"brNDC") # pos bot mid
 		elif (("#Delta#phi" in xlabel)):
 			leg = rt.TLegend(0.3,0.6,0.7,0.9,title,"brNDC") # pos top mid
@@ -253,11 +253,17 @@ for year in ['16','17','18PRE', '18POST']:
 			tempHist[bkgGroup].SetLineColor(bkgColorDict[bkgGroup])
 			tempHist[bkgGroup].SetFillColor(bkgColorDict[bkgGroup])
 			tempHist[bkgGroup].SetFillStyle(1001)
+			nBins = tempHist[bkgGroup].GetNbinsX()
+			tempHist[bkgGroup].SetBinContent(1,tempHist[bkgGroup].GetBinContent(0)+tempHist[bkgGroup].GetBinContent(1))
+			tempHist[bkgGroup].SetBinContent(nBins,tempHist[bkgGroup].GetBinContent(nBins)+tempHist[bkgGroup].GetBinContent(nBins+1))
 			_file.Close()
 		_file2 = rt.TFile.Open("Data"+year+"/dataMC_comp.root","READ")
 		_file2.GetObject(var+"_Data"+year,tempHist["Data"])
 		tempHist["Data"] = tempHist["Data"].Clone(tempHist["Data"].GetName()+"_")
 		tempHist["Data"].SetDirectory(0)
+		nBins = tempHist["Data"].GetNbinsX()
+		tempHist["Data"].SetBinContent(1,tempHist["Data"].GetBinContent(0)+tempHist["Data"].GetBinContent(1))
+		tempHist["Data"].SetBinContent(nBins,tempHist["Data"].GetBinContent(nBins)+tempHist["Data"].GetBinContent(nBins+1))
 		_file2.Close()
 		makeRatioBkgStack(
 			[tempHist["TTJets"],tempHist["WJets"],tempHist["ZJets"],tempHist["QCD"]], #bkg list
