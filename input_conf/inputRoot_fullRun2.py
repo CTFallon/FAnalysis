@@ -1,4 +1,4 @@
-baseLoc = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadmf/"
+baseLoc = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahad/"
 
 
 fileDict = {
