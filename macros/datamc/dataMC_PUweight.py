@@ -92,10 +92,10 @@ def loop(self):
 	'metR':["spec",100,0.15,0.7,self.fileID+";MET/m_{T};Events"],
 	'nJetsAK8':["spec",7,1,8,self.fileID+";nAK8 Jets;Events"],
 	'nJetsAK4':["spec",40,0,40,self.fileID+";nAK4 Jets;Events"],
-	'tau23_lead':["spec",100,0,7,self.fileID+";Leading Jet #tau_{23};Events"],
-	'tau12_lead':["spec",100,0,15,self.fileID+";Subleading Jet #tau_{12};Events"],
-	'tau23_sub':["spec",100,0,7,self.fileID+";Leading Jet #tau_{23};Events"],
-	'tau12_sub':["spec",100,0,15,self.fileID+";Subeading Jet #tau_{12};Events"],
+	'tau32_lead':["spec",100,0,1,self.fileID+";Leading Jet #tau_{32};Events"],
+	'tau21_lead':["spec",100,0,1,self.fileID+";Subleading Jet #tau_{21};Events"],
+	'tau32_sub':["spec",100,0,1,self.fileID+";Leading Jet #tau_{32};Events"],
+	'tau21_sub':["spec",100,0,1,self.fileID+";Subeading Jet #tau_{21};Events"],
 	'JetsAK8_bdtSVJtag[0]':["vI",100,0,1,self.fileID+"; SVJ BDT Output; Events"],
 	'JetsAK8_bdtSVJtag[1]':["vI",100,0,1,self.fileID+"; SVJ BDT Output; Events"],
 	'DeltaPhi1':["s",100,0,3.14,self.fileID+"; #Delta#phi(j_{1}, MET); Events"],
@@ -156,6 +156,27 @@ def loop(self):
 		if iEvent%1000 == 0:
 			print("Event: " + str(iEvent) + "/" + str(nEvents))
 		tree.GetEvent(iEvent)
+		#When using non-MF samples, besure to apply MET Filters if needed
+		# these are FILTERS, not TRIGGERS.
+		# each FILTER has the power to REJECT an event
+		# whereas each TRIGGER has the power to ACCEPT an event
+			# for instance, to not aplpy ecalBadCalibFilter, and to add in the 
+			# HTRatioDPhiTightFilter
+			# base MET Filters are:
+			# NVtx > 0, eeBadScFilter, HBHENoiseFilter, HBHEIsoNoiseFilter,
+			# globalSuperTightHalo2016Filter, BadChargedCandidateFilter,
+			# BadPFMuonFilte
+
+#		if not (
+#			tree.NVtx > 0 and
+#			tree.eeBadScFilter == 1 and
+#			tree.HBHENoiseFilter == 1 and
+#			tree.HBHEIsoNoiseFilter == 1 and
+#			tree.globalSuperTightHalo2016Filter == 1 and
+#			tree.BadChargedCandidateFilter == 1# and
+#			#tree.HTRatioDPhiTightFilter == 1
+#		): # must pass all filters to continue
+#			continue
 		if "TT" in self.fileID:
 			if self.stitchTT(tree.GetFile().GetName().split("/")[-1], tree.madHT, len(tree.GenElectrons),len(tree.GenMuons), len(tree.GenTaus), tree.GenMET, self.fileID):
 				continue		
@@ -229,29 +250,29 @@ def loop(self):
 		nJetsAK8 = len(tree.JetsAK8)
 		nJetsAK4 = len(tree.Jets)
 		try:
-			tau23_lead = tree.JetsAK8_NsubjettinessTau2[0]/tree.JetsAK8_NsubjettinessTau3[0]
+			tau32_lead = tree.JetsAK8_NsubjettinessTau3[0]/tree.JetsAK8_NsubjettinessTau2[0]
 		except ZeroDivisionError:
-			tau23_lead = 0
+			tau32_lead = 0
 		try:
-			tau12_lead = tree.JetsAK8_NsubjettinessTau1[0]/tree.JetsAK8_NsubjettinessTau2[0]
+			tau21_lead = tree.JetsAK8_NsubjettinessTau2[0]/tree.JetsAK8_NsubjettinessTau1[0]
 		except ZeroDivisionError:
-			tau12_lead = 0
+			tau21_lead = 0
 		try:
-			tau23_sub = tree.JetsAK8_NsubjettinessTau2[1]/tree.JetsAK8_NsubjettinessTau3[1]
+			tau32_sub = tree.JetsAK8_NsubjettinessTau3[1]/tree.JetsAK8_NsubjettinessTau2[1]
 		except ZeroDivisionError:
-			tau23_sub = 0
+			tau32_sub = 0
 		try:
-			tau12_sub = tree.JetsAK8_NsubjettinessTau1[1]/tree.JetsAK8_NsubjettinessTau2[1]
+			tau21_sub = tree.JetsAK8_NsubjettinessTau2[1]/tree.JetsAK8_NsubjettinessTau1[1]
 		except ZeroDivisionError:
-			tau12_sub = 0
+			tau21_sub = 0
 		histDict['deltaR12'].Fill(detlaR12,weight*lumi)
 		histDict['metR'].Fill(metR,weight*lumi)
 		histDict['nJetsAK8'].Fill(nJetsAK8,weight*lumi)
 		histDict['nJetsAK4'].Fill(nJetsAK4,weight*lumi)
-		histDict['tau23_lead'].Fill(tau23_lead,weight*lumi)
-		histDict['tau12_lead'].Fill(tau12_lead,weight*lumi)
-		histDict['tau23_sub'].Fill(tau23_sub,weight*lumi)
-		histDict['tau12_sub'].Fill(tau12_sub,weight*lumi)
+		histDict['tau32_lead'].Fill(tau32_lead,weight*lumi)
+		histDict['tau21_lead'].Fill(tau21_lead,weight*lumi)
+		histDict['tau32_sub'].Fill(tau32_sub,weight*lumi)
+		histDict['tau21_sub'].Fill(tau21_sub,weight*lumi)
 				
 			
 				# getattr is funky for methods. for a public variable of a class, getattr(obj, attr) works.
