@@ -80,10 +80,9 @@ def loop(self):
 	'JetsAK8_bdtSVJtag[0]':["vI",nBins,0,1,self.fileID+"; SVJ BDT Output; Events"],
 	'JetsAK8_bdtSVJtag[1]':["vI",nBins,0,1,self.fileID+"; SVJ BDT Output; Events"],
 	'DeltaPhi1':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{1}, MET); Events"],
-	'DeltaPhi2':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{2}, MET); Events"],
-	'ecalBadCalibReducedFilter':["s",2,0,2,self.fileID+"; ecalBadCalibReducedFilter; Events"],
-	'ecalBadCalibReducedExtraFilter':["s",2,0,2,self.fileID+"; ecalBadCalibReducedExtraFilter; Events"],
+	'DeltaPhi2':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{2}, MET); Events"]
 	}
+
 	branchList = tree.GetListOfBranches()
 	branchListNames = []
 	for thing in branchList:

@@ -42,6 +42,7 @@ def loop(self):
 	# initalize histograms to be made, or create Friend tree to be filled
 	self.outRootFile.cd()
 
+	nBins = 1000
 	# list of branches to plot
 	plotDict = {#key = var name, value = [varType, nBins, binLow, binHigh, title]
 				# varType can be "s" - single value (ie 'MET')
@@ -51,56 +52,62 @@ def loop(self):
 				#				 "vAF" - vector, all values but function (ie 'JetsAK8.Pt()' - Pt of all ak8 Jets)
 				#				 "vIF" - vector, indexed function (ie 'JetsAK8[0].Pt()', only Pt of leading AK8 Jet)
 				#				 "vR", "vRF
-	'fixedGridRhoFastjetAll':["s",100,0,80,self.fileID+";fixedGridRhoFastjetAll; Events"],
-	'NVtx':["s",100,0,100,self.fileID+";NVtx; Events"],	
-	'MET':["s",100,200,2000,self.fileID+";MET; Events"],
-	'METPhi':["s",100,-3.5,3.5,self.fileID+";MET#Phi; Events"],
-	'MHT':["s",100,200,2000,self.fileID+";MHT; Events"],
-	'JetsAK8[0].Pt()':["vIF",100,0,3000,self.fileID+";Jet Pt;Events"],
-	'JetsAK8[1].Pt()':["vIF",100,0,1800,self.fileID+";Jet Pt;Events"],
-	'JetsAK8[0].Eta()':["vIF",100,-2.5,2.5,self.fileID+";Jet Eta;Events"],
-	'JetsAK8[1].Eta()':["vIF",100,-2.5,2.5,self.fileID+";Jet Eta;Events"],
-	'JetsAK8[0].Phi()':["vIF",100,-3.2,3.2,self.fileID+";Jet Phi;Events"],
-	'JetsAK8[1].Phi()':["vIF",100,-3.2,3.2,self.fileID+";Jet Phi;Events"],
-	'JetsAK8_girth[0]':["vI",100,0,0.5,self.fileID+"; Girth; Events"],
-	'JetsAK8_girth[1]':["vI",100,0,0.5,self.fileID+"; Girth; Events"],
-	'JetsAK8_softDropMass[0]':["vI",100,0,600,self.fileID+"; SoftDrop Mass; Events"],
-	'JetsAK8_softDropMass[1]':["vI",100,0,450,self.fileID+"; SoftDrop Mass; Events"],
-	'JetsAK8_axismajor[0]':["vI",100,0,0.5,self.fileID+"; Major Axis; Events"],
-	'JetsAK8_axismajor[1]':["vI",100,0,0.5,self.fileID+"; Major Axis; Events"],
-	'JetsAK8_axisminor[0]':["vI",100,0,0.3,self.fileID+"; Minor Axis; Events"],
-	'JetsAK8_axisminor[1]':["vI",100,0,0.3,self.fileID+"; Minor Axis; Events"],
-	'JetsAK8_ptdrlog[0]':["vI",100,0,450,self.fileID+"; ptdrlog; Events"],
-	'JetsAK8_ptdrlog[1]':["vI",100,0,450,self.fileID+"; ptdrlog; Events"],
-	'JetsAK8_ptD[0]':["vI",100,0,1,self.fileID+"; ptD; Events"],
-	'JetsAK8_ptD[1]':["vI",100,0,1,self.fileID+"; ptD; Events"],
-	'JetsAK8_maxBvsAll[0]':["vI",100,0,1,self.fileID+"; maxBvsAll; Events"],
-	'JetsAK8_maxBvsAll[1]':["vI",100,0,1,self.fileID+"; maxBvsAll; Events"],
-	'JetsAK8_ecfN2b1[0]':["vI",100,0,0.5,self.fileID+"; ecfN2b1; Events"],
-	'JetsAK8_ecfN2b1[1]':["vI",100,0,0.5,self.fileID+"; ecfN2b1; Events"],
-	'JetsAK8_ecfN3b1[0]':["vI",100,0,4,self.fileID+"; ecfN3b1; Events"],
-	'JetsAK8_ecfN3b1[1]':["vI",100,0,4,self.fileID+"; ecfN3b1; Events"],
-	'JetsAK8_chargedHadronEnergyFraction[0]':["vI",100,0,1,self.fileID+"; fChgHad; Events"],
-	'JetsAK8_chargedHadronEnergyFraction[1]':["vI",100,0,1,self.fileID+"; fChgHad; Events"],
-	'JetsAK8_neutralHadronEnergyFraction[0]':["vI",100,0,1,self.fileID+"; fNeuHad; Events"],
-	'JetsAK8_neutralHadronEnergyFraction[1]':["vI",100,0,1,self.fileID+"; fNeuHad; Events"],
-	'JetsAK8_electronEnergyFraction[0]':["vI",100,0,1,self.fileID+"; fEle; Events"],
-	'JetsAK8_electronEnergyFraction[1]':["vI",100,0,1,self.fileID+"; fEle; Events"],
-	'JetsAK8_muonEnergyFraction[0]':["vI",100,0,1,self.fileID+"; fMu; Events"],
-	'JetsAK8_muonEnergyFraction[1]':["vI",100,0,1,self.fileID+"; fMu; Events"],
-	'deltaR12':["spec",100,0.8,5.0,self.fileID+";#Delta R(j_{1},j_{2});Events"],
-	'metR':["spec",100,0.15,0.7,self.fileID+";MET/m_{T};Events"],
+	'fixedGridRhoFastjetAll':["s",nBins,0,80,self.fileID+";fixedGridRhoFastjetAll; Events"],
+	'NVtx':["s",nBins,0,100,self.fileID+";NVtx; Events"],	
+	'MET':["s",nBins,200,2000,self.fileID+";MET; Events"],
+	'METPhi':["s",nBins,-rt.TMath.Pi(),rt.TMath.Pi(),self.fileID+";MET#Phi; Events"],
+	'MHT':["s",nBins,200,2000,self.fileID+";MHT; Events"],
+	'MT_AK8':["s",nBins,1500,6000,self.fileID+";MT;Events"],
+	'MJJ_AK8':["s",nBins,0,5000,self.fileID+";Mjj;Events"],
+	'JetsAK8[0].Pt()':["vIF",nBins,0,3000,self.fileID+";Jet Pt;Events"],
+	'JetsAK8[1].Pt()':["vIF",nBins,0,1800,self.fileID+";Jet Pt;Events"],
+	'JetsAK8[0].Eta()':["vIF",nBins,-2.4,2.4,self.fileID+";Jet Eta;Events"],
+	'JetsAK8[1].Eta()':["vIF",nBins,-2.4,2.4,self.fileID+";Jet Eta;Events"],
+	'JetsAK8[0].Phi()':["vIF",nBins,-rt.TMath.Pi(),rt.TMath.Pi(),self.fileID+";Jet Phi;Events"],
+	'JetsAK8[1].Phi()':["vIF",nBins,-rt.TMath.Pi(),rt.TMath.Pi(),self.fileID+";Jet Phi;Events"],
+	'JetsAK8_girth[0]':["vI",nBins,0,0.5,self.fileID+"; Girth; Events"],
+	'JetsAK8_girth[1]':["vI",nBins,0,0.5,self.fileID+"; Girth; Events"],
+	'JetsAK8_softDropMass[0]':["vI",nBins,0,600,self.fileID+"; SoftDrop Mass; Events"],
+	'JetsAK8_softDropMass[1]':["vI",nBins,0,450,self.fileID+"; SoftDrop Mass; Events"],
+	'JetsAK8_axismajor[0]':["vI",nBins,0,0.5,self.fileID+"; Major Axis; Events"],
+	'JetsAK8_axismajor[1]':["vI",nBins,0,0.5,self.fileID+"; Major Axis; Events"],
+	'JetsAK8_axisminor[0]':["vI",nBins,0,0.3,self.fileID+"; Minor Axis; Events"],
+	'JetsAK8_axisminor[1]':["vI",nBins,0,0.3,self.fileID+"; Minor Axis; Events"],
+	'JetsAK8_ptdrlog[0]':["vI",nBins,0,400,self.fileID+"; ptdrlog; Events"],
+	'JetsAK8_ptdrlog[1]':["vI",nBins,0,400,self.fileID+"; ptdrlog; Events"],
+	'JetsAK8_ptD[0]':["vI",nBins,0.1,1,self.fileID+"; ptD; Events"],
+	'JetsAK8_ptD[1]':["vI",nBins,0.1,1,self.fileID+"; ptD; Events"],
+	'JetsAK8_maxBvsAll[0]':["vI",nBins,0,1,self.fileID+"; maxBvsAll; Events"],
+	'JetsAK8_maxBvsAll[1]':["vI",nBins,0,1,self.fileID+"; maxBvsAll; Events"],
+	'JetsAK8_ecfN2b1[0]':["vI",nBins,0,0.5,self.fileID+"; ecfN2b1; Events"],
+	'JetsAK8_ecfN2b1[1]':["vI",nBins,0,0.5,self.fileID+"; ecfN2b1; Events"],
+	'JetsAK8_ecfN3b1[0]':["vI",nBins,0,4,self.fileID+"; ecfN3b1; Events"],
+	'JetsAK8_ecfN3b1[1]':["vI",nBins,0,4,self.fileID+"; ecfN3b1; Events"],
+	'JetsAK8_chargedHadronEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fChgHad; Events"],
+	'JetsAK8_chargedHadronEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fChgHad; Events"],
+	'JetsAK8_neutralHadronEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fNeuHad; Events"],
+	'JetsAK8_neutralHadronEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fNeuHad; Events"],
+	'JetsAK8_electronEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fEle; Events"],
+	'JetsAK8_electronEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fEle; Events"],
+	'JetsAK8_muonEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fMu; Events"],
+	'JetsAK8_muonEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fMu; Events"],
+	'JetsAK8_photonEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; f#gamma; Events"],
+	'JetsAK8_photonEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; f#gamma; Events"],
+	'deltaR12':["spec",nBins,0.8,3.5,self.fileID+";#Delta R(j_{1},j_{2});Events"],
+	'metR':["spec",nBins,0.15,0.7,self.fileID+";MET/m_{T};Events"],
 	'nJetsAK8':["spec",7,1,8,self.fileID+";nAK8 Jets;Events"],
 	'nJetsAK4':["spec",40,0,40,self.fileID+";nAK4 Jets;Events"],
-	'tau32_lead':["spec",100,0,1,self.fileID+";Leading Jet #tau_{32};Events"],
-	'tau21_lead':["spec",100,0,1,self.fileID+";Subleading Jet #tau_{21};Events"],
-	'tau32_sub':["spec",100,0,1,self.fileID+";Leading Jet #tau_{32};Events"],
-	'tau21_sub':["spec",100,0,1,self.fileID+";Subeading Jet #tau_{21};Events"],
-	'JetsAK8_bdtSVJtag[0]':["vI",100,0,1,self.fileID+"; SVJ BDT Output; Events"],
-	'JetsAK8_bdtSVJtag[1]':["vI",100,0,1,self.fileID+"; SVJ BDT Output; Events"],
-	'DeltaPhi1':["s",100,0,3.14,self.fileID+"; #Delta#phi(j_{1}, MET); Events"],
-	'DeltaPhi2':["s",100,0,3.14,self.fileID+"; #Delta#phi(j_{2}, MET); Events"],
+	'tau32_lead':["spec",nBins,0,1,self.fileID+";Leading Jet #tau_{32};Events"],
+	'tau21_lead':["spec",nBins,0,1,self.fileID+";Subleading Jet #tau_{21};Events"],
+	'tau32_sub':["spec",nBins,0,1,self.fileID+";Leading Jet #tau_{32};Events"],
+	'tau21_sub':["spec",nBins,0,1,self.fileID+";Subeading Jet #tau_{21};Events"],
+	'JetsAK8_bdtSVJtag[0]':["vI",nBins,0,1,self.fileID+"; SVJ BDT Output; Events"],
+	'JetsAK8_bdtSVJtag[1]':["vI",nBins,0,1,self.fileID+"; SVJ BDT Output; Events"],
+	'DeltaPhi1':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{1}, MET); Events"],
+	'DeltaPhi2':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{2}, MET); Events"]
 	}
+
+
 	branchList = tree.GetListOfBranches()
 	branchListNames = []
 	for thing in branchList:
@@ -119,6 +126,15 @@ def loop(self):
 	tree.SetBranchStatus("MT_AK8",1)
 	tree.SetBranchStatus("Jets",1)
 	tree.SetBranchStatus("TrueNumInteractions",1)
+	tree.SetBranchStatus("NVtx",1)
+	tree.SetBranchStatus("eeBadScFilter",1)
+	tree.SetBranchStatus("HBHENoiseFilter",1)
+	tree.SetBranchStatus("HBHEIsoNoiseFilter",1)
+	tree.SetBranchStatus("globalSuperTightHalo2016Filter",1)
+	tree.SetBranchStatus("BadChargedCandidateFilter",1)
+	tree.SetBranchStatus("HTRatioDPhiTightFilter",1)
+	tree.SetBranchStatus("BadPFMuonFilter",1)
+	tree.SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter",1)
 	for plotVar in plotDict.keys():
 		if plotVar.split("[")[0] in branchListNames:
 			tree.SetBranchStatus(plotVar.split("[")[0],1)
@@ -167,16 +183,18 @@ def loop(self):
 			# globalSuperTightHalo2016Filter, BadChargedCandidateFilter,
 			# BadPFMuonFilte
 
-#		if not (
-#			tree.NVtx > 0 and
-#			tree.eeBadScFilter == 1 and
-#			tree.HBHENoiseFilter == 1 and
-#			tree.HBHEIsoNoiseFilter == 1 and
-#			tree.globalSuperTightHalo2016Filter == 1 and
-#			tree.BadChargedCandidateFilter == 1# and
-#			#tree.HTRatioDPhiTightFilter == 1
-#		): # must pass all filters to continue
-#			continue
+		if not (
+			tree.globalSuperTightHalo2016Filter == 1 and
+			tree.HBHENoiseFilter == 1 and
+			tree.HBHEIsoNoiseFilter == 1 and
+			tree.eeBadScFilter == 1 and
+			tree.BadChargedCandidateFilter == 1 and
+			tree.BadPFMuonFilter == 1 and 
+			tree.NVtx > 0 and
+			tree.EcalDeadCellTriggerPrimitiveFilter == 1 and
+			tree.HTRatioDPhiTightFilter == 1
+		): # must pass all filters to continue
+			continue
 		if "TT" in self.fileID:
 			if self.stitchTT(tree.GetFile().GetName().split("/")[-1], tree.madHT, len(tree.GenElectrons),len(tree.GenMuons), len(tree.GenTaus), tree.GenMET, self.fileID):
 				continue		
@@ -273,6 +291,9 @@ def loop(self):
 		histDict['tau21_lead'].Fill(tau21_lead,weight*lumi)
 		histDict['tau32_sub'].Fill(tau32_sub,weight*lumi)
 		histDict['tau21_sub'].Fill(tau21_sub,weight*lumi)
+
+	for key, hist in histDict.items():
+		print(key, hist.Integral())
 				
 			
 				# getattr is funky for methods. for a public variable of a class, getattr(obj, attr) works.

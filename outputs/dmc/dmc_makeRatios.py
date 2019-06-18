@@ -27,16 +27,29 @@ def makeRatioBkgStack(bkgList, data , title, xlabel, ylabel, name, doLeg = True,
 	pad1.cd()               # pad1 becomes the current pad
 	#stack.SetStats(0)       # No statistics on upper plot
 	#data.SetStats(0)       # No statistics on upper plot
+	ks = stack.GetStack().Last().KolmogorovTest(data)
+	if data.GetNbinsX() == 1000:
+		for thing in stack.GetStack():
+			thing.Rebin(10)
+		data.Rebin(10)
+	chi2 = stack.GetStack().Last().Chi2Test(data,"CHI2/NDF")
+	if data.GetNbinsX() == 100:
+		for thing in stack.GetStack():
+			thing.Rebin(2)
+		data.Rebin(2)
+
 	stack.SetMinimum(1)
 	stack.SetMaximum(max(stack.GetStack().Last().GetMaximum(),data.GetMaximum())*1.5)
 	stack.Draw("hist")        
 	data.Draw("E1 same")
 	stack.GetYaxis().SetTitle(ylabel)
 	if doLeg:
-		if (("DeltaR" in xlabel) or ("Output" in xlabel) or ("Num." in xlabel) or ("#eta" in xlabel) or ("ptD" in xlabel) or ("BvsAll" in xlabel) or ("ecf" in xlabel) or ("chgH" in xlabel)):
+		if (("Phi" in xlabel) or ("(MET)" in xlabel) or ("tau" in xlabel) or ("DeltaR" in xlabel) or ("Output" in xlabel) or ("Num." in xlabel) or ("#eta" in xlabel) or ("ptD" in xlabel) or ("BvsAll" in xlabel) or ("ecf" in xlabel) or ("chgH" in xlabel)):
 			leg = rt.TLegend(0.3,0.0,0.7,0.3,title,"brNDC") # pos bot mid
 		elif (("#Delta#phi" in xlabel)):
 			leg = rt.TLegend(0.3,0.6,0.7,0.9,title,"brNDC") # pos top mid
+		elif (("Filter" in xlabel)):
+			leg = rt.TLegend(0.5,0.0,0.9,0.3,title,"brNDC") # pos bot right
 		else:		
 			leg = rt.TLegend(0.5,0.6,0.9,0.9,title,"brNDC") # pos top right
 		leg.SetNColumns(2)
@@ -45,14 +58,9 @@ def makeRatioBkgStack(bkgList, data , title, xlabel, ylabel, name, doLeg = True,
 		for hist in bkgList[::-1]:
 			histID = hist.GetName().split("_")[2]
 			leg.AddEntry(hist, histID, "F" )
-		ks = stack.GetStack().Last().KolmogorovTest(data)
-		chi2 = stack.GetStack().Last().Chi2Test(data,"CHI2/NDF")
 		leg.AddEntry(0,"KS = {:.2f}, #chi^2/ndf = {:.2f}".format(ks, chi2),"")
 		leg.Draw()
-	if data.GetNbinsX() == 100:
-		for thing in stack.GetStack():
-			thing.Rebin(2)
-		data.Rebin(2)
+	pad1.Update()
 
 	# Do not draw the Y axis label on the upper plot and redraw a small
 	# axis instead, in order to avoid the first label (0) to be clipped.
@@ -124,13 +132,13 @@ def makeRatioBkgStack(bkgList, data , title, xlabel, ylabel, name, doLeg = True,
 	one.Draw("same")
 	#h3.Fit("line","Q+")
 	#save as .png
-	c.SaveAs("plots3/"+name)
+	c.SaveAs("plots5/"+name)
 	print(name.split("_")[0] + ' ' + name.split("_")[1] + ' ' + name.split("_")[2]+ " {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} ".format(
 bkgList[0].Integral(),bkgList[1].Integral(),bkgList[2].Integral(),bkgList[3].Integral(),totBkg.Integral(),data.Integral(),
 bkgList[0].GetEntries(),bkgList[1].GetEntries(),bkgList[2].GetEntries(),bkgList[3].GetEntries(),totBkg.GetEntries(),data.GetEntries(), const.GetParameter(0), line.GetParameter(0), line.GetParameter(1)))
 	c.Delete()
 
-bkgList = ['TTJets',  'WJets', 'ZJets','QCD', "ST"]
+bkgList = ['TTJets',  'WJets', 'ZJets','QCD']#, "ST"]
 
 # make plots comparing each data year to bkg year 
 varList = {
@@ -169,23 +177,27 @@ varList = {
 	'JetsAK8_electronEnergyFraction[1]':["Subleading Jet eleEnrgyFrctn"],
 	'JetsAK8_muonEnergyFraction[0]':["Leading Jet muEnrgyFrctn"],
 	'JetsAK8_muonEnergyFraction[1]':["Subleading Jet muEnrgyFrctn"],
+	'JetsAK8_photonEnergyFraction[0]':["Leading Jet #gammaEnrgyFrctn"],
+	'JetsAK8_photonEnergyFraction[1]':["Subleading Jet #gammaEnrgyFrctn"],
 	'deltaR12':["#DeltaR(j_{1,2})"],
 	'metR':["MET/m_{T}"],
 	'nJetsAK8':['Num. AK8 Jets'],
 	'nJetsAK4':['Num. AK4 Jets'],
-	'tau23_lead':['Leading Jet #tau_{23}'],
-	'tau12_lead':['Leading Jet #tau_{12}'],
-	'tau23_sub':['Subleading Jet #tau_{23}'],
-	'tau12_sub':['Subleading Jet #tau_{12}'],
+	'tau32_lead':['Leading Jet #tau_{32}'],
+	'tau21_lead':['Leading Jet #tau_{21}'],
+	'tau32_sub':['Subleading Jet #tau_{32}'],
+	'tau21_sub':['Subleading Jet #tau_{21}'],
 	'JetsAK8_bdtSVJtag[0]':["Leading Jet SVJ BDT Output"],
 	'JetsAK8_bdtSVJtag[1]':["Subleading Jet SVJ BDT Output"],
 	'DeltaPhi1':["#Delta#phi(j_{1}, MET)"],
-	'DeltaPhi2':["#Delta#phi(j_{2}, MET)"]
+	'DeltaPhi2':["#Delta#phi(j_{2}, MET)"],
+	'ecalBadCalibReducedFilter':['ECAL Bad Calibration Reduced Filter'],
+	'ecalBadCalibReducedExtraFilter':['ECAL Bad Calibration Reduced Extra Filter']
 }
 
 # <var>_<sample>
 
-bkgColorDict = {"QCD":41,"TTJets":42,"WJets":43,"ZJets":44, "ST":45}
+bkgColorDict = {"QCD":41,"TTJets":42,"WJets":43,"ZJets":44}#, "ST":45}
 
 #for each year
 	# for each filter
@@ -193,87 +205,84 @@ bkgColorDict = {"QCD":41,"TTJets":42,"WJets":43,"ZJets":44, "ST":45}
 		# for data
 	# draw
 
+print("var yr Filter yTT yW yZ yQCD yBkg yData nTT nW nZ nQCD nBkg nData avgRatio")
 for year in ['16','17','18PRE', '18POST']:
-	print(year)
-	for var in varList.keys():
-		print(var)
-		tD = rt.TH1F()
-		tQ = rt.TH1F()
-		tT = rt.TH1F()
-		tZ = rt.TH1F()
-		tW = rt.TH1F()
-		tS = rt.TH1F()
-		tempHist = {"Data":tD,"QCD":tQ,"TTJets":tT,"WJets":tW,"ZJets":tZ,"ST":tS}
+	for filt in [""]:#,"_filter","_filter2"]:
+		for var in varList.keys():
+			showLog = True
+#			tD = rt.TH1F()
+#			tQ = rt.TH1F()
+#			tT = rt.TH1F()
+#			tZ = rt.TH1F()
+#			tW = rt.TH1F()
+#			tS = rt.TH1F()
+#			tempHist = {"Data":tD,"QCD":tQ,"TTJets":tT,"WJets":tW,"ZJets":tZ,"ST":tS}
 
-		for bkgGroup in bkgList:
-			bkgName = bkgGroup+year
-			_file = rt.TFile.Open(bkgName+"/dataMC_comp.root","READ")
-			_file.GetObject(var+"_"+bkgName,tempHist[bkgGroup])
-			tempHist[bkgGroup] = tempHist[bkgGroup].Clone(tempHist[bkgGroup].GetName()+"_")
-			tempHist[bkgGroup].SetDirectory(0)
-			tempHist[bkgGroup].SetLineColor(bkgColorDict[bkgGroup])
-			tempHist[bkgGroup].SetFillColor(bkgColorDict[bkgGroup])
-			tempHist[bkgGroup].SetFillStyle(1001)
-			_file.Close()
-		_file2 = rt.TFile.Open("Data"+year+"/dataMC_comp.root","READ")
-		_file2.GetObject(var+"_Data"+year,tempHist["Data"])
-		tempHist["Data"] = tempHist["Data"].Clone(tempHist["Data"].GetName()+"_")
-		tempHist["Data"].SetDirectory(0)
-		_file2.Close()
+#			for bkgGroup in bkgList:
+#				bkgName = bkgGroup+year
+#				_file = rt.TFile.Open(bkgName+"/dataMC_comp.root","READ")
+#				_file.GetObject(var+"_"+bkgName+filt,tempHist[bkgGroup])
+#				tempHist[bkgGroup] = tempHist[bkgGroup].Clone(tempHist[bkgGroup].GetName()+"_")
+#				tempHist[bkgGroup].SetDirectory(0)
+#				tempHist[bkgGroup].SetLineColor(bkgColorDict[bkgGroup])
+#				tempHist[bkgGroup].SetFillColor(bkgColorDict[bkgGroup])
+#				tempHist[bkgGroup].SetFillStyle(1001)
+#				_file.Close()
+#			_file2 = rt.TFile.Open("Data"+year+"/dataMC_comp.root","READ")
+#			_file2.GetObject(var+"_Data"+year+filt,tempHist["Data"])
+#			tempHist["Data"] = tempHist["Data"].Clone(tempHist["Data"].GetName()+"_")
+#			tempHist["Data"].SetDirectory(0)
+#			_file2.Close()
 
-		print("var yr Filter yTT yW yZ yQCD yBkg yData nTT nW nZ nQCD nBkg nData avgRatio")
-		showLog = True
-		if "Phi" in var:
-			if not ("Delta" in var):
-				showLog = False
-		makeRatioBkgStack(
-			[tempHist["TTJets"],tempHist["WJets"],tempHist["ZJets"],tempHist["QCD"], tempHist["ST"]], #bkg list
-			tempHist["Data"], # data
-			varList[var][0]+" "+year, # title
-			varList[var][0], # xlabel
-			"Events", # ylabel
-			var.translate(None,"_[]().")+"_"+year+"_ratio_ST.png", #name
-			doLeg = True, # doLegned
-			log = showLog) # doLog
-		print(var)
-		tD = rt.TH1F()
-		tQ = rt.TH1F()
-		tT = rt.TH1F()
-		tZ = rt.TH1F()
-		tW = rt.TH1F()
-		tS = rt.TH1F()
-		tempHist = {"Data":tD,"QCD":tQ,"TTJets":tT,"WJets":tW,"ZJets":tZ,"ST":tS}
+#			if "Phi" in var:
+#				if not ("Delta" in var):
+#					showLog = False
+#			makeRatioBkgStack(
+#				[tempHist["TTJets"],tempHist["WJets"],tempHist["ZJets"],tempHist["QCD"], tempHist["ST"]], #bkg list
+#				tempHist["Data"], # data
+#				varList[var][0]+" "+year+filt, # title
+#				varList[var][0], # xlabel
+#				"Events", # ylabel
+#				var.translate(None,"_[]().")+"_"+year+filt+"_ratio_ST.png", #name
+#				doLeg = True, # doLegned
+#				log = showLog) # doLog
+			tD = rt.TH1F()
+			tQ = rt.TH1F()
+			tT = rt.TH1F()
+			tZ = rt.TH1F()
+			tW = rt.TH1F()
+			tempHist = {"Data":tD,"QCD":tQ,"TTJets":tT,"WJets":tW,"ZJets":tZ}
 
-		for bkgGroup in bkgList:
-			bkgName = bkgGroup+year
-			_file = rt.TFile.Open(bkgName+"/dataMC_comp.root","READ")
-			_file.GetObject(var+"_"+bkgName,tempHist[bkgGroup])
-			tempHist[bkgGroup] = tempHist[bkgGroup].Clone(tempHist[bkgGroup].GetName()+"_")
-			tempHist[bkgGroup].SetDirectory(0)
-			tempHist[bkgGroup].SetLineColor(bkgColorDict[bkgGroup])
-			tempHist[bkgGroup].SetFillColor(bkgColorDict[bkgGroup])
-			tempHist[bkgGroup].SetFillStyle(1001)
-			nBins = tempHist[bkgGroup].GetNbinsX()
-			tempHist[bkgGroup].SetBinContent(1,tempHist[bkgGroup].GetBinContent(0)+tempHist[bkgGroup].GetBinContent(1))
-			tempHist[bkgGroup].SetBinContent(nBins,tempHist[bkgGroup].GetBinContent(nBins)+tempHist[bkgGroup].GetBinContent(nBins+1))
-			_file.Close()
-		_file2 = rt.TFile.Open("Data"+year+"/dataMC_comp.root","READ")
-		_file2.GetObject(var+"_Data"+year,tempHist["Data"])
-		tempHist["Data"] = tempHist["Data"].Clone(tempHist["Data"].GetName()+"_")
-		tempHist["Data"].SetDirectory(0)
-		nBins = tempHist["Data"].GetNbinsX()
-		tempHist["Data"].SetBinContent(1,tempHist["Data"].GetBinContent(0)+tempHist["Data"].GetBinContent(1))
-		tempHist["Data"].SetBinContent(nBins,tempHist["Data"].GetBinContent(nBins)+tempHist["Data"].GetBinContent(nBins+1))
-		_file2.Close()
-		makeRatioBkgStack(
-			[tempHist["TTJets"],tempHist["WJets"],tempHist["ZJets"],tempHist["QCD"]], #bkg list
-			tempHist["Data"], # data
-			varList[var][0]+" "+year, # title
-			varList[var][0], # xlabel
-			"Events", # ylabel
-			var.translate(None,"_[]().")+"_"+year+"_ratio.png", #name
-			doLeg = True, # doLegned
-			log = showLog) # doLog
+			for bkgGroup in bkgList:
+				bkgName = bkgGroup+year
+				_file = rt.TFile.Open(bkgName+"/dataMC_comp.root","READ")
+				_file.GetObject(var+"_"+bkgName,tempHist[bkgGroup])
+				tempHist[bkgGroup] = tempHist[bkgGroup].Clone(tempHist[bkgGroup].GetName()+"_")
+				tempHist[bkgGroup].SetDirectory(0)
+				tempHist[bkgGroup].SetLineColor(bkgColorDict[bkgGroup])
+				tempHist[bkgGroup].SetFillColor(bkgColorDict[bkgGroup])
+				tempHist[bkgGroup].SetFillStyle(1001)
+				nBins = tempHist[bkgGroup].GetNbinsX()
+				tempHist[bkgGroup].SetBinContent(1,tempHist[bkgGroup].GetBinContent(0)+tempHist[bkgGroup].GetBinContent(1))
+				tempHist[bkgGroup].SetBinContent(nBins,tempHist[bkgGroup].GetBinContent(nBins)+tempHist[bkgGroup].GetBinContent(nBins+1))
+				_file.Close()
+			_file2 = rt.TFile.Open("Data"+year+"/dataMC_comp.root","READ")
+			_file2.GetObject(var+"_Data"+year,tempHist["Data"])
+			tempHist["Data"] = tempHist["Data"].Clone(tempHist["Data"].GetName()+"_")
+			tempHist["Data"].SetDirectory(0)
+			nBins = tempHist["Data"].GetNbinsX()
+			tempHist["Data"].SetBinContent(1,tempHist["Data"].GetBinContent(0)+tempHist["Data"].GetBinContent(1))
+			tempHist["Data"].SetBinContent(nBins,tempHist["Data"].GetBinContent(nBins)+tempHist["Data"].GetBinContent(nBins+1))
+			_file2.Close()
+			makeRatioBkgStack(
+				[tempHist["TTJets"],tempHist["WJets"],tempHist["ZJets"],tempHist["QCD"]], #bkg list
+				tempHist["Data"], # data
+				varList[var][0]+" "+year+filt, # title
+				varList[var][0], # xlabel
+				"Events", # ylabel
+				var.translate(None,"_[]().")+"_"+year+filt+"_ratio.png", #name
+				doLeg = True, # doLegned
+				log = showLog) # doLog
 
 
 
