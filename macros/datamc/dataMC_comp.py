@@ -30,9 +30,11 @@ def loop(self):
 				#				 "vAF" - vector, all values but function (ie 'JetsAK8.Pt()' - Pt of all ak8 Jets)
 				#				 "vIF" - vector, indexed function (ie 'JetsAK8[0].Pt()', only Pt of leading AK8 Jet)
 				#				 "vR", "vRF
+	'fixedGridRhoFastjetAll':["s",nBins,0,80,self.fileID+";fixedGridRhoFastjetAll; Events"],
+	'NVtx':["s",nBins,0,100,self.fileID+";NVtx; Events"],
 	'MET':["s",nBins,200,2000,self.fileID+";MET; Events"],
 	'METPhi':["s",nBins,-rt.TMath.Pi(),rt.TMath.Pi(),self.fileID+";MET#Phi; Events"],
-	'MHT':["s",nBins,200,2000,self.fileID+";MHT; Events"],
+	#'MHT':["s",nBins,200,2000,self.fileID+";MHT; Events"],
 	'MT_AK8':["s",nBins,1500,6000,self.fileID+";MT;Events"],
 	'MJJ_AK8':["s",nBins,0,5000,self.fileID+";Mjj;Events"],
 	'JetsAK8[0].Pt()':["vIF",nBins,0,3000,self.fileID+";Jet Pt;Events"],
@@ -41,46 +43,46 @@ def loop(self):
 	'JetsAK8[1].Eta()':["vIF",nBins,-2.4,2.4,self.fileID+";Jet Eta;Events"],
 	'JetsAK8[0].Phi()':["vIF",nBins,-rt.TMath.Pi(),rt.TMath.Pi(),self.fileID+";Jet Phi;Events"],
 	'JetsAK8[1].Phi()':["vIF",nBins,-rt.TMath.Pi(),rt.TMath.Pi(),self.fileID+";Jet Phi;Events"],
-	'JetsAK8_girth[0]':["vI",nBins,0,0.5,self.fileID+"; Girth; Events"],
-	'JetsAK8_girth[1]':["vI",nBins,0,0.5,self.fileID+"; Girth; Events"],
-	'JetsAK8_softDropMass[0]':["vI",nBins,0,600,self.fileID+"; SoftDrop Mass; Events"],
-	'JetsAK8_softDropMass[1]':["vI",nBins,0,450,self.fileID+"; SoftDrop Mass; Events"],
-	'JetsAK8_axismajor[0]':["vI",nBins,0,0.5,self.fileID+"; Major Axis; Events"],
-	'JetsAK8_axismajor[1]':["vI",nBins,0,0.5,self.fileID+"; Major Axis; Events"],
-	'JetsAK8_axisminor[0]':["vI",nBins,0,0.3,self.fileID+"; Minor Axis; Events"],
-	'JetsAK8_axisminor[1]':["vI",nBins,0,0.3,self.fileID+"; Minor Axis; Events"],
-	'JetsAK8_ptdrlog[0]':["vI",nBins,0,400,self.fileID+"; ptdrlog; Events"],
-	'JetsAK8_ptdrlog[1]':["vI",nBins,0,400,self.fileID+"; ptdrlog; Events"],
-	'JetsAK8_ptD[0]':["vI",nBins,0.1,1,self.fileID+"; ptD; Events"],
-	'JetsAK8_ptD[1]':["vI",nBins,0.1,1,self.fileID+"; ptD; Events"],
-	'JetsAK8_maxBvsAll[0]':["vI",nBins,0,1,self.fileID+"; maxBvsAll; Events"],
-	'JetsAK8_maxBvsAll[1]':["vI",nBins,0,1,self.fileID+"; maxBvsAll; Events"],
-	'JetsAK8_ecfN2b1[0]':["vI",nBins,0,0.5,self.fileID+"; ecfN2b1; Events"],
-	'JetsAK8_ecfN2b1[1]':["vI",nBins,0,0.5,self.fileID+"; ecfN2b1; Events"],
-	'JetsAK8_ecfN3b1[0]':["vI",nBins,0,4,self.fileID+"; ecfN3b1; Events"],
-	'JetsAK8_ecfN3b1[1]':["vI",nBins,0,4,self.fileID+"; ecfN3b1; Events"],
-	'JetsAK8_chargedHadronEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fChgHad; Events"],
-	'JetsAK8_chargedHadronEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fChgHad; Events"],
-	'JetsAK8_neutralHadronEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fNeuHad; Events"],
-	'JetsAK8_neutralHadronEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fNeuHad; Events"],
-	'JetsAK8_electronEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fEle; Events"],
-	'JetsAK8_electronEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fEle; Events"],
-	'JetsAK8_muonEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fMu; Events"],
-	'JetsAK8_muonEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fMu; Events"],
-	'JetsAK8_photonEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; f#gamma; Events"],
-	'JetsAK8_photonEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; f#gamma; Events"],
-	'deltaR12':["spec",nBins,0.8,3.5,self.fileID+";#Delta R(j_{1},j_{2});Events"],
-	'metR':["spec",nBins,0.15,0.7,self.fileID+";MET/m_{T};Events"],
-	'nJetsAK8':["spec",7,1,8,self.fileID+";nAK8 Jets;Events"],
-	'nJetsAK4':["spec",40,0,40,self.fileID+";nAK4 Jets;Events"],
-	'tau32_lead':["spec",nBins,0,1,self.fileID+";Leading Jet #tau_{32};Events"],
-	'tau21_lead':["spec",nBins,0,1,self.fileID+";Subleading Jet #tau_{21};Events"],
-	'tau32_sub':["spec",nBins,0,1,self.fileID+";Leading Jet #tau_{32};Events"],
-	'tau21_sub':["spec",nBins,0,1,self.fileID+";Subeading Jet #tau_{21};Events"],
+	'JetsAK8_girth[0]':["vI",nBins,0,0.5,self.fileID+"; Girth; Events"],# BDT
+	'JetsAK8_girth[1]':["vI",nBins,0,0.5,self.fileID+"; Girth; Events"],# BDT
+	'JetsAK8_softDropMass[0]':["vI",nBins,0,600,self.fileID+"; SoftDrop Mass; Events"],# BDT
+	'JetsAK8_softDropMass[1]':["vI",nBins,0,450,self.fileID+"; SoftDrop Mass; Events"],# BDT
+	'JetsAK8_axismajor[0]':["vI",nBins,0,0.5,self.fileID+"; Major Axis; Events"],# BDT
+	'JetsAK8_axismajor[1]':["vI",nBins,0,0.5,self.fileID+"; Major Axis; Events"],# BDT
+	'JetsAK8_axisminor[0]':["vI",nBins,0,0.3,self.fileID+"; Minor Axis; Events"],# BDT
+	'JetsAK8_axisminor[1]':["vI",nBins,0,0.3,self.fileID+"; Minor Axis; Events"],# BDT
+	#'JetsAK8_ptdrlog[0]':["vI",nBins,0,400,self.fileID+"; ptdrlog; Events"],
+	#'JetsAK8_ptdrlog[1]':["vI",nBins,0,400,self.fileID+"; ptdrlog; Events"],
+	'JetsAK8_ptD[0]':["vI",nBins,0.1,1,self.fileID+"; ptD; Events"],# BDT
+	'JetsAK8_ptD[1]':["vI",nBins,0.1,1,self.fileID+"; ptD; Events"],# BDT
+	#'JetsAK8_maxBvsAll[0]':["vI",nBins,0,1,self.fileID+"; maxBvsAll; Events"],
+	#'JetsAK8_maxBvsAll[1]':["vI",nBins,0,1,self.fileID+"; maxBvsAll; Events"],
+	'JetsAK8_ecfN2b1[0]':["vI",nBins,0,0.5,self.fileID+"; ecfN2b1; Events"],# BDT
+	'JetsAK8_ecfN2b1[1]':["vI",nBins,0,0.5,self.fileID+"; ecfN2b1; Events"],# BDT
+	'JetsAK8_ecfN3b1[0]':["vI",nBins,0,4,self.fileID+"; ecfN3b1; Events"],# BDT
+	'JetsAK8_ecfN3b1[1]':["vI",nBins,0,4,self.fileID+"; ecfN3b1; Events"],# BDT
+	'JetsAK8_chargedHadronEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fChgHad; Events"],# BDT
+	'JetsAK8_chargedHadronEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fChgHad; Events"],# BDT
+	'JetsAK8_neutralHadronEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fNeuHad; Events"],# BDT
+	'JetsAK8_neutralHadronEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fNeuHad; Events"],# BDT
+	'JetsAK8_electronEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fEle; Events"],# BDT
+	'JetsAK8_electronEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fEle; Events"],# BDT
+	'JetsAK8_muonEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; fMu; Events"],# BDT
+	'JetsAK8_muonEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fMu; Events"],# BDT
+	'JetsAK8_photonEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; f#gamma; Events"],# BDT
+	'JetsAK8_photonEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; f#gamma; Events"],# BDT
+	#'deltaR12':["spec",nBins,0.8,3.5,self.fileID+";#Delta R(j_{1},j_{2});Events"],
+	#'metR':["spec",nBins,0.15,0.7,self.fileID+";MET/m_{T};Events"],
+	#'nJetsAK8':["spec",7,1,8,self.fileID+";nAK8 Jets;Events"],
+	#'nJetsAK4':["spec",40,0,40,self.fileID+";nAK4 Jets;Events"],
+	'tau32_lead':["spec",nBins,0,1,self.fileID+";Leading Jet #tau_{32};Events"], # BDT
+	'tau21_lead':["spec",nBins,0,1,self.fileID+";Subleading Jet #tau_{21};Events"], # BDT
+	'tau32_sub':["spec",nBins,0,1,self.fileID+";Leading Jet #tau_{32};Events"], # BDT
+	'tau21_sub':["spec",nBins,0,1,self.fileID+";Subeading Jet #tau_{21};Events"], # BDT
 	'JetsAK8_bdtSVJtag[0]':["vI",nBins,0,1,self.fileID+"; SVJ BDT Output; Events"],
 	'JetsAK8_bdtSVJtag[1]':["vI",nBins,0,1,self.fileID+"; SVJ BDT Output; Events"],
-	'DeltaPhi1':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{1}, MET); Events"],
-	'DeltaPhi2':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{2}, MET); Events"]
+	'DeltaPhi1':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{1}, MET); Events"],# BDT
+	'DeltaPhi2':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{2}, MET); Events"]# BDT
 	}
 
 	branchList = tree.GetListOfBranches()
@@ -100,6 +102,15 @@ def loop(self):
 	tree.SetBranchStatus("JetsAK8_NsubjettinessTau3",1)
 	tree.SetBranchStatus("MT_AK8",1)
 	tree.SetBranchStatus("Jets",1)
+	tree.SetBranchStatus("NVtx",1)
+	tree.SetBranchStatus("eeBadScFilter",1)
+	tree.SetBranchStatus("HBHENoiseFilter",1)
+	tree.SetBranchStatus("HBHEIsoNoiseFilter",1)
+	tree.SetBranchStatus("globalSuperTightHalo2016Filter",1)
+	tree.SetBranchStatus("BadChargedCandidateFilter",1)
+	tree.SetBranchStatus("HTRatioDPhiTightFilter",1)
+	tree.SetBranchStatus("BadPFMuonFilter",1)
+	tree.SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter",1)
 	for plotVar in plotDict.keys():
 		if plotVar.split("[")[0] in branchListNames:
 			tree.SetBranchStatus(plotVar.split("[")[0],1)
@@ -108,6 +119,7 @@ def loop(self):
 
 	if (("Jets" in self.fileID) or ("QCD" in self.fileID)): # only need to do this for MC bkg
 		tree.SetBranchStatus("Weight",1)
+		tree.SetBranchStatus("puWeight",1)
 		if "16" in self.fileID:
 			lumi = 35921.036
 			print("2016 Lumi")
@@ -129,7 +141,7 @@ def loop(self):
 	else:
 		lumi = 1
 	histDict = {}
-	histDictFilter = {}
+#	histDictFilter = {}
 #	histDictFilter2 = {}
 
 	for plotVar, histSpecs in plotDict.items():
@@ -145,17 +157,15 @@ def loop(self):
 				continue		
 		
 		if (("Jets" in self.fileID) or ("QCD" in self.fileID)): #or ("ST1" in self.fileID)): # Bkg MC get tree weight, data, SingleTop,  and signal MC get weight == 1
-			weight = tree.Weight
+			weight = tree.Weight*tree.puWeight
 		else: 
 			weight = 1.
 		
 		if "18" in self.fileID:
-			#print("2018 data")
-			if (("PRE" in self.fileID) and ("Data" in self.fileID) and (tree.RunNum >= 319077)):
+			#apply HEMOptVetoFilter to Data if runNum >= 319077
+			# right now MC does not get the filter applied... Problem?
+			if (("Data" in self.fileID) and (tree.RunNum >= 319077) and (tree.HEMOptVetoFilter == 0)):
 				continue
-			elif "POST" in self.fileID:
-				if ((("Data" in self.fileID) and (tree.RunNum < 319077)) or (tree.HEMOptVetoFilter == 0)):
-					continue
 
 		for plotVar in plotDict.keys():
 			if plotDict[plotVar][0] == "s": # branch
@@ -202,29 +212,29 @@ def loop(self):
 		nJetsAK8 = len(tree.JetsAK8)
 		nJetsAK4 = len(tree.Jets)
 		try:
-			tau23_lead = tree.JetsAK8_NsubjettinessTau3[0]/tree.JetsAK8_NsubjettinessTau2[0]
+			tau32_lead = tree.JetsAK8_NsubjettinessTau3[0]/tree.JetsAK8_NsubjettinessTau2[0]
 		except ZeroDivisionError:
-			tau23_lead = 0
+			tau32_lead = 0
 		try:
-			tau12_lead = tree.JetsAK8_NsubjettinessTau2[0]/tree.JetsAK8_NsubjettinessTau1[0]
+			tau21_lead = tree.JetsAK8_NsubjettinessTau2[0]/tree.JetsAK8_NsubjettinessTau1[0]
 		except ZeroDivisionError:
-			tau12_lead = 0
+			tau21_lead = 0
 		try:
-			tau23_sub = tree.JetsAK8_NsubjettinessTau3[1]/tree.JetsAK8_NsubjettinessTau2[1]
+			tau32_sub = tree.JetsAK8_NsubjettinessTau3[1]/tree.JetsAK8_NsubjettinessTau2[1]
 		except ZeroDivisionError:
-			tau23_sub = 0
+			tau32_sub = 0
 		try:
-			tau12_sub = tree.JetsAK8_NsubjettinessTau2[1]/tree.JetsAK8_NsubjettinessTau1[1]
+			tau21_sub = tree.JetsAK8_NsubjettinessTau2[1]/tree.JetsAK8_NsubjettinessTau1[1]
 		except ZeroDivisionError:
-			tau12_sub = 0
+			tau21_sub = 0
 		histDict['deltaR12'].Fill(detlaR12,weight*lumi)
 		histDict['metR'].Fill(metR,weight*lumi)
 		histDict['nJetsAK8'].Fill(nJetsAK8,weight*lumi)
 		histDict['nJetsAK4'].Fill(nJetsAK4,weight*lumi)
-		histDict['tau32_lead'].Fill(tau23_lead,weight*lumi)
-		histDict['tau21_lead'].Fill(tau12_lead,weight*lumi)
-		histDict['tau32_sub'].Fill(tau23_sub,weight*lumi)
-		histDict['tau21_sub'].Fill(tau12_sub,weight*lumi)
+		histDict['tau32_lead'].Fill(tau32_lead,weight*lumi)
+		histDict['tau21_lead'].Fill(tau21_lead,weight*lumi)
+		histDict['tau32_sub'].Fill(tau32_sub,weight*lumi)
+		histDict['tau21_sub'].Fill(tau21_sub,weight*lumi)
 
 #		histDictFilter['deltaR12'].Fill(detlaR12,weight*lumi*tree.ecalBadCalibReducedFilter)
 #		histDictFilter['metR'].Fill(metR,weight*lumi*tree.ecalBadCalibReducedFilter)
