@@ -1,5 +1,25 @@
-baseLoc = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahad/"
+tree_dijetlowmtdetahad = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetlowmtdetahad"
+tree_dijetlowmtdetahadloose = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetlowmtdetahadloose"
+tree_dijetlowmtdetahadloosemf = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetlowmtdetahadloosemf"
+tree_dijetlowmtdetahadmf = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetlowmtdetahadmf"
+tree_dijetmtdetahad = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahad"
+tree_dijetmtdetahadloose = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadloose"
+tree_dijetmtdetahadloosemf = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadloosemf"
+tree_dijetmtdetahadloosemf-train-flatsig = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadloosemf-train-flatsig"
+tree_dijetmtdetahadloosemf_JECdown = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadloosemf_JECdown"
+tree_dijetmtdetahadloosemf_JECup = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadloosemf_JECup"
+tree_dijetmtdetahadloosemf_JERdown = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadloosemf_JERdown"
+tree_dijetmtdetahadloosemf_JERup = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadloosemf_JERup"
+tree_dijetmtdetahadmf = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadmf"
+tree_dijetmtdetahadmf-train-flatsig = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadmf-train-flatsig"
+tree_dijetmtdetahadmf_JECdown = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadmf_JECdown"
+tree_dijetmtdetahadmf_JECup = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadmf_JECup"
+tree_dijetmtdetahadmf_JERdown = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadmf_JERdown"
+tree_dijetmtdetahadmf_JERup = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtdetahadmf_JERup"
+tree_dijetmtmutrig = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmtmutrig"
 
+
+baseLoc = tree_dijetmtdetahadmf
 
 fileDict = {
 "z10":[baseLoc+"tree_SVJ_mZprime-1000_mDark-20_rinv-0.3_alpha-peak_MC2017.root"],
