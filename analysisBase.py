@@ -50,6 +50,11 @@ class baseClass:
 		self.objects.append(hist)
 		return hist
 
+	def makeTH1Fvarbins(self, name, title, nbinsx, lowBinEdge):
+		hist = rt.TH1F(name, title, nbinsx, lowBinEdge)
+		self.objects.append(hist)
+		return hist
+
 	def makeTH2F(self, name, nbinsx, xmin, xmax, nbinsy, ymin, ymax):
 		hist = rt.TH2F(name, name, nbinsx, xmin, xmax, nbinsy, ymin, ymax)
 		self.objects.append(hist)
@@ -337,7 +342,63 @@ class baseClass:
 		#save as .png
 		c.SaveAs(self.extraDir+name+"_ratio.png")
 
-		
+		"""
+	def makeNMOpdf(self, LoHi, name, doLeg = True, log = False):
+		# always have the order of histograms be QCD, TTjets, ZJets, WJets, then signals
+		c1 = rt.TCanvas("c1","c1",1200,900)
+		colorDict = {0:41,1:42,2:43,3:44}
+		if log:
+			c1.SetLogy()
+		stack = rt.THStack()
+		LoH = []
+		for h in LoHi:
+			LoH.append(h.Clone())
+		for i in range(len(LoH)):
+			if i < 4:
+				LoH[i].SetLineColor(colorDict[i])
+				LoH[i].SetLineStyle(0)
+			else:
+				LoH[i].SetLineColor(i-3)
+				LoH[i].SetLineStyle(3)
+			stack.Add(LoH[i])
+		stack.Draw("nostack hist")
+		stack.GetXaxis().SetTitle(LoH[0].GetXaxis().GetTitle())
+		stack.GetYaxis().SetTitle("Count")
+		stack.SetTitle(name)
+		c1.Modified()
+		if doLeg:
+			c1.BuildLegend(0.7,0.7,0.9,0.9)
+		c1.SaveAs(self.extraDir+name+".png")
+		if doCum:
+			sCum = rt.THStack()
+			for i in range(len(LoH)):
+				sCum.Add(LoH[i].GetCumulative())
+			sCum.Draw("nostack")
+			sCum.GetYaxis().SetTitle("Cumulative Fraction")
+			sCum.Modified()
+			if doLeg:
+				c1.BuildLegend(0.7,0.7,0.9,0.9)
+			c1.SaveAs(self.extraDir+name+"_cum.png")
+		for i in range(len(LoH)):
+			if LoH[i].Integral() != 0:
+				LoH[i].Scale(1/LoH[i].Integral())
+		stack.Draw("nostack hist")
+		stack.GetYaxis().SetTitle("a.u.")
+		c1.Modified()
+		if doLeg:
+			c1.BuildLegend(0.7,0.7,0.9,0.9)
+		c1.SaveAs(self.extraDir+name+"_norm.png")
+		if doCum:
+			sCum = rt.THStack()
+			for i in range(len(LoH)):
+				sCum.Add(LoH[i].GetCumulative())
+			sCum.Draw("nostack")
+			sCum.GetYaxis().SetTitle("Normalized Cumulative Fraction")
+			sCum.Modified()
+			if doLeg:
+				c1.BuildLegend(0.7,0.7,0.9,0.9)
+			c1.SaveAs(self.extraDir+name+"_normcum.png")
+		"""
 
 	def make2dPng(self, hist, name):
 		c1 = rt.TCanvas("c1","c1",1200,900)
@@ -362,7 +423,7 @@ class baseClass:
 		for line in self.treeNameList:
 			print(line)
 		print("And saving output here:")
-		print(self.outFileName)
+		print(self.extraDir+self.outFileName)
 		print("------------------------")
 	
 	def run(self):

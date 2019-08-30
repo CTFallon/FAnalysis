@@ -26,12 +26,12 @@ def loop(self):
 				# varType can be "s" - single value (ie 'MET')
 				#				 "sF" - single value, but a function of (not sure if this exists, but just in case)
 				#				 "vA" - vector, all values (ie 'JetsAK8_girth')
-				#				 "vI" - vector, only index value (ie 'JetsAK8_girth[0]')
+				#				 "vI" - vector, only index'd value (ie 'JetsAK8_girth[0]')
 				#				 "vAF" - vector, all values but function (ie 'JetsAK8.Pt()' - Pt of all ak8 Jets)
 				#				 "vIF" - vector, indexed function (ie 'JetsAK8[0].Pt()', only Pt of leading AK8 Jet)
 				#				 "vR", "vRF
-	'fixedGridRhoFastjetAll':["s",nBins,0,80,self.fileID+";fixedGridRhoFastjetAll; Events"],
-	'NVtx':["s",nBins,0,100,self.fileID+";NVtx; Events"],
+	#'fixedGridRhoFastjetAll':["s",nBins,0,80,self.fileID+";fixedGridRhoFastjetAll; Events"],
+	#'NVtx':["s",nBins,0,100,self.fileID+";NVtx; Events"],
 	'MET':["s",nBins,200,2000,self.fileID+";MET; Events"],
 	'METPhi':["s",nBins,-rt.TMath.Pi(),rt.TMath.Pi(),self.fileID+";MET#Phi; Events"],
 	#'MHT':["s",nBins,200,2000,self.fileID+";MHT; Events"],
@@ -71,18 +71,20 @@ def loop(self):
 	'JetsAK8_muonEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; fMu; Events"],# BDT
 	'JetsAK8_photonEnergyFraction[0]':["vI",nBins,0,1,self.fileID+"; f#gamma; Events"],# BDT
 	'JetsAK8_photonEnergyFraction[1]':["vI",nBins,0,1,self.fileID+"; f#gamma; Events"],# BDT
-	#'deltaR12':["spec",nBins,0.8,3.5,self.fileID+";#Delta R(j_{1},j_{2});Events"],
-	#'metR':["spec",nBins,0.15,0.7,self.fileID+";MET/m_{T};Events"],
-	#'nJetsAK8':["spec",7,1,8,self.fileID+";nAK8 Jets;Events"],
-	#'nJetsAK4':["spec",40,0,40,self.fileID+";nAK4 Jets;Events"],
+	'deltaR12':["spec",nBins,0.8,3.5,self.fileID+";#Delta R(j_{1},j_{2});Events"],
+	'metR':["spec",nBins,0.15,0.7,self.fileID+";MET/m_{T};Events"],
+	'nJetsAK8':["spec",7,1,8,self.fileID+";nAK8 Jets;Events"],
+	'nJetsAK4':["spec",40,0,40,self.fileID+";nAK4 Jets;Events"],
 	'tau32_lead':["spec",nBins,0,1,self.fileID+";Leading Jet #tau_{32};Events"], # BDT
 	'tau21_lead':["spec",nBins,0,1,self.fileID+";Subleading Jet #tau_{21};Events"], # BDT
 	'tau32_sub':["spec",nBins,0,1,self.fileID+";Leading Jet #tau_{32};Events"], # BDT
 	'tau21_sub':["spec",nBins,0,1,self.fileID+";Subeading Jet #tau_{21};Events"], # BDT
-	'JetsAK8_bdtSVJtag[0]':["vI",nBins,0,1,self.fileID+"; SVJ BDT Output; Events"],
-	'JetsAK8_bdtSVJtag[1]':["vI",nBins,0,1,self.fileID+"; SVJ BDT Output; Events"],
+	'JetsAK8_bdtSVJtag[0]':["vI",nBins,0,1,self.fileID+"; Leading Jets' SVJ BDT Output; Events"],
+	'JetsAK8_bdtSVJtag[1]':["vI",nBins,0,1,self.fileID+"; Subleading Jets' SVJ BDT Output; Events"],
+	'JetsAK8_bdtSVJtag':["vA",nBins,0,1,self.fileID+"; All Jets' SVJ BDT Output; Events"],
 	'DeltaPhi1':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{1}, MET); Events"],# BDT
-	'DeltaPhi2':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{2}, MET); Events"]# BDT
+	'DeltaPhi2':["s",nBins,0,rt.TMath.Pi(),self.fileID+"; #Delta#phi(j_{2}, MET); Events"],# BDT
+	'nJetsTagged':["spec",3, 0,3, self.fileID+"; Number of SVJ Tagged Jets; Events"]
 	}
 
 	branchList = tree.GetListOfBranches()
@@ -141,13 +143,13 @@ def loop(self):
 	else:
 		lumi = 1
 	histDict = {}
-#	histDictFilter = {}
-#	histDictFilter2 = {}
+	histDict_lt300 = {}
+	histDict_gt300 = {}
 
 	for plotVar, histSpecs in plotDict.items():
 		histDict[plotVar] = self.makeTH1F(plotVar+"_"+self.fileID,histSpecs[4],histSpecs[1],histSpecs[2],histSpecs[3]) 
-#		histDictFilter[plotVar] = self.makeTH1F(plotVar+"_"+self.fileID+"_filter",histSpecs[4],histSpecs[1],histSpecs[2],histSpecs[3])
-#		histDictFilter2[plotVar] = self.makeTH1F(plotVar+"_"+self.fileID+"_filter2",histSpecs[4],histSpecs[1],histSpecs[2],histSpecs[3])
+		histDict_lt300[plotVar] = self.makeTH1F(plotVar+"_lt300_"+self.fileID,histSpecs[4],histSpecs[1],histSpecs[2],histSpecs[3]) 
+		histDict_gt300[plotVar] = self.makeTH1F(plotVar+"_gt300_"+self.fileID,histSpecs[4],histSpecs[1],histSpecs[2],histSpecs[3])
 	for iEvent in range(nEvents):
 		if iEvent%1000 == 0:
 			print("Event: " + str(iEvent) + "/" + str(nEvents))
@@ -163,49 +165,77 @@ def loop(self):
 		
 		if "18" in self.fileID:
 			#apply HEMOptVetoFilter to Data if runNum >= 319077
-			# right now MC does not get the filter applied... Problem?
-			if (("Data" in self.fileID) and (tree.RunNum >= 319077) and (tree.HEMOptVetoFilter == 0)):
+			#apply HEMOptVetoFilter to MC if in 18POST
+			if ((self.fileID == "Data18PRE") and (tree.RunNum >= 319077)):
 				continue
+			elif ((self.fileID == "Data18POST") and (tree.RunNum < 319077)):
+				continue
+			elif (("POST" in self.fileID) and (tree.HEMOptVetoFilter == 0)):
+				continue
+
+		#applying filters
+		#globalSuperTightHalo2016Filter
+		#HBHENoiseFilter
+		#HBHEIsoNoiseFilter
+		#eeBadScFilter
+		#EcalDeadCellTriggerPrimitiveFilter # dont use
+		#BadChargedCandidateFilter
+		#BadPFMuonFilter
+		#NVtx
+		if not (tree.globalSuperTightHalo2016Filter and tree.HBHENoiseFilter and tree.HBHEIsoNoiseFilter and tree.eeBadScFilter and tree.BadChargedCandidateFilter and tree.BadPFMuonFilter and tree.NVtx > 0):
+			continue
 
 		for plotVar in plotDict.keys():
 			if plotDict[plotVar][0] == "s": # branch
 				#print(plotVar)
 				histDict[plotVar].Fill(getattr(tree,plotVar),weight*lumi)
-#				histDictFilter[plotVar].Fill(getattr(tree,plotVar),weight*lumi*tree.ecalBadCalibReducedFilter)
-#				histDictFilter2[plotVar].Fill(getattr(tree,plotVar),weight*lumi*tree.ecalBadCalibReducedExtraFilter)
+				if tree.MET <= 300:
+					histDict_lt300[plotVar].Fill(getattr(tree,plotVar),weight*lumi)
+				else:
+					histDict_gt300[plotVar].Fill(getattr(tree,plotVar),weight*lumi)
 			elif plotDict[plotVar][0] == "sF": # branch.func()
 				varStrHelper = plotVar.split(".")
 				bName, bFunc = varStrHelper[0],varStrHelper[1][:-2]
 				#print(bname, bFunc)
 				histDict[plotVar].Fill(getattr(getattr(tree, bName), bFunc)(), weight*lumi)
-#				histDictFilter[plotVar].Fill(getattr(getattr(tree, bName), bFunc)(), weight*lumi*tree.ecalBadCalibReducedFilter)
-#				histDictFilter2[plotVar].Fill(getattr(getattr(tree, bName), bFunc)(), weight*lumi*tree.ecalBadCalibReducedExtraFilter)
+				if tree.MET <= 300:
+					histDict_lt300[plotVar].Fill(getattr(getattr(tree, bName), bFunc)(), weight*lumi)
+				else:
+					histDict_gt300[plotVar].Fill(getattr(getattr(tree, bName), bFunc)(), weight*lumi)
 			elif plotDict[plotVar][0] == "vA": # branch
 				#print(plotVar)
 				for value in getattr(tree,plotVar):
 					histDict[plotVar].Fill(value,weight*lumi)
-#					histDictFilter[plotVar].Fill(value,weight*lumi*tree.ecalBadCalibReducedFilter)
-#					histDictFilter2[plotVar].Fill(value,weight*lumi*tree.ecalBadCalibReducedExtraFilter)
+					if tree.MET <= 300:
+						histDict_lt300[plotVar].Fill(value,weight*lumi)
+					else:
+						histDict_gt300[plotVar].Fill(value,weight*lumi)
 			elif plotDict[plotVar][0] == "vI": # branch[index]
 				varStrHelper = plotVar.replace("]","[").split("[")
 				bName, bIndex = varStrHelper[0],varStrHelper[1]
 				#print(bName, bIndex)
 				histDict[plotVar].Fill(getattr(tree,bName)[int(bIndex)],weight*lumi)
-#				histDictFilter[plotVar].Fill(getattr(tree,bName)[int(bIndex)],weight*lumi*tree.ecalBadCalibReducedFilter)
-#				histDictFilter2[plotVar].Fill(getattr(tree,bName)[int(bIndex)],weight*lumi*tree.ecalBadCalibReducedExtraFilter)
+				if tree.MET <= 300:
+					histDict_lt300[plotVar].Fill(getattr(tree,bName)[int(bIndex)],weight*lumi)
+				else:
+					histDict_gt300[plotVar].Fill(getattr(tree,bName)[int(bIndex)],weight*lumi)
 			elif plotDict[plotVar][0] == "vAF":# branch.func()
 				bName, bFunc = plotVar.split(".")[0],plotVar.split(".")[1][:-2]
 				#print(bName, bFunc)
 				for value in getattr(tree,bName):
 					histDict[plotVar].Fill(getattr(value, bFunc)(), weight*lumi)
-#					histDictFilter[plotVar].Fill(getattr(value, bFunc)(), weight*lumi*tree.ecalBadCalibReducedFilter)
-#					histDictFilter2[plotVar].Fill(getattr(value, bFunc)(), weight*lumi*tree.ecalBadCalibReducedExtraFilter)
+					if tree.MET <= 300:
+						histDict_lt300[plotVar].Fill(getattr(value, bFunc)(), weight*lumi)
+					else:
+						histDict_gt300[plotVar].Fill(getattr(value, bFunc)(), weight*lumi)
 			elif plotDict[plotVar][0] == "vIF":# branch[index].func()
 				varStrHelper = plotVar.replace("]","[").replace("[",".").split(".")
 				bName, bIndex, bFunc = varStrHelper[0],varStrHelper[1],varStrHelper[3][0:-2]
 				histDict[plotVar].Fill(getattr(getattr(tree,bName)[int(bIndex)],bFunc)(),weight*lumi)
-#				histDictFilter[plotVar].Fill(getattr(getattr(tree,bName)[int(bIndex)],bFunc)(),weight*lumi*tree.ecalBadCalibReducedFilter)
-#				histDictFilter2[plotVar].Fill(getattr(getattr(tree,bName)[int(bIndex)],bFunc)(),weight*lumi*tree.ecalBadCalibReducedExtraFilter)
+				if tree.MET <= 300:
+					histDict_lt300[plotVar].Fill(getattr(getattr(tree,bName)[int(bIndex)],bFunc)(),weight*lumi)
+				else:
+					histDict_gt300[plotVar].Fill(getattr(getattr(tree,bName)[int(bIndex)],bFunc)(),weight*lumi)
 		#special ones that don't fit the normal stuff
 		detlaR12 = tree.JetsAK8[0].DeltaR(tree.JetsAK8[1])
 		metR = tree.MET/tree.MT_AK8
@@ -235,27 +265,27 @@ def loop(self):
 		histDict['tau21_lead'].Fill(tau21_lead,weight*lumi)
 		histDict['tau32_sub'].Fill(tau32_sub,weight*lumi)
 		histDict['tau21_sub'].Fill(tau21_sub,weight*lumi)
+		nJetsTagged = int(tree.JetsAK8_bdtSVJtag[0]>0.6)+int(tree.JetsAK8_bdtSVJtag[1]>0.6)
+		histDict["nJetsTagged"].Fill(nJetsTagged, weight*lumi)
+		if tree.MET <= 300:
+			histDict_lt300['deltaR12'].Fill(detlaR12,weight*lumi)
+			histDict_lt300['metR'].Fill(metR,weight*lumi)
+			histDict_lt300['nJetsAK8'].Fill(nJetsAK8,weight*lumi)
+			histDict_lt300['nJetsAK4'].Fill(nJetsAK4,weight*lumi)
+			histDict_lt300['tau32_lead'].Fill(tau32_lead,weight*lumi)
+			histDict_lt300['tau21_lead'].Fill(tau21_lead,weight*lumi)
+			histDict_lt300['tau32_sub'].Fill(tau32_sub,weight*lumi)
+			histDict_lt300['tau21_sub'].Fill(tau21_sub,weight*lumi)
+		else:
+			histDict_gt300['deltaR12'].Fill(detlaR12,weight*lumi)
+			histDict_gt300['metR'].Fill(metR,weight*lumi)
+			histDict_gt300['nJetsAK8'].Fill(nJetsAK8,weight*lumi)
+			histDict_gt300['nJetsAK4'].Fill(nJetsAK4,weight*lumi)
+			histDict_gt300['tau32_lead'].Fill(tau32_lead,weight*lumi)
+			histDict_gt300['tau21_lead'].Fill(tau21_lead,weight*lumi)
+			histDict_gt300['tau32_sub'].Fill(tau32_sub,weight*lumi)
+			histDict_gt300['tau21_sub'].Fill(tau21_sub,weight*lumi)
 
-#		histDictFilter['deltaR12'].Fill(detlaR12,weight*lumi*tree.ecalBadCalibReducedFilter)
-#		histDictFilter['metR'].Fill(metR,weight*lumi*tree.ecalBadCalibReducedFilter)
-#		histDictFilter['nJetsAK8'].Fill(nJetsAK8,weight*lumi*tree.ecalBadCalibReducedFilter)
-#		histDictFilter['nJetsAK4'].Fill(nJetsAK4,weight*lumi*tree.ecalBadCalibReducedFilter)
-#		histDictFilter['tau32_lead'].Fill(tau23_lead,weight*lumi*tree.ecalBadCalibReducedFilter)
-#		histDictFilter['tau21_lead'].Fill(tau12_lead,weight*lumi*tree.ecalBadCalibReducedFilter)
-#		histDictFilter['tau32_sub'].Fill(tau23_sub,weight*lumi*tree.ecalBadCalibReducedFilter)
-#		histDictFilter['tau21_sub'].Fill(tau12_sub,weight*lumi*tree.ecalBadCalibReducedFilter)
-
-#		histDictFilter2['deltaR12'].Fill(detlaR12,weight*lumi*tree.ecalBadCalibReducedExtraFilter*tree.ecalBadCalibReducedExtraFilter)
-#		histDictFilter2['metR'].Fill(metR,weight*lumi*tree.ecalBadCalibReducedExtraFilter)
-#		histDictFilter2['nJetsAK8'].Fill(nJetsAK8,weight*lumi*tree.ecalBadCalibReducedExtraFilter)
-#		histDictFilter2['nJetsAK4'].Fill(nJetsAK4,weight*lumi*tree.ecalBadCalibReducedExtraFilter)
-#		histDictFilter2['tau32_lead'].Fill(tau23_lead,weight*lumi*tree.ecalBadCalibReducedExtraFilter)
-#		histDictFilter2['tau21_lead'].Fill(tau12_lead,weight*lumi*tree.ecalBadCalibReducedExtraFilter)
-#		histDictFilter2['tau32_sub'].Fill(tau23_sub,weight*lumi*tree.ecalBadCalibReducedExtraFilter)
-#		histDictFilter2['tau21_sub'].Fill(tau12_sub,weight*lumi*tree.ecalBadCalibReducedExtraFilter)
-
-				
-			
 				# getattr is funky for methods. for a public variable of a class, getattr(obj, attr) works.
 				# for a public function, needs getattr(obj,func)(args of func)
 				# since JetsAK8[0].Pt() is a public function, the proper way to get that value using getattr is
