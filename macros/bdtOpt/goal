@@ -1,0 +1,24 @@
+During our lunch meeting last week Kevin and Anapaola suggested that you could
+also work on the optimization of the BDT cut, since you are already working on
+optimizing the rest of the selection.
+This is tricky because we want good performance looking at the rejection rate
+but also need to keep enough statistics for the background fit... so there is
+no clear figure of merit. We were thinking that perhaps something like the half
+width of the peak of the Z' peak in the mT distribution, in relation to its
+height from respect to the continuous background.... basically something that
+takes into account the resolution of the resulting peak in the signal, but
+leaves enough stats in the falling background... 
+
+
+Optimization of BDT cut
+
+Good performance at rejection rate
+Keep stats for background fit
+
+half width of the Z' peak in mT, relitive to background
+resolution of the signal peak, but keeps background to fit against
+
+
+
+
+window in mT around mZ'
