@@ -170,7 +170,7 @@ def makeRatio(denomR, numerR, name, direc, doLeg = True, log = False):
 	h3.GetYaxis().SetLabelSize(15)
 
 	# X axis ratio plot settings
-	h3.GetXaxis().SetTitle("Jet Pt")
+	h3.GetXaxis().SetTitle("Jet Eta")
 	h3.GetXaxis().SetTitleSize(20)
 	h3.GetXaxis().SetTitleFont(43)
 	h3.GetXaxis().SetTitleOffset(4.)
@@ -208,23 +208,29 @@ for yearList in bkgList:
 		_file1 = rt.TFile.Open("outputs/scalefact/"+dataSet+"/scalefact_jeteta_CRDE.root","read")
 		histDict_numer_pt0[dataSet] = _file1.Get("JetsAK8[0].Eta()_numer_"+dataSet)
 		histDict_numer_pt0[dataSet].SetDirectory(0)
-		histDict_numer_pt0[dataSet].Rebin(2)
+		#histDict_numer_pt0[dataSet].Sumw2()
+		histDict_numer_pt0[dataSet].Rebin(4)
 		histDict_numer_pt1[dataSet] = _file1.Get("JetsAK8[1].Eta()_numer_"+dataSet)
 		histDict_numer_pt1[dataSet].SetDirectory(0)
-		histDict_numer_pt1[dataSet].Rebin(2)
+		#histDict_numer_pt1[dataSet].Sumw2()
+		histDict_numer_pt1[dataSet].Rebin(4)
 		histDict_numer_ptb[dataSet] = _file1.Get("JetsAK8.Eta()_numer_"+dataSet)
 		histDict_numer_ptb[dataSet].SetDirectory(0)
-		histDict_numer_ptb[dataSet].Rebin(2)
+		#histDict_numer_ptb[dataSet].Sumw2()
+		histDict_numer_ptb[dataSet].Rebin(4)
 		
 		histDict_denom_pt0[dataSet] = _file1.Get("JetsAK8[0].Eta()_denom_"+dataSet)
 		histDict_denom_pt0[dataSet].SetDirectory(0)
-		histDict_denom_pt0[dataSet].Rebin(2)
+		#histDict_denom_pt0[dataSet].Sumw2()
+		histDict_denom_pt0[dataSet].Rebin(4)
 		histDict_denom_pt1[dataSet] = _file1.Get("JetsAK8[1].Eta()_denom_"+dataSet)
 		histDict_denom_pt1[dataSet].SetDirectory(0)
-		histDict_denom_pt1[dataSet].Rebin(2)
+		#histDict_denom_pt1[dataSet].Sumw2()
+		histDict_denom_pt1[dataSet].Rebin(4)
 		histDict_denom_ptb[dataSet] = _file1.Get("JetsAK8.Eta()_denom_"+dataSet)
 		histDict_denom_ptb[dataSet].SetDirectory(0)
-		histDict_denom_ptb[dataSet].Rebin(2)
+		#histDict_denom_ptb[dataSet].Sumw2()
+		histDict_denom_ptb[dataSet].Rebin(4)
 	
 #		direct = "outputs/scalefact/plots_test/"
 #		makePng([listOfNumer[0],listOfDenom[0]], "leadJetPt", direct, doLeg = True, log = False, nBinsX = 50, stackLines = True)
@@ -245,13 +251,15 @@ dictOfRatios_pt0 = {}
 dictOfRatios_pt1 = {}
 dictOfRatios_ptb = {}
 
+direct = "outputs/scalefact/plots_jetEta2/"
+
 for yearKey in ["16","17","18PRE","18POST"]:
-	histDict_numer_sumBkgs_pt0[yearKey].SetTitle("Bkg"+yearKey)
-	histDict_numer_sumBkgs_pt1[yearKey].SetTitle("Bkg"+yearKey)
-	histDict_numer_sumBkgs_ptb[yearKey].SetTitle("Bkg"+yearKey)
-	histDict_denom_sumBkgs_pt0[yearKey].SetTitle("Bkg"+yearKey)
-	histDict_denom_sumBkgs_pt1[yearKey].SetTitle("Bkg"+yearKey)
-	histDict_denom_sumBkgs_ptb[yearKey].SetTitle("Bkg"+yearKey)
+	histDict_numer_sumBkgs_pt0[yearKey].SetTitle("CR-MC"+yearKey)
+	histDict_numer_sumBkgs_pt1[yearKey].SetTitle("CR-MC"+yearKey)
+	histDict_numer_sumBkgs_ptb[yearKey].SetTitle("CR-MC"+yearKey)
+	histDict_denom_sumBkgs_pt0[yearKey].SetTitle("CR-MC"+yearKey)
+	histDict_denom_sumBkgs_pt1[yearKey].SetTitle("CR-MC"+yearKey)
+	histDict_denom_sumBkgs_ptb[yearKey].SetTitle("CR-MC"+yearKey)
 	for bkgKey in ["TTJets","WJets","ZJets"]:
 		histDict_numer_sumBkgs_pt0[yearKey].Add(histDict_numer_pt0[bkgKey+yearKey])
 		histDict_numer_sumBkgs_pt1[yearKey].Add(histDict_numer_pt1[bkgKey+yearKey])
@@ -259,7 +267,6 @@ for yearKey in ["16","17","18PRE","18POST"]:
 		histDict_denom_sumBkgs_pt0[yearKey].Add(histDict_denom_pt0[bkgKey+yearKey])
 		histDict_denom_sumBkgs_pt1[yearKey].Add(histDict_denom_pt1[bkgKey+yearKey])
 		histDict_denom_sumBkgs_ptb[yearKey].Add(histDict_denom_ptb[bkgKey+yearKey])
-	direct = "outputs/scalefact/plots_jetEta/"
 	#makeRatio(histDict_denom_sumBkgs_pt0[yearKey],histDict_numer_sumBkgs_pt0[yearKey], yearKey+"_leadJetPt", direct, doLeg = True, log = False)
 	#makeRatio(histDict_denom_sumBkgs_pt1[yearKey],histDict_numer_sumBkgs_pt1[yearKey], yearKey+"_subJetPt", direct, doLeg = True, log = False)
 	#makeRatio(histDict_denom_sumBkgs_ptb[yearKey],histDict_numer_sumBkgs_ptb[yearKey], yearKey+"_bothJetPt", direct, doLeg = True, log = False)
@@ -303,19 +310,34 @@ for yearKey in ["16", "17","18PRE","18POST"]:
 		dictOfRatios_pt1["Bkg"+yearKey].GetPoint(iPoint, xB_pt1, yB_pt1)
 		dictOfRatios_ptb["Data"+yearKey].GetPoint(iPoint, xT_ptb, yT_ptb)
 		dictOfRatios_ptb["Bkg"+yearKey].GetPoint(iPoint, xB_ptb, yB_ptb)
+		yeT_pt0 = dictOfRatios_pt0["Data"+yearKey].GetErrorYhigh(iPoint)
+		yeB_pt0 = dictOfRatios_pt0["Bkg"+yearKey].GetErrorYhigh(iPoint)
+		yeT_pt1 = dictOfRatios_pt1["Data"+yearKey].GetErrorYhigh(iPoint) 
+		yeB_pt1 = dictOfRatios_pt1["Bkg"+yearKey].GetErrorYhigh(iPoint)
+		yeT_ptb = dictOfRatios_ptb["Data"+yearKey].GetErrorYhigh(iPoint)
+		yeB_ptb = dictOfRatios_ptb["Bkg"+yearKey].GetErrorYhigh(iPoint)
+		sqrtError_pt0 = rt.TMath.Sqrt( (yeT_pt0/yT_pt0)**2 + (yeB_pt0/yB_pt0)**2 )
+		sqrtError_pt1 = rt.TMath.Sqrt( (yeT_pt1/yT_pt1)**2 + (yeB_pt1/yB_pt1)**2 )
+		sqrtError_ptb = rt.TMath.Sqrt( (yeT_ptb/yT_ptb)**2 + (yeB_ptb/yB_ptb)**2 )
 		try:
 			dictOfSF_pt0[yearKey].SetPoint(iPoint,xT_pt0, yT_pt0/yB_pt0)
+			dictOfSF_pt0[yearKey].SetPointEYhigh(iPoint, abs(yT_pt0/yB_pt0)*sqrtError_pt0)
+			dictOfSF_pt0[yearKey].SetPointEYlow(iPoint, abs(yT_pt0/yB_pt0)*sqrtError_pt0)
 		except ZeroDivisionError:
 			dictOfSF_pt0[yearKey].SetPoint(iPoint,xT_pt0, 1.)
 		try:
 			dictOfSF_pt1[yearKey].SetPoint(iPoint,xT_pt1, yT_pt1/yB_pt1)
+			dictOfSF_pt1[yearKey].SetPointEYhigh(iPoint, abs(yT_pt1/yB_pt1)*sqrtError_pt1)
+			dictOfSF_pt1[yearKey].SetPointEYlow(iPoint, abs(yT_pt1/yB_pt1)*sqrtError_pt1)
 		except ZeroDivisionError:
 			dictOfSF_pt1[yearKey].SetPoint(iPoint,xT_pt1, 1.)
 		try:
 			dictOfSF_ptb[yearKey].SetPoint(iPoint,xT_ptb, yT_ptb/yB_ptb)
+			dictOfSF_ptb[yearKey].SetPointEYhigh(iPoint, abs(yT_ptb/yB_ptb)*sqrtError_ptb)
+			dictOfSF_ptb[yearKey].SetPointEYlow(iPoint, abs(yT_ptb/yB_ptb)*sqrtError_ptb)
 		except ZeroDivisionError:
 			dictOfSF_ptb[yearKey].SetPoint(iPoint,xT_ptb, 1.)
-		print(xT_pt0, xB_pt0, xT_pt1, xB_pt1, xT_ptb, xB_ptb)
+		print(xT_pt0, xB_pt0, xT_pt1, xB_pt1, xT_ptb, xB_ptb, sqrtError_pt0,sqrtError_pt1,sqrtError_ptb)
 
 for key in dictOfRatios_pt0:
 	print(key)
@@ -328,6 +350,7 @@ for yearKey in ["16","17","18PRE","18POST"]:
 	dictOfRatios_pt0["Bkg"+yearKey].SetMaximum(0.5)
 	dictOfRatios_pt0["Bkg"+yearKey].Draw("")
 	for setKey in ["Data"]:
+		dictOfRatios_pt0[setKey+yearKey].SetTitle("CR-"+setKey+yearKey)
 		dictOfRatios_pt0[setKey+yearKey].Draw("same")
 	title = rt.TPaveText(0.3,0.91,0.7,0.99,"brNDC")
 	title.AddText(yearKey+" Leading Jet Eta")
@@ -341,6 +364,7 @@ for yearKey in ["16","17","18PRE","18POST"]:
 	dictOfRatios_pt1["Bkg"+yearKey].SetMaximum(0.5)
 	dictOfRatios_pt1["Bkg"+yearKey].Draw("")
 	for setKey in ["Data"]:
+		dictOfRatios_pt1[setKey+yearKey].SetTitle("CR-"+setKey+yearKey)
 		dictOfRatios_pt1[setKey+yearKey].Draw("same")
 	title = rt.TPaveText(0.3,0.91,0.7,0.99,"brNDC")
 	title.AddText(yearKey+" Subleading Jet Eta")
@@ -354,6 +378,7 @@ for yearKey in ["16","17","18PRE","18POST"]:
 	dictOfRatios_ptb["Bkg"+yearKey].SetMaximum(0.5)
 	dictOfRatios_ptb["Bkg"+yearKey].Draw("")
 	for setKey in ["Data"]:
+		dictOfRatios_ptb[setKey+yearKey].SetTitle("CR-"+setKey+yearKey)
 		dictOfRatios_ptb[setKey+yearKey].Draw("same")
 	title = rt.TPaveText(0.3,0.91,0.7,0.99,"brNDC")
 	title.AddText(yearKey+" Both Leading Jets' Eta")
@@ -367,13 +392,15 @@ for yearKey in ["16","17","18PRE","18POST"]:
 	dictOfSF_pt0[yearKey].SetMaximum(3)
 	dictOfSF_pt0[yearKey].SetLineColor(1)
 	dictOfSF_pt0[yearKey].SetTitle("Leading Jet")
-	dictOfSF_pt0[yearKey].Draw("")
+	dictOfSF_pt0[yearKey].GetXaxis().SetTitle("Jet |#eta|")
+	dictOfSF_pt0[yearKey].GetYaxis().SetTitle("Scale Factor #varepsilon_{data}/#varepsilon_{MC}")
+	dictOfSF_pt0[yearKey].Draw("ap")
 	dictOfSF_pt1[yearKey].SetLineColor(2)
 	dictOfSF_pt1[yearKey].SetTitle("Subleading Jet")
-	dictOfSF_pt1[yearKey].Draw("same")
+	dictOfSF_pt1[yearKey].Draw("p same")
 	dictOfSF_ptb[yearKey].SetLineColor(3)
 	dictOfSF_ptb[yearKey].SetTitle("Both Jets")
-	dictOfSF_ptb[yearKey].Draw("same")
+	dictOfSF_ptb[yearKey].Draw("p same")
 	title = rt.TPaveText(0.3,0.91,0.7,0.99,"brNDC")
 	title.AddText(yearKey+" ScaleFactors")
 	title.Draw()

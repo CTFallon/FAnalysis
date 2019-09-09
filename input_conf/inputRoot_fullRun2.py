@@ -27,7 +27,7 @@ tree_dijetmtdetaele = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run
 tree_dijetmthighdetahadloose = "root://cmseos.fnal.gov//store/user/lpcsusyhad/SVJ2017/Run2ProductionV17/Skims/tree_dijetmthighdetahadloose/"
 
 
-baseLoc = tree_dijetmthighdetahadloose
+baseLoc = tree_dijetmtdetahadloose
 
 fileDict = {
 "z10":[baseLoc+"tree_SVJ_mZprime-1000_mDark-20_rinv-0.3_alpha-peak_MC2017.root"],

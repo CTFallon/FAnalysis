@@ -159,7 +159,7 @@ def loop(self):
 				continue		
 		
 		if (("Jets" in self.fileID) or ("QCD" in self.fileID)): #or ("ST1" in self.fileID)): # Bkg MC get tree weight, data, SingleTop,  and signal MC get weight == 1
-			weight = tree.Weight*tree.puWeight
+			weight = tree.Weight*tree.puWeightNew
 		else: 
 			weight = 1.
 		
